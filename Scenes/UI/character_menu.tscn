@@ -1,0 +1,471 @@
+[gd_scene format=3 uid="uid://bumkko05kvkep"]
+
+[ext_resource type="Script" uid="uid://b85pu70t71k02" path="res://Scripts/character_menu.gd" id="1_ifo6h"]
+
+[node name="CharacterMenu" type="CanvasLayer" unique_id=606830278]
+script = ExtResource("1_ifo6h")
+
+[node name="Panel" type="Panel" parent="." unique_id=683465865]
+custom_minimum_size = Vector2(900, 500)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = -605.0
+offset_right = 1159.0
+offset_bottom = -105.0
+grow_vertical = 0
+
+[node name="MainVBox" type="VBoxContainer" parent="Panel" unique_id=326321915]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+
+[node name="TitleEquip" type="Label" parent="Panel/MainVBox" unique_id=117085405]
+layout_mode = 2
+text = "Equipment"
+horizontal_alignment = 1
+
+[node name="EquipHBox" type="HBoxContainer" parent="Panel/MainVBox" unique_id=1015650786]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="EquipLeft" type="VBoxContainer" parent="Panel/MainVBox/EquipHBox" unique_id=1866432]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SlotMainWeapon" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipLeft" unique_id=1734231564]
+layout_mode = 2
+alignment = 2
+
+[node name="LblMainWeapon" type="Label" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotMainWeapon" unique_id=2089125838]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Main Weapon"
+horizontal_alignment = 2
+
+[node name="Btnmain_weapon" type="Button" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotMainWeapon" unique_id=676811418]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="SlotHelm" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipLeft" unique_id=2010337611]
+layout_mode = 2
+alignment = 2
+
+[node name="LblHelm" type="Label" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotHelm" unique_id=929985380]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Helm"
+horizontal_alignment = 2
+
+[node name="Btnhelm" type="Button" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotHelm" unique_id=1072026085]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="SlotArmor" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipLeft" unique_id=883718254]
+layout_mode = 2
+alignment = 2
+
+[node name="LblArmor" type="Label" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotArmor" unique_id=730868168]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Armor"
+horizontal_alignment = 2
+
+[node name="Btnarmor" type="Button" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotArmor" unique_id=856721238]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="SlotBoots" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipLeft" unique_id=2007382180]
+layout_mode = 2
+alignment = 2
+
+[node name="LblBoots" type="Label" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotBoots" unique_id=779295621]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Boots"
+horizontal_alignment = 2
+
+[node name="Btnboots" type="Button" parent="Panel/MainVBox/EquipHBox/EquipLeft/SlotBoots" unique_id=619480524]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="Preview" type="ColorRect" parent="Panel/MainVBox/EquipHBox" unique_id=1712967140]
+custom_minimum_size = Vector2(120, 180)
+layout_mode = 2
+color = Color(0.1, 0.1, 0.1, 0.5)
+
+[node name="@Label@4" type="Label" parent="Panel/MainVBox/EquipHBox/Preview" unique_id=1870431210]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+text = "Player"
+
+[node name="EquipRight" type="VBoxContainer" parent="Panel/MainVBox/EquipHBox" unique_id=904834817]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SlotSecondaryWeapon" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipRight" unique_id=271133225]
+layout_mode = 2
+
+[node name="Btnsecondary_weapon" type="Button" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotSecondaryWeapon" unique_id=1199711594]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="LblSecondaryWeapon" type="Label" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotSecondaryWeapon" unique_id=1241854124]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Secondary Weapon"
+
+[node name="SlotArtifact" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipRight" unique_id=615019304]
+layout_mode = 2
+
+[node name="Btnartifact" type="Button" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotArtifact" unique_id=490402480]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="LblArtifact" type="Label" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotArtifact" unique_id=252662475]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Artifact"
+
+[node name="SlotAccessory1" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipRight" unique_id=1576347568]
+layout_mode = 2
+
+[node name="Btnaccessory1" type="Button" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotAccessory1" unique_id=1903845328]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="LblAccessory1" type="Label" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotAccessory1" unique_id=2032137475]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Accessory 1"
+
+[node name="SlotAccessory2" type="HBoxContainer" parent="Panel/MainVBox/EquipHBox/EquipRight" unique_id=895051435]
+layout_mode = 2
+
+[node name="Btnaccessory2" type="Button" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotAccessory2" unique_id=1886302150]
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+text = "Kosong"
+
+[node name="LblAccessory2" type="Label" parent="Panel/MainVBox/EquipHBox/EquipRight/SlotAccessory2" unique_id=1147995474]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Accessory 2"
+
+[node name="VSeparator" type="VSeparator" parent="Panel/MainVBox/EquipHBox" unique_id=480085391]
+layout_mode = 2
+
+[node name="EquipInvVBox" type="VBoxContainer" parent="Panel/MainVBox/EquipHBox" unique_id=414330308]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EquipInvTitle" type="Label" parent="Panel/MainVBox/EquipHBox/EquipInvVBox" unique_id=1239871452]
+layout_mode = 2
+text = "Pilih Slot"
+horizontal_alignment = 1
+
+[node name="EquipScroll" type="ScrollContainer" parent="Panel/MainVBox/EquipHBox/EquipInvVBox" unique_id=711467147]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EquipInvGrid" type="GridContainer" parent="Panel/MainVBox/EquipHBox/EquipInvVBox/EquipScroll" unique_id=1018141862]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="@HSeparator@6" type="HSeparator" parent="Panel/MainVBox" unique_id=1507429149]
+layout_mode = 2
+
+[node name="@HBoxContainer@7" type="HBoxContainer" parent="Panel/MainVBox" unique_id=1587141976]
+layout_mode = 2
+
+[node name="@Label@8" type="Label" parent="Panel/MainVBox/@HBoxContainer@7" unique_id=984308215]
+layout_mode = 2
+text = "Status"
+
+[node name="LblPoints" type="Label" parent="Panel/MainVBox/@HBoxContainer@7" unique_id=1216440684]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sisa Stat Point: 0"
+horizontal_alignment = 2
+
+[node name="StatHBox" type="HBoxContainer" parent="Panel/MainVBox" unique_id=567595036]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/MainVBox/StatHBox" unique_id=1574336704]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 5
+
+[node name="@Label@9" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=938489588]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "STR"
+
+[node name="ValSTR" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1166724058]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "1 + 0"
+
+[node name="BtnUpSTR" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1066546846]
+layout_mode = 2
+text = "+"
+
+[node name="BtnDnSTR" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=2101601204]
+layout_mode = 2
+text = "-"
+
+[node name="@Control@10" type="Control" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=784574664]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="@Label@11" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1086922732]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "AGI"
+
+[node name="ValAGI" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=369238461]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "1 + 0"
+
+[node name="BtnUpAGI" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=53591554]
+layout_mode = 2
+text = "+"
+
+[node name="BtnDnAGI" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=164761991]
+layout_mode = 2
+text = "-"
+
+[node name="@Control@12" type="Control" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1421229667]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="@Label@13" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=909405408]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "VIT"
+
+[node name="ValVIT" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=395615213]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "1 + 0"
+
+[node name="BtnUpVIT" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=612562982]
+layout_mode = 2
+text = "+"
+
+[node name="BtnDnVIT" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=284833288]
+layout_mode = 2
+text = "-"
+
+[node name="@Control@14" type="Control" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1968157051]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="@Label@15" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=334706409]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "INT"
+
+[node name="ValINT" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1374628650]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "1 + 0"
+
+[node name="BtnUpINT" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=745217396]
+layout_mode = 2
+text = "+"
+
+[node name="BtnDnINT" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=324735531]
+layout_mode = 2
+text = "-"
+
+[node name="@Control@16" type="Control" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=340312286]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="@Label@17" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=252236050]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "DEX"
+
+[node name="ValDEX" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=441273609]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "1 + 0"
+
+[node name="BtnUpDEX" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1552653630]
+layout_mode = 2
+text = "+"
+
+[node name="BtnDnDEX" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=683971161]
+layout_mode = 2
+text = "-"
+
+[node name="@Control@18" type="Control" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1854973465]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="@Label@19" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=770442403]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "LUK"
+
+[node name="ValLUK" type="Label" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=857710911]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "1 + 0"
+
+[node name="BtnUpLUK" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1184946355]
+layout_mode = 2
+text = "+"
+
+[node name="BtnDnLUK" type="Button" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1324525469]
+layout_mode = 2
+text = "-"
+
+[node name="@Control@20" type="Control" parent="Panel/MainVBox/StatHBox/StatsGrid" unique_id=1669928358]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="@VSeparator@21" type="VSeparator" parent="Panel/MainVBox/StatHBox" unique_id=734178311]
+layout_mode = 2
+
+[node name="DetailGrid" type="GridContainer" parent="Panel/MainVBox/StatHBox" unique_id=475658104]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 4
+
+[node name="@Label@22" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1055876297]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "MaxHP"
+
+[node name="DetailMaxHP" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=91561699]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@23" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1053329231]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "MaxMP"
+
+[node name="DetailMaxMP" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1036276936]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@24" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=728539680]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Atk"
+
+[node name="DetailAtk" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=22125462]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@25" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=2084320910]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Matk"
+
+[node name="DetailMatk" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1063523149]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@26" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=2113903594]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Def"
+
+[node name="DetailDef" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=2060644501]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@27" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=2018961613]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Mdef"
+
+[node name="DetailMdef" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=972877457]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@28" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=26606899]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Hit"
+
+[node name="DetailHit" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=674245541]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@29" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1789320859]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Flee"
+
+[node name="DetailFlee" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=852301595]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@30" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1657584724]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Critical"
+
+[node name="DetailCritical" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=139352677]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="@Label@31" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1102585464]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "Aspd"
+
+[node name="DetailAspd" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=2064254364]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "0 + 0"
+
+[node name="BtnConfirm" type="Button" parent="Panel/MainVBox" unique_id=1643230758]
+layout_mode = 2
+text = "Terapkan Stat"
+
+[node name="BtnClose" type="Button" parent="Panel" unique_id=717430531]
+layout_mode = 0
+offset_left = 1018.0
+offset_top = 10.0
+offset_right = 1048.0
+offset_bottom = 41.0
+text = "X"

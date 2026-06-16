@@ -1,0 +1,96 @@
+[gd_scene load_steps=2 format=3 uid="uid://shop_menu_scene"]
+
+[ext_resource type="Script" path="res://Scripts/shop_menu.gd" id="1_smgd"]
+
+[node name="ShopMenu" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_smgd")
+
+[node name="Panel" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = 80.0
+offset_right = -150.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.15, 0.15, 0.15, 0.95)
+
+[node name="TopBar" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BtnBuy" type="Button" parent="Panel/TopBar"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Beli"
+
+[node name="BtnSell" type="Button" parent="Panel/TopBar"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Jual"
+
+[node name="BtnCancel" type="Button" parent="Panel/TopBar"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Batal"
+
+[node name="HBox" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 80.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="LeftPanel" type="Panel" parent="Panel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/HBox/LeftPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/HBox/LeftPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="RightPanel" type="VBoxContainer" parent="Panel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="LblCoins" type="Label" parent="Panel/HBox/RightPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "Koin: 0 G"
+horizontal_alignment = 1
+
+[node name="LblPossession" type="Label" parent="Panel/HBox/RightPanel"]
+layout_mode = 2
+text = "Dimiliki: 0"
+horizontal_alignment = 1

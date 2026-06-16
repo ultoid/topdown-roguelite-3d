@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://or78ktjmua4q"]
+
+[ext_resource type="Script" uid="uid://dk71t3g14ob14" path="res://Scripts/npc.gd" id="1_npc"]
+[ext_resource type="Texture2D" uid="uid://0r3th46w7qkj" path="res://Assets/player.png" id="2_xxsvc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_solid"]
+size = Vector2(13, 18)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_npc"]
+radius = 22.0
+
+[node name="NPC" type="StaticBody3D" unique_id=477499049]
+script = ExtResource("1_npc")
+
+[node name="Sprite2D" type="Sprite3D" parent="." unique_id=2095500675]
+modulate = Color(0.5, 1, 0.5, 1)
+texture = ExtResource("2_xxsvc")
+hframes = 6
+vframes = 10
+
+[node name="SolidCollision" type="CollisionShape3D" parent="." unique_id=1911752350]
+position = Vector2(-0.5, -2)
+shape = SubResource("RectangleShape2D_solid")
+
+[node name="InteractArea" type="Area3D" parent="." unique_id=1738724831]
+
+[node name="CollisionShape2D" type="CollisionShape3D" parent="InteractArea" unique_id=839265827]
+shape = SubResource("CircleShape2D_npc")
+
+[node name="Label" type="Label" parent="." unique_id=800346141]
+offset_left = -200.0
+offset_top = -25.0
+offset_right = 200.0
+offset_bottom = -5.0
+scale = Vector2(0.5, 0.5)
+pivot_offset = Vector2(200, 10)
+theme_override_font_sizes/font_size = 12
+text = "NPC"
+horizontal_alignment = 1
+vertical_alignment = 1

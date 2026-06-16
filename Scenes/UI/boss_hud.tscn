@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://csovqxvf15o0y"]
+
+[ext_resource type="Script" path="res://Scripts/boss_hud.gd" id="1_37p78"]
+
+[node name="BossHUD" type="CanvasLayer" unique_id=576414922]
+script = ExtResource("1_37p78")
+
+[node name="BossHealthBar" type="ProgressBar" parent="." unique_id=309379391]
+modulate = Color(1, 0, 0, 1)
+offset_left = 353.0
+offset_top = 53.0
+offset_right = 921.0
+offset_bottom = 83.0
+show_percentage = false
+
+[node name="BossNameLabel" type="Label" parent="." unique_id=3343746]
+offset_left = 355.0
+offset_top = 26.0
+offset_right = 921.0
+offset_bottom = 49.0
+text = "RAJA TENGKORAK"
+horizontal_alignment = 1
+

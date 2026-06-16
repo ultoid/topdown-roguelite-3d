@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/collectible.gd" id="1_coin"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_coin"]
+size = Vector2(8, 8)
+
+[node name="Coin" type="Area3D"]
+script = ExtResource("1_coin")
+type = 0
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+color = Color(1, 0.84, 0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape3D" parent="."]
+shape = SubResource("RectangleShape2D_coin")

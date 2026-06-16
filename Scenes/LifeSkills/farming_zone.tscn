@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cxdbitemdb004"]
+
+[ext_resource type="Script" uid="uid://dd3xxv34pfrmk" path="res://Scripts/LifeSkills/farming_zone.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(263, 102)
+
+[node name="FarmingZone" type="Area3D" unique_id=1591451921]
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape3D" parent="." unique_id=1794878348]
+shape = SubResource("RectangleShape2D_1")

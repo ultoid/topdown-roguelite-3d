@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://xxdummyenemyxx"]
+
+[ext_resource type="Script" path="res://Scripts/dummy_enemy.gd" id="1_de"]
+[ext_resource type="PackedScene" uid="uid://cc0q8yq84g11g" path="res://Scenes/UI/enemy_hp_bar.tscn" id="2_ehp"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_de1"]
+radius = 0.5
+height = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_de2"]
+albedo_color = Color(0.8, 0.2, 0.2, 1)
+
+[node name="DummyEnemy" type="CharacterBody3D" groups=["Enemy"]]
+script = ExtResource("1_de")
+monster_name = "Dummy"
+elements = ["netral"]
+resistances = {"api": 1.0, "air": 1.0, "tanah": 1.0, "angin": 1.0, "cahaya": 1.0, "kegelapan": 1.0, "netral": 1.0}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_de1")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+radius = 0.5
+height = 2.0
+material = SubResource("StandardMaterial3D_de2")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+pixel_size = 0.02
+billboard = 1
+text = "Dummy"
+
+[node name="EnemyHPBar" parent="." instance=ExtResource("2_ehp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)

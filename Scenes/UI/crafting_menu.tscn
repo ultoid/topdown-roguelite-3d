@@ -1,0 +1,183 @@
+[gd_scene format=3 uid="uid://cxdbitemdb115"]
+
+[ext_resource type="Script" uid="uid://c5xxx2v34pfrmk" path="res://Scripts/UI/crafting_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ddxx1234pfrmk" path="res://Assets/item_icon.png" id="2_icon"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.25, 0.15, 0.1, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.4, 0.25, 0.15, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.85, 0.75, 0.55, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.45, 0.25, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="CraftingMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 20
+script = ExtResource("1_script")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="MainPanel" type="Panel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -160.0
+offset_right = 280.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="Title" type="Label" parent="MainPanel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = 200.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 20
+text = "Crafting Bench"
+
+[node name="Subtitle" type="Label" parent="MainPanel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 40.0
+offset_right = 250.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(0.7, 0.6, 0.5, 1)
+theme_override_font_sizes/font_size = 10
+text = "Recipe cards, required materials and progress state"
+
+[node name="CloseButton" type="Button" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 40.0
+grow_horizontal = 0
+text = "X"
+
+[node name="LeftPanel" type="Panel" parent="MainPanel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 200.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Label" type="Label" parent="MainPanel/LeftPanel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 100.0
+offset_bottom = 30.0
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_font_sizes/font_size = 14
+text = "Recipes"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainPanel/LeftPanel"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 40.0
+offset_right = 170.0
+offset_bottom = 220.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/LeftPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RightPanel" type="Panel" parent="MainPanel"]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 70.0
+offset_right = 540.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="RecipeTitle" type="Label" parent="MainPanel/RightPanel"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 30.0
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_font_sizes/font_size = 16
+text = "Select a Recipe"
+
+[node name="DetailsContainer" type="Control" parent="MainPanel/RightPanel"]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ResultIcon" type="TextureRect" parent="MainPanel/RightPanel/DetailsContainer"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 84.0
+offset_bottom = 124.0
+texture = ExtResource("2_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MaterialsLabel" type="Label" parent="MainPanel/RightPanel/DetailsContainer"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 40.0
+offset_right = 300.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(0.2, 0.1, 0.05, 1)
+theme_override_font_sizes/font_size = 14
+text = "Required Materials"
+
+[node name="MaterialsHBox" type="HBoxContainer" parent="MainPanel/RightPanel/DetailsContainer"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 70.0
+offset_right = 300.0
+offset_bottom = 120.0
+theme_override_constants/separation = 10
+
+[node name="ProgressBar" type="ProgressBar" parent="MainPanel/RightPanel/DetailsContainer"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 190.0
+offset_right = 220.0
+offset_bottom = 210.0
+show_percentage = false
+
+[node name="CraftButton" type="Button" parent="MainPanel/RightPanel/DetailsContainer"]
+layout_mode = 0
+offset_left = 230.0
+offset_top = 185.0
+offset_right = 300.0
+offset_bottom = 215.0
+text = "Craft"

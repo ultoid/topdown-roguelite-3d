@@ -1,0 +1,88 @@
+[gd_scene load_steps=2 format=3 uid="uid://dialogue_box_123"]
+
+[ext_resource type="Theme" uid="uid://wooden_theme_123" path="res://Assets/Themes/wooden_theme.tres" id="1_theme_wood"]
+[ext_resource type="Script" path="res://Scripts/dialogue_box.gd" id="1_dlog"]
+
+[node name="DialogueBox" type="CanvasLayer"]
+theme = ExtResource("1_theme_wood")
+process_mode = 3
+script = ExtResource("1_dlog")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -150.0
+offset_right = 300.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 20
+text = "Ini adalah contoh teks dialog."
+
+[node name="PromptLabel" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -30.0
+offset_right = -10.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 14
+text = "[Space] Lanjut"
+horizontal_alignment = 2
+
+[node name="ChoiceBox" type="Panel" parent="."]
+visible = false
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -280.0
+offset_right = -50.0
+offset_bottom = -180.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ChoiceBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="BtnYes" type="Button" parent="ChoiceBox/VBoxContainer"]
+layout_mode = 2
+text = "Masuk Dungeon"
+
+[node name="BtnNo" type="Button" parent="ChoiceBox/VBoxContainer"]
+layout_mode = 2
+text = "Belum Siap"

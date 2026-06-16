@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://cxdbitemdb002"]
+
+[ext_resource type="Script" uid="uid://xyz1" path="res://Scripts/LifeSkills/resource_node.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_icon"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(32, 32)
+
+[node name="ResourceNode" type="Area3D"]
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite3D" parent="."]
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 837
+
+[node name="CollisionShape2D" type="CollisionShape3D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="StaticBody2D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape3D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_1")

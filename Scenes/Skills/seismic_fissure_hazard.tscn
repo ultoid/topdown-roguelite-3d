@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cxsfissure"]
+
+[ext_resource type="Script" path="res://Scripts/seismic_fissure_hazard.gd" id="1_sf"]
+
+[node name="SeismicFissureHazard" type="Area3D"]
+script = ExtResource("1_sf")

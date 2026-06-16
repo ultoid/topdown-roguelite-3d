@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cxfirebolt"]
+
+[ext_resource type="Script" path="res://Scripts/fire_bolt.gd" id="1_fb"]
+
+[node name="FireBolt" type="Area3D"]
+script = ExtResource("1_fb")

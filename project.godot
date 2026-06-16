@@ -1,0 +1,43 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="topdownaction_base"
+run/main_scene="uid://cxxcwf77ptnv6"
+config/features=PackedStringArray("4.6", "Forward Plus")
+config/icon="res://Assets/icon.svg"
+
+[autoload]
+
+Global="*res://Scripts/global.gd"
+ItemDB="*res://Scenes/item_db.tscn"
+SkillDB="*res://Scenes/skill_db.tscn"
+PlayerHUD="*res://Scenes/UI/player_hud.tscn"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+
+[gui]
+
+timers/tooltip_delay_sec=0.0
+theme/custom="res://Assets/Themes/wooden_theme.tres"
+theme/custom_font="res://Assets/Fonts/final-fantasy-advance-ds.otf"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+rendering_device/driver.windows="d3d12"

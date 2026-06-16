@@ -1,0 +1,11 @@
+# To-Do List : 
+- ~~memperbarui tileset, ui dan sprite~~
+- ~~implementasi class job~~
+- ~~class level~~
+- skill point & skill level
+- job advancement
+- crafting system
+- mining, foraging, logging, farming system
+- npc event -> cutscene
+- quest system (main quest & side quest)
+- mulai penyusunan story

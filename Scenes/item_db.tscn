@@ -1,0 +1,506 @@
+[gd_scene format=3 uid="uid://cxdbitemdb001"]
+
+[ext_resource type="Script" uid="uid://dcmheegxgo0i" path="res://Scripts/item_db.gd" id="1_itemdb"]
+[ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://b3c0fwmvh160j" path="res://Scripts/item_data.gd" id="3_itemdata"]
+
+[node name="ItemDB" type="Node" unique_id=570287595]
+script = ExtResource("1_itemdb")
+
+[node name="Consumable" type="Node" parent="." unique_id=181179739]
+
+[node name="potion" type="Sprite2D" parent="Consumable" unique_id=410469562]
+visible = false
+position = Vector2(-509, -196)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 264
+script = ExtResource("3_itemdata")
+item_name = "Potion"
+description = "Menyembuhkan 50 HP."
+price = 10
+effect_type = "heal_hp"
+effect_amount = 50
+is_craftable = true
+req_mat_1 = "herb"
+req_amount_1 = 3
+req_mat_2 = "water"
+req_amount_2 = 1
+
+[node name="ether" type="Sprite2D" parent="Consumable" unique_id=991002925]
+visible = false
+position = Vector2(-445, -196)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 122
+script = ExtResource("3_itemdata")
+item_name = "Ether"
+description = "Menyembuhkan 20 MP."
+price = 20
+effect_type = "heal_mp"
+effect_amount = 20
+
+[node name="energy_drink" type="Sprite2D" parent="Consumable" unique_id=217491755]
+visible = false
+position = Vector2(-485, -59)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 502
+script = ExtResource("3_itemdata")
+item_name = "Energy Drink"
+description = "Menambah 100 EP."
+price = 20
+effect_type = "heal_ep"
+effect_amount = 100
+
+[node name="Equipment" type="Node" parent="." unique_id=1587395078]
+
+[node name="MainWeapon" type="Node" parent="Equipment" unique_id="910641728"]
+
+[node name="SecondaryWeapon" type="Node" parent="Equipment" unique_id="834625428"]
+
+[node name="Helm" type="Node" parent="Equipment" unique_id="276705036"]
+
+[node name="Armor" type="Node" parent="Equipment" unique_id="807257619"]
+
+[node name="Boots" type="Node" parent="Equipment" unique_id="439823996"]
+
+[node name="Accessory" type="Node" parent="Equipment" unique_id="435938960"]
+
+[node name="practice_long_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000000]
+visible = false
+position = Vector2(-743, 370)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1447
+script = ExtResource("3_itemdata")
+item_name = "Practice Long Sword"
+description = "Pedang panjang latihan (2-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "long_sword"
+bonus_p_atk = 10
+
+[node name="practice_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000001]
+visible = false
+position = Vector2(-608, 400)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1440
+script = ExtResource("3_itemdata")
+item_name = "Practice Sword"
+description = "Pedang latihan (1-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "sword"
+bonus_p_atk = 10
+
+[node name="practice_gloves" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000002]
+visible = false
+position = Vector2(-86, 322)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1487
+script = ExtResource("3_itemdata")
+item_name = "Practice Gloves"
+description = "Sarung tangan latihan (2-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "gloves"
+bonus_p_atk = 10
+
+[node name="practice_lance" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000003]
+visible = false
+position = Vector2(-212, 329)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1460
+script = ExtResource("3_itemdata")
+item_name = "Practice Lance"
+description = "Tombak latihan (2-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "lance"
+bonus_p_atk = 10
+
+[node name="practice_staff" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000004]
+visible = false
+position = Vector2(-612, 93)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1491
+script = ExtResource("3_itemdata")
+item_name = "Practice Staff"
+description = "Tongkat sihir besar (2-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "staff"
+bonus_p_atk = 10
+
+[node name="practice_rod" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000005]
+visible = false
+position = Vector2(-455, 139)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1488
+script = ExtResource("3_itemdata")
+item_name = "Practice Rod"
+description = "Tongkat sihir pendek (1-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "rod"
+bonus_p_atk = 10
+
+[node name="practice_long_bow" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000006]
+visible = false
+position = Vector2(-403, 302)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1482
+script = ExtResource("3_itemdata")
+item_name = "Practice Long Bow"
+description = "Busur panjang (2-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "long_bow"
+bonus_p_atk = 10
+
+[node name="practice_crossbow" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000007]
+visible = false
+position = Vector2(-537, 272)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1480
+script = ExtResource("3_itemdata")
+item_name = "Practice Crossbow"
+description = "Busur silang (1-Handed)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "crossbow"
+bonus_p_atk = 10
+
+[node name="practice_dagger" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000008]
+visible = false
+position = Vector2(-638, 244)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1444
+script = ExtResource("3_itemdata")
+item_name = "Practice Dagger"
+description = "Belati (Bisa Dual Wield)"
+type = "equipment"
+price = 50
+equipment_slot = "main_weapon"
+weapon_type = "dagger"
+bonus_p_atk = 10
+
+[node name="iron_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=2339116]
+visible = false
+position = Vector2(-377, -196)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1446
+script = ExtResource("3_itemdata")
+item_name = "Iron Sword"
+description = "Pedang besi standar.
+
+Physical Attack +15
+STR +2"
+type = "equipment"
+price = 150
+equipment_slot = "main_weapon"
+weapon_type = "sword"
+bonus_p_atk = 15
+bonus_str = 2
+
+[node name="fire_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=565574309]
+visible = false
+position = Vector2(-107, -194)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1680
+script = ExtResource("3_itemdata")
+item_name = "Sword Sword"
+description = "Pedang yang diberikan kekuatan api misterius
+
+Physical Attack +15
+STR +2
+Attack Element Fire"
+type = "equipment"
+rarity = "epic"
+price = 1500
+equipment_slot = "main_weapon"
+weapon_type = "sword"
+bonus_p_atk = 15
+bonus_str = 2
+weapon_element = "api"
+bonus_dmg_api = 10.0
+
+[node name="leather_armor" type="Sprite2D" parent="Equipment/Armor" unique_id=1010220573]
+visible = false
+position = Vector2(-372, -280)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1817
+script = ExtResource("3_itemdata")
+item_name = "Leather Armor"
+description = "Baju zirah ringan dari kulit.
+
+Physical Defense +5
+Max HP +30"
+type = "equipment"
+price = 120
+equipment_slot = "armor"
+bonus_p_def = 5
+bonus_max_hp = 30
+
+[node name="leather_helmet" type="Sprite2D" parent="Equipment/Helm" unique_id=1340063860]
+visible = false
+position = Vector2(-445, -281)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1831
+script = ExtResource("3_itemdata")
+item_name = "Leather Helmet"
+description = "Helm ringan dari kulit.
+
+Physical Defense +5
+Max HP +30"
+type = "equipment"
+price = 120
+equipment_slot = "helm"
+bonus_p_def = 5
+bonus_max_hp = 30
+
+[node name="leather_boots" type="Sprite2D" parent="Equipment/Boots" unique_id=2068952468]
+visible = false
+position = Vector2(-307, -280)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1853
+script = ExtResource("3_itemdata")
+item_name = "Leather Boots"
+description = "Sepatu ringan dari kulit.
+
+Physical Defense +5
+Max HP +30"
+type = "equipment"
+price = 120
+equipment_slot = "boots"
+bonus_p_def = 5
+bonus_max_hp = 30
+
+[node name="ruby_ring" type="Sprite2D" parent="Equipment/Accessory" unique_id=1728266518]
+visible = false
+position = Vector2(-229, -196)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1844
+script = ExtResource("3_itemdata")
+item_name = "Ruby Ring"
+description = "Cincin yang memancarkan energi magis.
+
+INT +4
+Max MP +10"
+type = "equipment"
+price = 200
+equipment_slot = "accessory"
+bonus_int = 4
+bonus_max_mp = 10
+
+[node name="holy_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=1637996804]
+visible = false
+position = Vector2(-377, -102)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1721
+script = ExtResource("3_itemdata")
+item_name = "Holy Sword"
+description = "Pedang spesial milik Avalerion.
+
+Physical Attack +1000
+STR +99"
+type = "equipment"
+rarity = "legendary"
+price = 99999999
+equipment_slot = "main_weapon"
+weapon_type = "long_sword"
+bonus_p_atk = 1000
+bonus_str = 99
+
+[node name="Material" type="Node" parent="." unique_id=1375806897]
+
+[node name="stone" type="Sprite2D" parent="Material" unique_id=899546556]
+visible = false
+position = Vector2(159, -25)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 313
+script = ExtResource("3_itemdata")
+item_name = "Stone"
+description = "Batu biasa."
+type = "material"
+price = 10
+
+[node name="iron_ore" type="Sprite2D" parent="Material" unique_id=874366415]
+visible = false
+position = Vector2(59, 130)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 208
+script = ExtResource("3_itemdata")
+item_name = "Iron Ore"
+description = "Bijih besi."
+type = "material"
+price = 10
+
+[node name="wood" type="Sprite2D" parent="Material" unique_id=672771326]
+visible = false
+position = Vector2(-109, 143)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 251
+script = ExtResource("3_itemdata")
+item_name = "Wood"
+description = "Kayu."
+type = "material"
+price = 10
+
+[node name="herb" type="Sprite2D" parent="Material" unique_id=984465706]
+visible = false
+position = Vector2(266, -161)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 241
+script = ExtResource("3_itemdata")
+item_name = "Herb"
+description = "Tanaman herbal."
+type = "material"
+price = 10
+
+[node name="water" type="Sprite2D" parent="Material" unique_id=1144374357]
+visible = false
+position = Vector2(191, -319)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 54
+script = ExtResource("3_itemdata")
+item_name = "Water"
+description = "Air."
+type = "material"
+price = 1
+
+[node name="seed" type="Sprite2D" parent="Material" unique_id=796614087]
+visible = false
+position = Vector2(-89, 37)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 416
+script = ExtResource("3_itemdata")
+item_name = "Seed"
+description = "Biji tanaman."
+type = "material"
+price = 10
+
+[node name="KeyItem" type="Node" parent="." unique_id=1184274082]
+
+[node name="pickaxe" type="Sprite2D" parent="KeyItem" unique_id=517476607]
+visible = false
+position = Vector2(208, 94)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1457
+script = ExtResource("3_itemdata")
+item_name = "Pickaxe"
+description = "Alat untuk menambang."
+type = "key_item"
+price = 10
+
+[node name="axe" type="Sprite2D" parent="KeyItem" unique_id=670962195]
+visible = false
+position = Vector2(307, -43)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1464
+script = ExtResource("3_itemdata")
+item_name = "Axe"
+description = "Alat untuk menebang pohon."
+type = "key_item"
+price = 10
+
+[node name="hoe" type="Sprite2D" parent="KeyItem" unique_id=230289633]
+visible = false
+position = Vector2(85, -132)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1471
+script = ExtResource("3_itemdata")
+item_name = "Hoe"
+description = "Alat untuk mencangkul lahan."
+type = "key_item"
+price = 10
+
+[node name="watering_can" type="Sprite2D" parent="KeyItem" unique_id=177535192]
+visible = false
+position = Vector2(-196, 110)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 907
+script = ExtResource("3_itemdata")
+item_name = "Watering Can"
+description = "Alat untuk menyiram tanaman."
+type = "key_item"
+price = 10
+
+[node name="Recipe" type="Node" parent="." unique_id=501337088]
+
+[node name="potion_recipe" type="Sprite2D" parent="Recipe" unique_id=741258963]
+visible = false
+position = Vector2(0, -243)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 109
+script = ExtResource("3_itemdata")
+item_name = "Potion Recipe"
+description = "Buku panduan meracik Potion."
+price = 50
+effect_type = "unlock_recipe"
+recipe_id = "potion"

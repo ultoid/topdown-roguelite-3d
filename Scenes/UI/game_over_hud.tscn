@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://cotd8m1mh4jv8"]
+
+[ext_resource type="Script" path="res://Scripts/game_over_hud.gd" id="1_37p78"]
+
+[node name="GameOverHUD" type="CanvasLayer" unique_id=576414922]
+script = ExtResource("1_37p78")
+
+[node name="GameOverPanel" type="Panel" parent="." unique_id=676984308]
+offset_left = 373.0
+offset_top = 204.0
+offset_right = 876.0
+offset_bottom = 503.0
+
+[node name="Label" type="Label" parent="GameOverPanel" unique_id=962868788]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 10.0
+offset_right = 292.0
+offset_bottom = 33.0
+text = "GAME OVER"
+
+[node name="Button" type="Button" parent="GameOverPanel" unique_id=329382499]
+layout_mode = 0
+offset_left = 208.0
+offset_top = 249.0
+offset_right = 285.0
+offset_bottom = 280.0
+text = "try again"
+
+[node name="SummaryLabel" type="Label" parent="GameOverPanel" unique_id=1523292465]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 56.0
+offset_right = 450.0
+offset_bottom = 136.0
+theme_override_font_sizes/font_size = 18
+text = "Summary"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="GameOverPanel/Button" to="." method="_on_restart_button_pressed"]

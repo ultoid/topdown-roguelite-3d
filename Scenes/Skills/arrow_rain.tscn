@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://xxarrowrainxx"]
+
+[ext_resource type="Script" path="res://Scripts/arrow_rain.gd" id="1_ar"]
+
+[node name="ArrowRain" type="Area3D"]
+script = ExtResource("1_ar")

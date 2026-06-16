@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://b8y1o0gq5k2q3"]
+
+[ext_resource type="Script" uid="uid://dm7lwrf28rb2j" path="res://Scripts/status_icon_manager.gd" id="1_sim"]
+[ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_icon"]
+
+[node name="StatusIconManager" type="Control" unique_id=1430299881]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_sim")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1569973444]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BuffsRow" type="HBoxContainer" parent="VBoxContainer" unique_id=888059979]
+layout_mode = 2
+
+[node name="DebuffsRow" type="HBoxContainer" parent="VBoxContainer" unique_id=701269309]
+layout_mode = 2
+
+[node name="Icons" type="Node2D" parent="." unique_id=1718169025]
+visible = false
+
+[node name="poison" type="Sprite2D" parent="Icons" unique_id=31246449]
+position = Vector2(-37, -281)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 672
+
+[node name="burn" type="Sprite2D" parent="Icons" unique_id=556456153]
+position = Vector2(-152, 41)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 692
+
+[node name="freeze" type="Sprite2D" parent="Icons" unique_id=1555355810]
+position = Vector2(99, 179)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 693
+
+[node name="chill" type="Sprite2D" parent="Icons" unique_id=1776758532]
+position = Vector2(-131, 177)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 710
+
+[node name="bleed" type="Sprite2D" parent="Icons" unique_id=1300573720]
+position = Vector2(304, 14)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 676
+
+[node name="paralyze" type="Sprite2D" parent="Icons" unique_id=1177367638]
+position = Vector2(60, -125)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 687
+
+[node name="sleep" type="Sprite2D" parent="Icons" unique_id=693360284]
+position = Vector2(224, 80)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 686
+
+[node name="confuse" type="Sprite2D" parent="Icons" unique_id=1456745613]
+position = Vector2(-288, 90)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 682
+
+[node name="fear" type="Sprite2D" parent="Icons" unique_id=1326582832]
+position = Vector2(199, -125)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 685
+
+[node name="curse" type="Sprite2D" parent="Icons" unique_id=1139909831]
+position = Vector2(-181, -154)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 684
+
+[node name="blind" type="Sprite2D" parent="Icons" unique_id=818205204]
+position = Vector2(-481, -191)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 718

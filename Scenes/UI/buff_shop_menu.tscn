@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3 uid="uid://buff_shop_scene"]
+
+[ext_resource type="Script" path="res://Scripts/buff_shop_menu.gd" id="1_buff"]
+
+[node name="BuffShopMenu" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_buff")
+
+[node name="Panel" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 300.0
+offset_top = 100.0
+offset_right = -300.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.121569, 0.121569, 0.160784, 0.95)
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 20.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+text = "Hadiah Kemenangan"
+horizontal_alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 80.0
+offset_right = -50.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="LblCoins" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Koin: 0 G"
+horizontal_alignment = 1
+
+[node name="ShopBtn1" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Buff 1"
+
+[node name="ShopBtn2" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Buff 2"
+
+[node name="ShopBtn3" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Buff 3"
+
+[node name="BtnClose" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Selesai & Pulang"

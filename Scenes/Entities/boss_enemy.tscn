@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bxjtp36h3cxcg"]
+
+[ext_resource type="Script" uid="uid://c23y1nggdw64h" path="res://Scripts/boss_enemy.gd" id="1_boss"]
+[ext_resource type="Texture2D" uid="uid://bl0oep1rxur4h" path="res://Assets/enemy.png" id="2_boss"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_boss1"]
+size = Vector2(22, 36)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_boss2"]
+size = Vector2(28, 43)
+
+[node name="BossEnemy" type="CharacterBody3D" unique_id=1134540342]
+y_sort_enabled = true
+script = ExtResource("1_boss")
+
+[node name="Sprite2D" type="Sprite3D" parent="." unique_id=362020591]
+modulate = Color(1, 0.5, 0.5, 1)
+scale = Vector2(2, 2)
+texture = ExtResource("2_boss")
+hframes = 6
+vframes = 10
+
+[node name="CollisionShape2D" type="CollisionShape3D" parent="." unique_id=1955268166]
+position = Vector2(1, -4)
+shape = SubResource("RectangleShape2D_boss1")
+
+[node name="Hurtbox" type="Area3D" parent="." unique_id=113946060]
+
+[node name="CollisionShape2D" type="CollisionShape3D" parent="Hurtbox" unique_id=845098697]
+position = Vector2(1, -3.5)
+shape = SubResource("RectangleShape2D_boss2")
+
+[connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]

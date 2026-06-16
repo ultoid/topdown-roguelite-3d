@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://b822n1o18o16g"]
+
+[ext_resource type="Script" uid="uid://bttihrcs8l60y" path="res://Scripts/element_db.gd" id="1_elemdb"]
+[ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_duveq"]
+
+[node name="ElementDB" type="Node" unique_id=988941097]
+script = ExtResource("1_elemdb")
+
+[node name="netral" type="Sprite2D" parent="." unique_id=155958883]
+visible = false
+texture = ExtResource("2_duveq")
+hframes = 16
+vframes = 137
+
+[node name="api" type="Sprite2D" parent="." unique_id=760152302]
+visible = false
+
+[node name="air" type="Sprite2D" parent="." unique_id=1654516841]
+visible = false
+
+[node name="tanah" type="Sprite2D" parent="." unique_id=1519002347]
+visible = false
+
+[node name="udara" type="Sprite2D" parent="." unique_id=1411127395]
+visible = false
+
+[node name="listrik" type="Sprite2D" parent="." unique_id=1084710646]
+visible = false
+
+[node name="es" type="Sprite2D" parent="." unique_id=600542555]
+visible = false
+
+[node name="besi" type="Sprite2D" parent="." unique_id=509157423]
+visible = false
+
+[node name="suara" type="Sprite2D" parent="." unique_id=361498991]
+visible = false
+
+[node name="cahaya" type="Sprite2D" parent="." unique_id=398386467]
+visible = false
+
+[node name="kegelapan" type="Sprite2D" parent="." unique_id=1295737675]
+visible = false

@@ -1,0 +1,584 @@
+[gd_scene format=3 uid="uid://cbt5y2l3gcb7h"]
+
+[ext_resource type="Script" uid="uid://biu4pugcrbob5" path="res://Scripts/skill_db.gd" id="1_skilldb"]
+[ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_icon"]
+[ext_resource type="Script" uid="uid://dgcbgjpi4jhby" path="res://Scripts/skill_data.gd" id="3_skilldata"]
+
+[node name="SkillDB" type="Node" unique_id=1678488479]
+script = ExtResource("1_skilldb")
+
+[node name="Fighter" type="Node" parent="." unique_id=955130897]
+
+[node name="dash" type="Sprite2D" parent="Fighter" unique_id=1228931758]
+position = Vector2(310, -79)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1077
+script = ExtResource("3_skilldata")
+skill_name = "Dash"
+description = "Melakukan manuver cepat."
+ep_costs = Array[int]([10])
+cooldowns = Array[float]([2.0])
+
+[node name="heavy" type="Sprite2D" parent="Fighter" unique_id=1248452726]
+position = Vector2(211, -80)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 671
+script = ExtResource("3_skilldata")
+skill_name = "Charge Attack"
+description = "Serangan jarak dekat mematikan."
+ep_costs = Array[int]([30])
+cooldowns = Array[float]([2.0])
+
+[node name="weapon_mastery" type="Sprite2D" parent="Fighter" unique_id=387599053]
+position = Vector2(-536, 245)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1173
+script = ExtResource("3_skilldata")
+skill_name = "Weapon Mastery"
+description = "Meningkatkan Physical Attack secara permanen."
+type = "passive"
+max_level = 10
+damages = Array[int]([5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
+
+[node name="vitality_mastery" type="Sprite2D" parent="Fighter" unique_id=745809502]
+position = Vector2(-540, 330)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1123
+script = ExtResource("3_skilldata")
+skill_name = "Vitality Mastery"
+description = "Meningkatkan Hybrid Defense (Physical + Magic Def)."
+type = "passive"
+max_level = 10
+damages = Array[int]([5, 10, 15, 20, 25, 30, 35, 40, 45, 50])
+
+[node name="cyclone_sweep" type="Sprite2D" parent="Fighter" unique_id=747920740]
+position = Vector2(-381, 95)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1154
+script = ExtResource("3_skilldata")
+skill_name = "Cyclone Sweep"
+description = "Berputar memberikan damage berkelanjutan ke musuh di sekitar."
+max_level = 5
+ep_costs = Array[int]([50, 50, 50, 50, 50])
+cooldowns = Array[float]([20.0, 17.5, 15.0, 12.5, 10.0])
+damages = Array[int]([20, 35, 50, 70, 100])
+effect_durations = Array[float]([2.0, 2.5, 3.0, 3.5, 4.0])
+
+[node name="fatal_blow" type="Sprite2D" parent="Fighter" unique_id=1658347427]
+position = Vector2(-386, 187)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1130
+script = ExtResource("3_skilldata")
+skill_name = "Fatal Blow"
+description = "Serangan kejut mematikan dengan efek knockout."
+max_level = 10
+ep_costs = Array[int]([30, 30, 30, 30, 30, 30, 30, 30, 30, 30])
+cooldowns = Array[float]([10.0, 9.5, 9.0, 8.5, 8.0, 7.5, 7.0, 6.5, 6.0, 5.0])
+damages = Array[int]([50, 65, 80, 100, 120, 150, 180, 220, 260, 320])
+crit_chances = Array[float]([0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8])
+
+[node name="impact_wave" type="Sprite2D" parent="Fighter" unique_id=302325153]
+position = Vector2(-394, 276)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1132
+script = ExtResource("3_skilldata")
+skill_name = "Impact Wave"
+description = "Meluncurkan gelombang tanah ke arah musuh."
+max_level = 5
+ep_costs = Array[int]([50, 50, 50, 50, 50])
+cooldowns = Array[float]([10.0, 9.0, 8.0, 7.0, 5.0])
+damages = Array[int]([40, 60, 85, 115, 150])
+ranges = Array[float]([1.0, 1.2, 1.4, 1.7, 2.0])
+
+[node name="fatal_smash" type="Sprite2D" parent="Fighter" unique_id=826279375]
+position = Vector2(-266, 183)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1151
+script = ExtResource("3_skilldata")
+skill_name = "Fatal Smash"
+description = "Melompat dan menghantam target dengan gaya ledakan memutar."
+type = "target_aoe"
+prerequisite_skill = "fatal_blow"
+prerequisite_level = 5
+ep_costs = Array[int]([100])
+cooldowns = Array[float]([30.0])
+damages = Array[int]([400])
+crit_chances = Array[float]([0.8])
+aoe_radiuses = Array[float]([0.25])
+ranges = Array[float]([1.25])
+
+[node name="endure" type="Sprite2D" parent="Fighter" unique_id=1273097430]
+position = Vector2(-393, 376)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1121
+script = ExtResource("3_skilldata")
+skill_name = "Endure"
+description = "Kebal akan status effect."
+type = "buff"
+max_level = 10
+prerequisite_skill = "vitality_mastery"
+prerequisite_level = 5
+ep_costs = Array[int]([50, 50, 50, 50, 50, 50, 50, 50, 50, 50])
+cooldowns = Array[float]([15.0, 14.5, 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.5, 8.0])
+effect_durations = Array[float]([5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 10.0])
+
+[node name="provoke" type="Sprite2D" parent="Fighter" unique_id=2030180703]
+position = Vector2(-399, 474)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1158
+script = ExtResource("3_skilldata")
+skill_name = "Provoke"
+description = "Meneriakkan taunt, musuh di radius 100 akan menyerang pemain."
+type = "buff"
+max_level = 5
+ep_costs = Array[int]([60, 60, 60, 60, 60])
+cooldowns = Array[float]([20.0, 20.0, 20.0, 20.0, 20.0])
+effect_durations = Array[float]([3.0, 4.0, 5.0, 6.0, 8.0])
+aoe_radiuses = Array[float]([1.0, 1.0, 1.0, 1.0, 1.0])
+
+[node name="implosion" type="Sprite2D" parent="Fighter" unique_id=1065852846]
+position = Vector2(-282, 475)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1150
+script = ExtResource("3_skilldata")
+skill_name = "Implosion"
+description = "Menarik paksa musuh dalam radius ke arah pemain."
+prerequisite_skill = "provoke"
+prerequisite_level = 3
+ep_costs = Array[int]([80])
+cooldowns = Array[float]([40.0])
+aoe_radiuses = Array[float]([1.0])
+
+[node name="Apprentice" type="Node" parent="." unique_id=2026691991]
+
+[node name="heal" type="Sprite2D" parent="Apprentice" unique_id=269164961]
+position = Vector2(298, 429)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1174
+script = ExtResource("3_skilldata")
+skill_name = "Heal"
+description = "Memulihkan HP diri sendiri."
+class_owner = "apprentice"
+max_level = 10
+mp_costs = Array[int]([20, 20, 20, 20, 20, 20, 20, 20, 20, 20])
+cooldowns = Array[float]([10.0, 9.5, 9.0, 8.5, 8.0, 7.5, 7.0, 6.0, 5.5, 5.0])
+cast_times = Array[float]([3.0, 2.7, 2.4, 2.1, 1.8, 1.5, 1.2, 0.9, 0.5, 0.0])
+damages = Array[int]([20, 30, 45, 60, 80, 100, 125, 150, 180, 220])
+
+[node name="fireball" type="Sprite2D" parent="Apprentice" unique_id=740177985]
+position = Vector2(466, -82)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1350
+script = ExtResource("3_skilldata")
+skill_name = "Fireball"
+description = "Menembakkan bola api."
+type = "target_aoe"
+class_owner = "apprentice"
+max_level = 5
+mp_costs = Array[int]([20, 30, 40, 50, 60])
+cooldowns = Array[float]([5.0, 5.0, 4.5, 4.5, 4.0])
+cast_times = Array[float]([3.0, 2.5, 2.0, 1.5, 1.0])
+damages = Array[int]([50, 80, 120, 170, 250])
+aoe_radiuses = Array[float]([0.15, 0.15, 0.2, 0.2, 0.25])
+ranges = Array[float]([1.0, 1.1, 1.2, 1.3, 1.5])
+
+[node name="spell_mastery" type="Sprite2D" parent="Apprentice" unique_id=465625354]
+position = Vector2(172, 431)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1184
+script = ExtResource("3_skilldata")
+skill_name = "Spell Mastery"
+description = "Meningkatkan efisiensi casting (MP Regen, Cast Time, CDR)."
+type = "passive"
+class_owner = "apprentice"
+max_level = 10
+damages = Array[int]([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+
+[node name="elemental_mastery" type="Sprite2D" parent="Apprentice" unique_id=1434967151]
+position = Vector2(171, 181)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1182
+script = ExtResource("3_skilldata")
+skill_name = "Elemental Mastery"
+description = "Meningkatkan kapasitas Max MP dan persentase serangan elemen."
+type = "passive"
+class_owner = "apprentice"
+max_level = 10
+mp_costs = Array[int]([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
+damages = Array[int]([5, 8, 11, 14, 17, 19, 21, 23, 24, 25])
+
+[node name="aqua_blast" type="Sprite2D" parent="Apprentice" unique_id=480986786]
+position = Vector2(284, 84)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1192
+script = ExtResource("3_skilldata")
+skill_name = "Aqua Blast"
+description = "AoE melingkar dari tubuh pengguna yang memunculkan gelombang air (Knockback)."
+class_owner = "apprentice"
+max_level = 5
+prerequisite_skill = "elemental_mastery"
+mp_costs = Array[int]([20, 20, 20, 20, 20])
+cooldowns = Array[float]([10.0, 9.0, 8.0, 6.5, 5.0])
+cast_times = Array[float]([5.0, 4.0, 3.0, 1.5, 0.0])
+damages = Array[int]([40, 60, 85, 115, 150])
+aoe_radiuses = Array[float]([0.8, 0.8, 0.8, 0.8, 0.8])
+
+[node name="fire_bolt" type="Sprite2D" parent="Apprentice" unique_id=416718405]
+position = Vector2(285, 179)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1196
+script = ExtResource("3_skilldata")
+skill_name = "Fire Bolt"
+description = "Menembakkan proyektil api yang mengejar satu target."
+type = "target_single"
+class_owner = "apprentice"
+max_level = 5
+prerequisite_skill = "elemental_mastery"
+mp_costs = Array[int]([30, 30, 30, 30, 30])
+cooldowns = Array[float]([20.0, 16.0, 12.0, 8.0, 5.0])
+cast_times = Array[float]([8.0, 6.5, 5.0, 3.5, 2.0])
+damages = Array[int]([150, 220, 300, 400, 550])
+
+[node name="sonic_boom" type="Sprite2D" parent="Apprentice" unique_id=1320418760]
+position = Vector2(288, 285)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1202
+script = ExtResource("3_skilldata")
+skill_name = "Sonic Boom"
+description = "Menembakkan gelombang kejut kerucut ke depan (Paralyze)."
+type = "target_cone"
+class_owner = "apprentice"
+max_level = 5
+prerequisite_skill = "elemental_mastery"
+mp_costs = Array[int]([15, 15, 15, 15, 15])
+cooldowns = Array[float]([6.0, 5.5, 4.5, 4.0, 3.0])
+cast_times = Array[float]([2.0, 1.5, 1.0, 0.5, 0.0])
+damages = Array[int]([25, 35, 50, 70, 95])
+effect_durations = Array[float]([1.0, 1.5, 2.0, 2.5, 3.0])
+
+[node name="seismic_fissure" type="Sprite2D" parent="Apprentice" unique_id=1600785398]
+position = Vector2(446, 176)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1212
+script = ExtResource("3_skilldata")
+skill_name = "Seismic Fissure"
+description = "Membelah tanah ke arah depan yang meninggalkan medan Slow."
+type = "target_aoe"
+class_owner = "apprentice"
+prerequisite_skill = "elemental_mastery"
+prerequisite_level = 5
+mp_costs = Array[int]([50])
+cooldowns = Array[float]([40.0])
+cast_times = Array[float]([5.0])
+damages = Array[int]([100])
+effect_durations = Array[float]([5.0])
+
+[node name="holy_veil" type="Sprite2D" parent="Apprentice" unique_id=1082776660]
+position = Vector2(426, 422)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1180
+script = ExtResource("3_skilldata")
+skill_name = "Holy Veil"
+description = "Menciptakan kubah cahaya pelindung penyerap damage (Super Armor)."
+type = "buff"
+class_owner = "apprentice"
+prerequisite_skill = "heal"
+prerequisite_level = 5
+mp_costs = Array[int]([40])
+cooldowns = Array[float]([35.0])
+cast_times = Array[float]([10.0])
+damages = Array[int]([150])
+effect_durations = Array[float]([10.0])
+
+[node name="hex" type="Sprite2D" parent="Apprentice" unique_id=2115787105]
+position = Vector2(297, 534)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1230
+script = ExtResource("3_skilldata")
+skill_name = "Hex"
+description = "Memberi efek curse, mengurangi Magical Defense secara drastis."
+type = "target_single"
+class_owner = "apprentice"
+max_level = 10
+mp_costs = Array[int]([20, 20, 20, 20, 20, 20, 20, 20, 20, 20])
+cooldowns = Array[float]([20.0, 19.0, 18.0, 17.0, 16.0, 15.0, 14.0, 13.0, 11.5, 10.0])
+cast_times = Array[float]([5.0, 4.5, 4.0, 3.5, 3.0, 2.5, 2.0, 1.5, 0.5, 0.0])
+damages = Array[int]([5, 8, 12, 16, 20, 25, 30, 35, 40, 50])
+effect_durations = Array[float]([5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 10.0])
+ranges = Array[float]([1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5])
+
+[node name="soul_drain" type="Sprite2D" parent="Apprentice" unique_id=242569248]
+position = Vector2(432, 541)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1231
+script = ExtResource("3_skilldata")
+skill_name = "Soul Drain"
+description = "Menyerap HP dari musuh yang terkena curse."
+class_owner = "apprentice"
+prerequisite_skill = "hex"
+prerequisite_level = 5
+mp_costs = Array[int]([30])
+cooldowns = Array[float]([20.0])
+cast_times = Array[float]([1.0])
+damages = Array[int]([10])
+effect_durations = Array[float]([5.0])
+ranges = Array[float]([1.5])
+
+[node name="Scout" type="Node" parent="." unique_id=288154059]
+
+[node name="hunters_mark" type="Sprite2D" parent="Scout" unique_id=1416521448]
+position = Vector2(-624, -599)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1287
+script = ExtResource("3_skilldata")
+skill_name = "Hunter's Mark"
+description = "Menandai target musuh agar menerima damage 2x lipat."
+type = "target_single"
+class_owner = "scout"
+max_level = 10
+ep_costs = Array[int]([15, 15, 15, 15, 15, 15, 15, 15, 15, 15])
+cooldowns = Array[float]([15.0, 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.0, 6.5, 5.0])
+cast_times = Array[float]([1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.0])
+effect_durations = Array[float]([10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0])
+
+[node name="falcon_dive" type="Sprite2D" parent="Scout" unique_id=1198879749]
+position = Vector2(-513, -597)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1274
+script = ExtResource("3_skilldata")
+skill_name = "Falcon Dive"
+description = "Menembakkan 5 panah beruntun dan 1 panah finisher critical."
+type = "target_single"
+class_owner = "scout"
+max_level = 10
+prerequisite_skill = "hunters_mark"
+prerequisite_level = 3
+ep_costs = Array[int]([25, 25, 25, 25, 25, 25, 25, 25, 25, 25])
+cooldowns = Array[float]([12.0, 11.5, 11.0, 10.0, 9.5, 9.0, 8.5, 8.0, 7.0, 6.0])
+cast_times = Array[float]([2.0, 1.8, 1.6, 1.4, 1.2, 1.0, 0.9, 0.8, 0.6, 0.5])
+damages = Array[int]([50, 60, 75, 90, 110, 130, 155, 180, 210, 250])
+
+[node name="arrow_rain" type="Sprite2D" parent="Scout" unique_id=1928024689]
+position = Vector2(-380, -596)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1267
+script = ExtResource("3_skilldata")
+skill_name = "Arrow Rain"
+description = "Hujan panah dengan efek damage area dan Slow."
+type = "target_aoe"
+class_owner = "scout"
+max_level = 5
+prerequisite_skill = "falcon_dive"
+prerequisite_level = 5
+ep_costs = Array[int]([35, 35, 35, 35, 35])
+cooldowns = Array[float]([20.0, 17.5, 15.0, 12.5, 10.0])
+cast_times = Array[float]([3.0, 2.5, 2.0, 1.5, 1.0])
+damages = Array[int]([100, 130, 160, 200, 250])
+aoe_radiuses = Array[float]([0.5, 0.5, 0.5, 0.5, 0.5])
+ranges = Array[float]([1.5, 1.5, 1.5, 1.5, 1.5])
+
+[node name="agility_mastery" type="Sprite2D" parent="Scout" unique_id=1226623340]
+position = Vector2(-771, -488)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1245
+script = ExtResource("3_skilldata")
+skill_name = "Agility Mastery"
+description = "Meningkatkan AGI dan Attack Speed."
+type = "passive"
+class_owner = "scout"
+max_level = 10
+damages = Array[int]([2, 4, 6, 8, 10, 12, 14, 16, 18, 20])
+
+[node name="haste" type="Sprite2D" parent="Scout" unique_id=1452082835]
+position = Vector2(-624, -491)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1250
+script = ExtResource("3_skilldata")
+skill_name = "Haste"
+description = "Meningkatkan Attack Speed secara instan."
+type = "buff"
+class_owner = "scout"
+max_level = 5
+prerequisite_skill = "agility_mastery"
+prerequisite_level = 3
+ep_costs = Array[int]([20, 20, 20, 20, 20])
+cooldowns = Array[float]([25.0, 22.0, 19.0, 16.0, 12.0])
+cast_times = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0])
+effect_durations = Array[float]([5.0, 6.0, 7.0, 8.0, 10.0])
+
+[node name="mirage_strike" type="Sprite2D" parent="Scout" unique_id=148241029]
+position = Vector2(-503, -492)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1245
+script = ExtResource("3_skilldata")
+skill_name = "Mirage Strike"
+description = "Membuat 3 serangan berikutnya menjadi serangan ganda."
+type = "buff"
+class_owner = "scout"
+max_level = 5
+prerequisite_skill = "haste"
+prerequisite_level = 3
+ep_costs = Array[int]([30, 30, 30, 30, 30])
+cooldowns = Array[float]([30.0, 26.0, 22.0, 18.0, 15.0])
+cast_times = Array[float]([1.0, 0.8, 0.6, 0.4, 0.0])
+effect_durations = Array[float]([15.0, 15.0, 15.0, 15.0, 15.0])
+
+[node name="fortunes_eye" type="Sprite2D" parent="Scout" unique_id=1876188087]
+position = Vector2(-779, -367)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1294
+script = ExtResource("3_skilldata")
+skill_name = "Fortune's Eye"
+description = "Meningkatkan LUK dan Critical Chance."
+type = "passive"
+class_owner = "scout"
+max_level = 10
+damages = Array[int]([2, 4, 6, 8, 10, 12, 14, 16, 18, 20])
+
+[node name="shadow_walk" type="Sprite2D" parent="Scout" unique_id=1627425003]
+position = Vector2(-636, -361)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1121
+script = ExtResource("3_skilldata")
+skill_name = "Shadow Walk"
+description = "Menghilang (Stealth), kebal serangan fisik, batal jika menyerang."
+type = "buff"
+class_owner = "scout"
+max_level = 5
+ep_costs = Array[int]([30, 30, 30, 30, 30])
+cooldowns = Array[float]([35.0, 31.0, 27.0, 24.0, 20.0])
+cast_times = Array[float]([1.0, 0.8, 0.6, 0.4, 0.0])
+effect_durations = Array[float]([5.0, 6.0, 7.0, 8.0, 10.0])
+
+[node name="thief" type="Sprite2D" parent="Scout" unique_id=879684985]
+position = Vector2(-501, -364)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1284
+script = ExtResource("3_skilldata")
+skill_name = "Thief"
+description = "Mencuri item musuh dari jarak dekat (harus saat Stealth)."
+class_owner = "scout"
+max_level = 5
+prerequisite_skill = "shadow_walk"
+prerequisite_level = 3
+ep_costs = Array[int]([10, 10, 10, 10, 10])
+cooldowns = Array[float]([10.0, 8.0, 6.0, 4.0, 3.0])
+cast_times = Array[float]([0.5, 0.4, 0.3, 0.2, 0.0])
+
+[node name="phantom_strike" type="Sprite2D" parent="Scout" unique_id=1216491559]
+position = Vector2(-498, -258)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1279
+script = ExtResource("3_skilldata")
+skill_name = "Phantom Strike"
+description = "Melesat ke belakang musuh dan memberikan eksekusi crit 100%."
+type = "target_single"
+class_owner = "scout"
+max_level = 5
+prerequisite_skill = "shadow_walk"
+prerequisite_level = 3
+ep_costs = Array[int]([25, 25, 25, 25, 25])
+cooldowns = Array[float]([15.0, 13.0, 11.0, 9.0, 8.0])
+cast_times = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0])
+damages = Array[int]([150, 200, 260, 330, 420])
+ranges = Array[float]([0.5, 0.5, 0.5, 0.5, 0.5])
+
+[node name="phantom_flurry" type="Sprite2D" parent="Scout" unique_id=1771431185]
+position = Vector2(-377, -256)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1304
+script = ExtResource("3_skilldata")
+skill_name = "Phantom Flurry"
+description = "Menyerang berkali-kali secara zigzag (Finisher)."
+type = "target_single"
+class_owner = "scout"
+prerequisite_skill = "phantom_strike"
+prerequisite_level = 5
+ep_costs = Array[int]([50])
+cooldowns = Array[float]([45.0])
+cast_times = Array[float]([1.0])
+damages = Array[int]([500])
+ranges = Array[float]([3.0])
+
+[node name="poison_weapon" type="Sprite2D" parent="Scout" unique_id=1567637976]
+position = Vector2(-638, -165)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1296
+script = ExtResource("3_skilldata")
+skill_name = "Poison Weapon"
+description = "Serangan memiliki peluang 50% memberi efek Poison."
+type = "buff"
+class_owner = "scout"
+max_level = 5
+ep_costs = Array[int]([20, 20, 20, 20, 20])
+cooldowns = Array[float]([30.0, 26.0, 22.0, 18.0, 15.0])
+cast_times = Array[float]([1.5, 1.2, 0.9, 0.5, 0.0])
+effect_durations = Array[float]([15.0, 20.0, 25.0, 30.0, 40.0])

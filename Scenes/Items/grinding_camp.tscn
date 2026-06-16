@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/grinding_camp.gd" id="1_camp"]
+
+[node name="GrindingCamp" type="Node3D"]
+script = ExtResource("1_camp")
+max_enemies = 3
+respawn_time = 10.0
+spawn_radius = 50.0

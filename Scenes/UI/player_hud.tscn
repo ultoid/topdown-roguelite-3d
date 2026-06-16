@@ -1,0 +1,413 @@
+[gd_scene format=3 uid="uid://bku6i0ukmcat8"]
+
+[ext_resource type="Script" uid="uid://bo7ppse18q2nt" path="res://Scripts/player_hud.gd" id="1_37p78"]
+[ext_resource type="PackedScene" uid="uid://b8y1o0gq5k2q3" path="res://Scenes/UI/status_icon_manager.tscn" id="2_sim"]
+
+[node name="PlayerHUD" type="CanvasLayer" unique_id=576414922]
+script = ExtResource("1_37p78")
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=653785818]
+offset_left = 25.0
+offset_top = 21.0
+offset_right = 325.0
+offset_bottom = 48.0
+show_percentage = false
+
+[node name="ExpBar" type="ProgressBar" parent="." unique_id=804583670]
+offset_left = 4.0
+offset_top = 708.0
+offset_right = 636.0
+offset_bottom = 720.0
+show_percentage = false
+
+[node name="ClassExpBar" type="ProgressBar" parent="." unique_id=883391034]
+modulate = Color(1, 0.8, 0.2, 1)
+offset_left = 640.0
+offset_top = 708.0
+offset_right = 1272.0
+offset_bottom = 720.0
+show_percentage = false
+
+[node name="ClassLevelLabel" type="Label" parent="." unique_id=983419034]
+offset_left = 1102.0
+offset_top = 680.0
+offset_right = 1202.0
+offset_bottom = 703.0
+text = "Class: Lv.1"
+horizontal_alignment = 2
+
+[node name="ClassLabel" type="Label" parent="." unique_id=383191024]
+offset_left = 25.0
+offset_top = 85.0
+offset_right = 150.0
+offset_bottom = 108.0
+text = "Class: Fighter"
+
+[node name="LevelLabel" type="Label" parent="." unique_id=811849262]
+offset_left = 12.0
+offset_top = 679.0
+offset_right = 52.0
+offset_bottom = 702.0
+text = "Lv.1"
+
+[node name="DashIcon" type="ColorRect" parent="." unique_id=1558654909]
+offset_left = 20.0
+offset_top = 620.0
+offset_right = 70.0
+offset_bottom = 670.0
+
+[node name="DashLabel" type="Label" parent="DashIcon" unique_id=697324440]
+layout_mode = 0
+offset_top = 15.0
+offset_right = 50.0
+offset_bottom = 38.0
+text = "DASH"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DashCooldown" type="ColorRect" parent="DashIcon" unique_id=356231787]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+
+[node name="EnergyBar" type="ProgressBar" parent="." unique_id=1195285594]
+modulate = Color(1, 1, 0, 1)
+offset_left = 25.0
+offset_top = 52.0
+offset_right = 325.0
+offset_bottom = 65.0
+show_percentage = false
+
+[node name="HeavyIcon" type="ColorRect" parent="." unique_id=2061454745]
+offset_left = 80.0
+offset_top = 620.0
+offset_right = 130.0
+offset_bottom = 670.0
+
+[node name="HeavyLabel" type="Label" parent="HeavyIcon" unique_id=1702916513]
+layout_mode = 0
+offset_top = 15.0
+offset_right = 50.0
+offset_bottom = 38.0
+text = "HVY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HeavyCooldown" type="ColorRect" parent="HeavyIcon" unique_id=1844482661]
+layout_mode = 0
+offset_right = 50.0
+offset_bottom = 50.0
+
+[node name="ManaBar" type="ProgressBar" parent="." unique_id=1552760517]
+modulate = Color(0, 0.5, 1, 1)
+offset_left = 25.0
+offset_top = 68.0
+offset_right = 325.0
+offset_bottom = 81.0
+show_percentage = false
+
+[node name="SkillSlot0" type="Panel" parent="." unique_id=678640483]
+offset_left = 464.0
+offset_top = 650.0
+offset_right = 504.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot0" unique_id=977052072]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "1"
+
+[node name="NameLabel" type="Label" parent="SkillSlot0" unique_id=757213196]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillSlot1" type="Panel" parent="." unique_id=237396377]
+offset_left = 509.0
+offset_top = 650.0
+offset_right = 549.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot1" unique_id=239016098]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "2"
+
+[node name="NameLabel" type="Label" parent="SkillSlot1" unique_id=220730831]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillSlot2" type="Panel" parent="." unique_id=683218960]
+offset_left = 554.0
+offset_top = 650.0
+offset_right = 594.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot2" unique_id=918362198]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "3"
+
+[node name="NameLabel" type="Label" parent="SkillSlot2" unique_id=204053912]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillSlot3" type="Panel" parent="." unique_id=238234293]
+offset_left = 599.0
+offset_top = 650.0
+offset_right = 639.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot3" unique_id=285784564]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "4"
+
+[node name="NameLabel" type="Label" parent="SkillSlot3" unique_id=308706288]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillSlot4" type="Panel" parent="." unique_id=170558337]
+offset_left = 644.0
+offset_top = 650.0
+offset_right = 684.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot4" unique_id=304758193]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "5"
+
+[node name="NameLabel" type="Label" parent="SkillSlot4" unique_id=140695135]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillSlot5" type="Panel" parent="." unique_id=226092420]
+offset_left = 689.0
+offset_top = 650.0
+offset_right = 729.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot5" unique_id=517225330]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "6"
+
+[node name="NameLabel" type="Label" parent="SkillSlot5" unique_id=328375988]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillSlot6" type="Panel" parent="." unique_id=332093266]
+offset_left = 734.0
+offset_top = 650.0
+offset_right = 774.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot6" unique_id=130199142]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "7"
+
+[node name="NameLabel" type="Label" parent="SkillSlot6" unique_id=239820185]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillSlot7" type="Panel" parent="." unique_id=333091829]
+offset_left = 779.0
+offset_top = 650.0
+offset_right = 819.0
+offset_bottom = 690.0
+
+[node name="HotkeyLabel" type="Label" parent="SkillSlot7" unique_id=251875644]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "8"
+
+[node name="NameLabel" type="Label" parent="SkillSlot7" unique_id=266172250]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemSlot0" type="Panel" parent="." unique_id=327295846]
+offset_left = 557.0
+offset_top = 590.0
+offset_right = 597.0
+offset_bottom = 630.0
+
+[node name="HotkeyLabel" type="Label" parent="ItemSlot0" unique_id=326294852]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "9"
+
+[node name="NameLabel" type="Label" parent="ItemSlot0" unique_id=841207412]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemSlot1" type="Panel" parent="." unique_id=286920831]
+offset_left = 602.0
+offset_top = 590.0
+offset_right = 642.0
+offset_bottom = 630.0
+
+[node name="HotkeyLabel" type="Label" parent="ItemSlot1" unique_id=153564075]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "0"
+
+[node name="NameLabel" type="Label" parent="ItemSlot1" unique_id=141015076]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemSlot2" type="Panel" parent="." unique_id=208509271]
+offset_left = 647.0
+offset_top = 590.0
+offset_right = 687.0
+offset_bottom = 630.0
+
+[node name="HotkeyLabel" type="Label" parent="ItemSlot2" unique_id=221843586]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "-"
+
+[node name="NameLabel" type="Label" parent="ItemSlot2" unique_id=301895908]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ItemSlot3" type="Panel" parent="." unique_id=273984857]
+offset_left = 692.0
+offset_top = 590.0
+offset_right = 732.0
+offset_bottom = 630.0
+
+[node name="HotkeyLabel" type="Label" parent="ItemSlot3" unique_id=871867886]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 16.0
+offset_bottom = 27.0
+text = "="
+
+[node name="NameLabel" type="Label" parent="ItemSlot3" unique_id=207759889]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusIconManager" parent="." unique_id=740141232 instance=ExtResource("2_sim")]
+offset_left = 25.0
+offset_top = 115.0
+offset_right = 325.0
+offset_bottom = 165.0
