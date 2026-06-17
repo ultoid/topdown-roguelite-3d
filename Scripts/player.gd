@@ -115,6 +115,13 @@ var jump_height: float = 15.0
 var base_y_offset: float = 0.0
 var jump_cooldown: float = 0.0
 
+# Fatal Smash state (position dihandle di _physics_process)
+var is_smashing: bool = false
+var smash_start_pos: Vector3 = Vector3.ZERO
+var smash_target_pos: Vector3 = Vector3.ZERO
+var smash_elapsed: float = 0.0
+var smash_total_dur: float = 0.6
+
 
 var status_manager: StatusEffectManager = null
 
@@ -372,7 +379,7 @@ func _unhandled_input(event):
 		return
 		
 	if event.is_action_pressed("basic_attack") and not is_targeting and not is_farming_targeting:
-		if not is_attacking and not is_jumping and not is_casting and magic_charge_timer == 0.0 and not is_animating_skill and not is_spinning:
+		if not is_attacking and not is_jumping and not is_casting and magic_charge_timer == 0.0 and not is_animating_skill and not is_spinning and not is_dashing:
 			if status_manager and not status_manager.can_move():
 				var effect_name = status_manager.get_movement_restriction_name()
 				spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
@@ -404,7 +411,9 @@ func _unhandled_input(event):
 					var skill_db = get_node_or_null("/root/SkillDB")
 					if skill_db:
 						var data = skill_db.get_skill(current_targeting_skill)
-						var max_range = data.get("range", 2.5)
+						var cur_lvl_r = Global.unlocked_skills.get(current_targeting_skill, 0) if get_node_or_null("/root/Global") else 0
+						var max_range = skill_db.get_skill_val(current_targeting_skill, "ranges", cur_lvl_r)
+						if max_range <= 0: max_range = 2.5  # Fallback
 						if global_position.distance_to(target_pos) > max_range:
 							target_pos = global_position + (target_pos - global_position).normalized() * max_range
 				
@@ -586,7 +595,8 @@ func _open_skill_menu():
 			get_tree().paused = true
 
 func _use_skill(slot_index: int):
-	if is_dead or is_casting or is_attacking or is_dashing or is_targeting or is_spinning or is_animating_skill or not get_node_or_null("/root/Global"): return
+	# Hapus is_attacking dari blokir agar skill jadi prioritas
+	if is_dead or is_casting or is_dashing or is_targeting or is_spinning or is_animating_skill or not get_node_or_null("/root/Global"): return
 	if status_manager and not status_manager.can_move():
 		var effect_name = status_manager.get_movement_restriction_name()
 		spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
@@ -633,6 +643,12 @@ func _use_skill(slot_index: int):
 		spawn_floating_text("EP Tidak Cukup!", Color(1.0, 0.5, 0.2))
 		return
 		
+	# Skill valid, cancel attack jika sedang attack (agar skill memprioritaskan attack)
+	if is_attacking:
+		is_attacking = false
+		if sword_hitbox:
+			sword_hitbox.set_deferred("disabled", true)
+		
 	var cost = mp_cost # Passed down just in case
 	var type = data.get("type", "instant")
 	if type in ["target_aoe", "target_single", "target_cone"]:
@@ -646,8 +662,8 @@ func _use_skill(slot_index: int):
 			var custom_range = skill_db.get_skill_val(skill_id, "ranges", cur_lvl)
 			var custom_aoe = skill_db.get_skill_val(skill_id, "aoe_radiuses", cur_lvl)
 			
-			if custom_range == 0: custom_range = 1.25 if skill_id == "fatal_smash" else 2.5
-			if custom_aoe == 0: custom_aoe = 0.25 if skill_id == "fatal_smash" else 0.6
+			if custom_range == 0: custom_range = 10.0 if skill_id == "fatal_smash" else 2.5
+			if custom_aoe == 0: custom_aoe = 3.0 if skill_id == "fatal_smash" else 0.6
 			
 			target_indicator_node.max_range = float(custom_range)
 			target_indicator_node.aoe_radius = float(custom_aoe)
@@ -1038,19 +1054,41 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		var old_crit = critical_chance
 		critical_chance = crit * 100.0
 		
+		# Ambil arah mouse saat skill diaktifkan
+		var m_pos = get_mouse_3d_pos()
+		var dir = (m_pos - global_position)
+		dir.y = 0
+		if dir.length() > 0.01:
+			dir = dir.normalized()
+			last_direction = dir # Hadapkan karakter ke arah mouse
+			if sprite:
+				var target_angle = atan2(-dir.z, dir.x)
+				sprite.rotation.y = target_angle - PI/2.0
+				if is_instance_valid(sword_hitbox):
+					sword_hitbox.rotation.y = sprite.rotation.y
+		else:
+			dir = last_direction
+		
 		# Animate a stab
 		var original_pos = global_position
-		var stab_pos = global_position + last_direction * 25.0
+		# Lunge 5 meter ke depan arah mouse
+		var stab_pos = global_position + dir * 5.0
 		var stab_tween = get_tree().create_tween()
 		
 		is_attacking = true
+		
+		if animation_tree:
+			animation_tree.set("parameters/AttackTimeScale/scale", 2.5) # Mainkan animasi serang dengan cepat
+		if state_machine:
+			state_machine.travel("Attack")
 		
 		stab_tween.tween_property(self, "global_position", stab_pos, 0.1).set_ease(Tween.EASE_OUT)
 		stab_tween.tween_callback(func():
 			apply_camera_shake(15.0, 0.2)
 			var enemies = get_tree().get_nodes_in_group("Enemy")
 			for e in enemies:
-				if e.global_position.distance_to(global_position) <= 45.0:
+				# Radius 5 meter di depan player setelah lunge
+				if e.global_position.distance_to(global_position) <= 5.0:
 					if e.has_method("take_damage"):
 						e.take_damage(physical_attack + dmg, global_position)
 						if e.get("velocity") != null:
@@ -1061,6 +1099,8 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		stab_tween.tween_callback(func(): 
 			critical_chance = old_crit
 			is_attacking = false
+			if state_machine:
+				state_machine.travel("Idle")
 		)
 		
 	elif skill_id == "impact_wave":
@@ -1071,25 +1111,40 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		var p_pos = global_position
 		var l_dir = last_direction
 		var c_lvl = cur_lvl
-		if typeof(c_lvl) != TYPE_FLOAT and typeof(c_lvl) != TYPE_INT: c_lvl = 1
+		var slow_dur = dur if dur > 0 else 3.0
 		
 		get_tree().create_timer(0.15).timeout.connect(func():
 			var wave = Area3D.new()
-			wave.position = global_position + l_dir * 0.1
+			var start_pos = p_pos + l_dir * 1.0 # Mulai dari 1 meter di depan karakter
+			wave.position = start_pos
 			wave.rotation.y = atan2(-l_dir.z, l_dir.x)
 			
 			var coll = CollisionShape3D.new()
 			var box = BoxShape3D.new()
-			box.size = Vector3(1.0, 1.0, 4.0)
+			box.size = Vector3(1.0, 0.5, 3.0) # Lebar 3 meter (sumbu Z karena orientasi X depan)
 			coll.shape = box
+			coll.position.x = 0.4 # Posisikan agak maju supaya pas dengan mesh sabit
 			wave.add_child(coll)
 			
-			var visual = CSGBox3D.new()
+			# Bentuk Sabit menggunakan CSGPolygon3D yang diextrude
+			var visual = CSGPolygon3D.new()
+			var pts = PackedVector2Array()
+			pts.append(Vector2(0.0, -1.5)) # Bawah kiri (belakang)
+			pts.append(Vector2(0.6, 0.0))  # Tengah dalam (melengkung ke depan)
+			pts.append(Vector2(0.0, 1.5))  # Atas kiri (belakang)
+			pts.append(Vector2(0.4, 1.5))  # Atas kanan (depan)
+			pts.append(Vector2(1.0, 0.0))  # Tengah luar (lebih ke depan)
+			pts.append(Vector2(0.4, -1.5)) # Bawah kanan (depan)
+			visual.polygon = pts
+			visual.mode = CSGPolygon3D.MODE_DEPTH
+			visual.depth = 0.1
+			visual.rotation_degrees.x = -90 # Putar agar rata dengan tanah (XZ plane)
+			
 			var mat = StandardMaterial3D.new()
-			mat.albedo_color = Color(0.9, 0.7, 0.1, 0.8)
+			mat.albedo_color = Color(0.1, 0.8, 0.9, 0.9) # Warna sabit energi biru es (cocok dengan efek slow)
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 			visual.material = mat
-			visual.size = Vector3(1.0, 0.1, 4.0)
 			wave.add_child(visual)
 			
 			get_tree().current_scene.add_child(wave)
@@ -1100,48 +1155,98 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 					hit_enemies[body] = true
 					if body.has_method("take_damage"):
 						body.take_damage(p_attack + wave_dmg, p_pos)
+					if body.get("status_manager") != null:
+						body.status_manager.apply_effect("slow", slow_dur)
 			)
 			
-			var wave_range = 0.4 + (c_lvl * 0.1) # max 0.5m at lv 1, up to 0.9m at lv 5
-			var dest = wave.global_position + l_dir * wave_range
+			# Bergerak 4 meter lagi kedepan sehingga total menempuh 5 meter dari player
+			var dest = start_pos + l_dir * 4.0
 			var tween = get_tree().create_tween()
-			tween.tween_property(wave, "global_position", dest, 0.5)
+			tween.set_parallel(true)
+			tween.tween_property(wave, "global_position", dest, 0.4)
+			tween.tween_property(mat, "albedo_color:a", 0.0, 0.4).set_ease(Tween.EASE_IN)
+			tween.set_parallel(false)
 			tween.tween_callback(wave.queue_free)
 		)
 		
 
 		
 	elif skill_id == "fatal_smash":
-		# Jump to target and circle break
+		# Lompat ke titik target lalu hentakan di area tersebut
 		is_invincible = true
 		is_animating_skill = true
+		is_smashing = true
 		
-		var tween = get_tree().create_tween()
-		tween.tween_property(self, "global_position", t_pos, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		var smash_radius = aoe if aoe > 0 else 3.0
+		smash_total_dur = 0.6
+		smash_elapsed = 0.0
+		smash_start_pos = global_position
+		# Pertahankan Y player saat ini agar tidak tenggelam/terbang
+		smash_target_pos = Vector3(t_pos.x, global_position.y, t_pos.z)
 		
-		var jump_tween = get_tree().create_tween()
-		jump_tween.tween_property(sprite, "position:y", -0.8, 0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		jump_tween.tween_property(sprite, "position:y", 0.0, 0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		var rise_dur = smash_total_dur * 0.4
+		var fall_dur = smash_total_dur * 0.6
+		var jump_peak = base_y_offset + 5.0  # + = naik ke atas (sprite bergerak lebih tinggi)
 		
-		tween.tween_callback(func():
+		# Arc visual + scale dengan nilai asli sprite sebagai referensi
+		if sprite:
+			var original_scale = sprite.scale  # Simpan scale asli!
+			
+			var arc_tween = get_tree().create_tween()
+			arc_tween.tween_property(sprite, "position:y", jump_peak, rise_dur) \
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			arc_tween.tween_property(sprite, "position:y", base_y_offset, fall_dur) \
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+			
+			# Scale relatif terhadap scale asli (bukan hardcode 1.0)
+			var scale_tween = get_tree().create_tween()
+			scale_tween.tween_property(sprite, "scale", original_scale * 1.2, rise_dur) \
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			scale_tween.tween_property(sprite, "scale", original_scale, fall_dur) \
+				.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		
+		# Landing callback: damage + efek setelah smash_total_dur selesai
+		get_tree().create_timer(smash_total_dur).timeout.connect(func():
 			is_invincible = false
 			is_animating_skill = false
-			apply_camera_shake(25.0, 0.4) # Shake parah saat mendarat
+			velocity = Vector3.ZERO
+			apply_camera_shake(30.0, 0.5)
 			
-			# Explode
+			# --- Visual: Shockwave ring melebar ---
+			var ring = CSGCylinder3D.new()
+			ring.radius = 0.2
+			ring.height = 0.12
+			ring.sides = 48
+			var ring_mat = StandardMaterial3D.new()
+			ring_mat.albedo_color = Color(1.0, 0.4, 0.05, 1.0)
+			ring_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			ring.material = ring_mat
+			var ring_node = Node3D.new()
+			ring_node.position = global_position
+			ring_node.add_child(ring)
+			get_tree().current_scene.add_child(ring_node)
+			
+			var ring_tween = get_tree().create_tween()
+			ring_tween.set_parallel(true)
+			ring_tween.tween_property(ring, "radius", smash_radius, 0.4).set_ease(Tween.EASE_OUT)
+			ring_tween.tween_property(ring_mat, "albedo_color:a", 0.0, 0.4).set_ease(Tween.EASE_IN)
+			ring_tween.set_parallel(false)
+			ring_tween.tween_callback(ring_node.queue_free)
+			
+			# --- Damage + Knockback ---
 			var old_crit = critical_chance
 			critical_chance = crit * 100.0
 			var enemies = get_tree().get_nodes_in_group("Enemy")
 			for e in enemies:
-				if e.global_position.distance_to(global_position) <= aoe:
+				if e.global_position.distance_to(global_position) <= smash_radius:
 					if e.has_method("take_damage"):
 						e.take_damage(physical_attack + dmg, global_position)
-						# Extra knockback
 						if e.get("velocity") != null:
 							var push_dir = (e.global_position - global_position).normalized()
 							e.velocity = push_dir * 1500
 			critical_chance = old_crit
-			spawn_floating_text("SMASH!", Color(1, 0, 0))
+			spawn_floating_text("SMASH!", Color(1, 0.2, 0))
 		)
 		
 	elif skill_id == "endure":
@@ -1150,33 +1255,25 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		spawn_floating_text("Endure!", Color(1, 0.8, 0))
 		
 	elif skill_id == "provoke":
+		var prov_radius = 5.0
 		var enemies = get_tree().get_nodes_in_group("Enemy")
 		for e in enemies:
-			if e.global_position.distance_to(global_position) <= aoe:
+			if e.global_position.distance_to(global_position) <= prov_radius:
 				if e.has_method("set_target"):
 					e.set_target(self) # Force target player
 				if e.get("status_manager") != null:
 					e.status_manager.apply_effect("taunt", dur)
-		spawn_floating_text("Provoke!", Color(1, 0.5, 0))
-		
-	elif skill_id == "implosion":
-		is_invincible = true
-		is_animating_skill = true
-		get_tree().create_timer(0.8).timeout.connect(func(): is_invincible = false; is_animating_skill = false)
-		
-		var jump_tween = get_tree().create_tween()
-		jump_tween.tween_property(sprite, "position:y", -60.0, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		jump_tween.tween_property(sprite, "position:y", 0.0, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-		
-		# Visual circle effect
+					
+		# Visual area Provoke
 		var circle = CSGCylinder3D.new()
-		circle.radius = float(aoe)
-		circle.height = 0.05
-		circle.sides = 32
+		circle.radius = prov_radius
+		circle.height = 0.1
+		circle.sides = 48
 		
 		var mat = StandardMaterial3D.new()
-		mat.albedo_color = Color(0.4, 0.0, 0.8, 0.2)
+		mat.albedo_color = Color(1.0, 0.2, 0.2, 0.3) # Merah transparan
 		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		circle.material = mat
 		
 		var visual_node = Node3D.new()
@@ -1185,17 +1282,53 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		get_tree().current_scene.add_child(visual_node)
 		
 		var visual_tween = get_tree().create_tween()
-		visual_tween.tween_property(circle, "radius", 0.1, 0.6).set_ease(Tween.EASE_IN)
-		visual_tween.chain().tween_callback(visual_node.queue_free)
+		visual_tween.tween_property(mat, "albedo_color:a", 0.0, 0.5).set_ease(Tween.EASE_OUT)
+		visual_tween.tween_callback(visual_node.queue_free)
+		
+		spawn_floating_text("Provoke!", Color(1, 0.5, 0))
+		
+	elif skill_id == "implosion":
+		is_invincible = true
+		is_animating_skill = true
+		get_tree().create_timer(0.8).timeout.connect(func(): is_invincible = false; is_animating_skill = false)
+		
+		var jump_tween = get_tree().create_tween()
+		var start_y = base_y_offset if sprite else 0.0
+		jump_tween.tween_property(sprite, "position:y", start_y + 3.0, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		jump_tween.tween_property(sprite, "position:y", start_y, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		
+		# Visual circle effect
+		var imp_radius = 5.0
+		var circle = CSGCylinder3D.new()
+		circle.radius = imp_radius
+		circle.height = 0.05
+		circle.sides = 32
+		
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = Color(0.4, 0.0, 0.8, 0.4)
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		circle.material = mat
+		
+		var visual_node = Node3D.new()
+		visual_node.position = global_position
+		visual_node.add_child(circle)
+		get_tree().current_scene.add_child(visual_node)
+		
+		var visual_tween = get_tree().create_tween()
+		visual_tween.tween_property(circle, "radius", 0.01, 0.6).set_ease(Tween.EASE_IN)
+		visual_tween.tween_callback(visual_node.queue_free)
 		
 		var enemies = get_tree().get_nodes_in_group("Enemy")
 		var pulled_enemies = []
 		for e in enemies:
-			if e.global_position.distance_to(global_position) <= aoe:
+			if e.global_position.distance_to(global_position) <= imp_radius:
 				pulled_enemies.append(e)
 				var tween = get_tree().create_tween()
 				tween.set_loops(4)
-				tween.tween_property(e, "global_position", global_position + Vector3(randf_range(-20, 20), 0, randf_range(-20, 20)), 0.1)
+				# Tarik ke tengah (posisi player)
+				var random_offset = Vector3(randf_range(-1.0, 1.0), 0, randf_range(-1.0, 1.0))
+				tween.tween_property(e, "global_position", global_position + random_offset, 0.1)
 				tween.tween_interval(0.05)
 				
 		jump_tween.tween_callback(func():
@@ -1547,37 +1680,65 @@ func _physics_process(delta):
 		if Input.is_action_just_pressed(key):
 			var current_time = Time.get_ticks_msec() / 1000.0
 			if last_tap_key == key and current_time - last_tap_time < 0.3:
-				is_running_from_double_tap = true
+				if not is_spinning:
+					is_running_from_double_tap = true
 			else:
 				last_tap_key = key
 				last_tap_time = current_time
 				
-	if not is_any_move_pressed:
+	if not is_any_move_pressed or is_spinning:
 		is_running_from_double_tap = false
 				
-	# Single press Shift (run action) to Dash
-	if Input.is_action_just_pressed("run"):
-		if not is_dashing and not is_attacking and not is_casting and not is_animating_skill and not is_spinning:
+	# --- DIRECTIONAL DASH ---
+	# Trigger 1: Shift baru ditekan (arah dari tombol yang sedang ditekan, atau arah hadap jika tidak ada)
+	# Trigger 2: Shift sudah ditekan lalu tombol arah baru ditekan -> dash ke arah itu
+	var direction_just_pressed = false
+	for _dk in ["move_up", "move_down", "move_left", "move_right"]:
+		if Input.is_action_just_pressed(_dk):
+			direction_just_pressed = true
+			break
+
+	var should_trigger_dash = Input.is_action_just_pressed("run") or \
+		(Input.is_action_pressed("run") and direction_just_pressed and not is_dashing)
+
+	if should_trigger_dash:
+		# is_casting diizinkan jika itu state aim/charge ranged (magic_charge_timer > 0)
+		# bukan casting skill biasa (magic_charge_timer == 0)
+		var casting_blocks_dash = is_casting and magic_charge_timer == 0.0
+		# is_attacking boleh diinterupsi oleh dash (kombinasi klik + arah + Shift)
+		if not is_dashing and not casting_blocks_dash and not is_animating_skill and not is_spinning:
 			if current_dash_cooldown <= 0:
 				if status_manager and not status_manager.can_move():
 					var effect_name = status_manager.get_movement_restriction_name()
 					spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
 				elif current_energy >= 20.0:
+					# Cancel animasi attack jika sedang attack saat dash
+					if is_attacking:
+						is_attacking = false
+						if sword_hitbox:
+							sword_hitbox.set_deferred("disabled", true)
+					# Cancel aim/charge jika sedang aim saat dash
+					if magic_charge_timer > 0.0:
+						magic_charge_timer = 0.0
+						is_casting = false
+						if is_instance_valid(magic_charge_bar):
+							magic_charge_bar.queue_free()
 					current_energy -= 20.0
 					emit_signal("energy_changed", current_energy, max_energy)
 					is_dashing = true
 					if state_machine: state_machine.travel("Dash")
 					dash_timer = dash_duration / global_movement_scale
 					current_dash_cooldown = dash_cooldown
-					var dir = Vector3(
-						Input.get_action_strength("move_right") - Input.get_action_strength("move_left"), 
-						0, 
-						Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
-					).normalized()
+					# Hitung arah dash dari input saat ini
+					var input_x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+					var input_z = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+					var dir = Vector3(input_x, 0, input_z).normalized()
+					# Jika tidak ada tombol arah -> dash ke arah hadap karakter
 					if dir == Vector3.ZERO:
 						dir = last_direction
 					if dir == Vector3.ZERO:
 						dir = Vector3(0, 0, 1) # Fallback
+					# Karakter menghadap ke arah dash
 					last_direction = dir
 					velocity = dir * dash_speed
 					var enemies = get_tree().get_nodes_in_group("Enemy")
@@ -1608,6 +1769,19 @@ func _physics_process(delta):
 			for e in enemies:
 				if is_instance_valid(e) and e is CollisionObject3D:
 					remove_collision_exception_with(e)
+		return
+	
+	# --- FATAL SMASH: gerak karakter ke titik target via smoothstep ---
+	if is_smashing:
+		smash_elapsed += delta
+		var t = clamp(smash_elapsed / smash_total_dur, 0.0, 1.0)
+		# Smoothstep: easing in-out natural
+		var s = t * t * (3.0 - 2.0 * t)
+		global_position = smash_start_pos.lerp(smash_target_pos, s)
+		velocity = Vector3.ZERO
+		move_and_slide()
+		if t >= 1.0:
+			is_smashing = false
 		return
 		
 	if is_jumping:
@@ -1719,7 +1893,7 @@ func _physics_process(delta):
 	move_and_slide()
 		
 
-	if Input.is_action_just_pressed("charge_attack") and not charge_input_consumed and not is_attacking and not is_jumping and not is_casting and not is_targeting and not is_farming_targeting and targeting_cancel_cooldown <= 0.0 and magic_charge_timer == 0.0 and not is_animating_skill and not is_spinning:
+	if Input.is_action_just_pressed("charge_attack") and not charge_input_consumed and not is_attacking and not is_jumping and not is_casting and not is_targeting and not is_farming_targeting and targeting_cancel_cooldown <= 0.0 and magic_charge_timer == 0.0 and not is_animating_skill and not is_spinning and not is_dashing:
 		if status_manager and not status_manager.can_move():
 			var effect_name = status_manager.get_movement_restriction_name()
 			spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))

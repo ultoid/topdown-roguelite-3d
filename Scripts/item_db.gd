@@ -11,6 +11,8 @@ func _build_database():
 
 func _traverse_children(parent_node: Node):
 	for child in parent_node.get_children():
+		if child is CanvasItem:
+			child.hide()
 		if child is ItemData:
 			var data = {
 				"name": child.item_name,

@@ -156,38 +156,43 @@ func _process(delta):
 		for i in range(8):
 			var skill_id = Global.quick_skills[i]
 			var slot_node = get_node_or_null("SkillSlot" + str(i))
-			if slot_node and skill_id != "":
+			if slot_node:
 				var cooldown_rect = slot_node.get_node_or_null("CooldownRect")
-				if not cooldown_rect:
-					cooldown_rect = ColorRect.new()
-					cooldown_rect.name = "CooldownRect"
-					cooldown_rect.color = Color(0, 0, 0, 0.6)
-					cooldown_rect.anchor_right = 1.0
-					cooldown_rect.anchor_bottom = 1.0
-					cooldown_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-					slot_node.add_child(cooldown_rect)
-					
 				var cd_lbl = slot_node.get_node_or_null("CdText")
-				if not cd_lbl:
-					cd_lbl = Label.new()
-					cd_lbl.name = "CdText"
-					cd_lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
-					cd_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-					cd_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-					cd_lbl.add_theme_font_size_override("font_size", 16)
-					cd_lbl.add_theme_color_override("font_color", Color(1, 1, 1))
-					cd_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
-					cd_lbl.add_theme_constant_override("outline_size", 4)
-					slot_node.add_child(cd_lbl)
 				
-				var cd = player_ref.active_skill_cooldowns.get(skill_id, 0.0)
-				if cd > 0:
-					cooldown_rect.visible = true
-					cd_lbl.text = "%.1f" % cd
-					cd_lbl.visible = true
+				if skill_id != "":
+					if not cooldown_rect:
+						cooldown_rect = ColorRect.new()
+						cooldown_rect.name = "CooldownRect"
+						cooldown_rect.color = Color(0, 0, 0, 0.6)
+						cooldown_rect.anchor_right = 1.0
+						cooldown_rect.anchor_bottom = 1.0
+						cooldown_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+						slot_node.add_child(cooldown_rect)
+						
+					if not cd_lbl:
+						cd_lbl = Label.new()
+						cd_lbl.name = "CdText"
+						cd_lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
+						cd_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+						cd_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+						cd_lbl.add_theme_font_size_override("font_size", 16)
+						cd_lbl.add_theme_color_override("font_color", Color(1, 1, 1))
+						cd_lbl.add_theme_color_override("font_outline_color", Color(0, 0, 0))
+						cd_lbl.add_theme_constant_override("outline_size", 4)
+						slot_node.add_child(cd_lbl)
+					
+					var cd = player_ref.active_skill_cooldowns.get(skill_id, 0.0)
+					if cd > 0:
+						cooldown_rect.visible = true
+						cd_lbl.text = "%.1f" % cd
+						cd_lbl.visible = true
+					else:
+						cooldown_rect.visible = false
+						cd_lbl.visible = false
 				else:
-					cooldown_rect.visible = false
-					cd_lbl.visible = false
+					if cooldown_rect: cooldown_rect.visible = false
+					if cd_lbl: cd_lbl.visible = false
 	
 	_update_quick_items()
 	_update_quick_skills()

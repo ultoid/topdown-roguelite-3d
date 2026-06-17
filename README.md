@@ -8,3 +8,10 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
 - [ ] Menyelesaikan Migrasi 2D ke 3D all component and system
 - [ ] Melengkapi animasi model 3d
 - [ ] Implementasi animasi ke game
+
+## Change Log
+- Memperbaiki arah rotasi dan *lunge* pada skill `Fatal Blow` agar mengikuti arah kursor mouse.
+- Memperbaiki lompatan pada skill `Implosion` dan menyempurnakan indikator lingkaran *pull* musuh dengan radius akurat 5 meter.
+- Menambahkan indikator visual merah transparan pada radius 5 meter untuk skill `Provoke`.
+- Memperbaiki bug visual sisa *render* 2D di mana icon pedang (atau *sprite* lainnya dari *Autoload* `ItemDB` & `SkillDB`) tidak sengaja melayang dan bocor ke UI versi 3D.
+- Memperbaiki bug pada `PlayerHUD` di mana teks dan overlay gelap *cooldown* masih tertinggal di slot yang telah dikosongkan (contoh: mengganti *class* saat skill masih dalam masa *cooldown*).
