@@ -16,13 +16,14 @@ npc_name = "Guild Mentor"
 npc_type = "ClassChanger"
 
 [node name="HeroModel" parent="." unique_id=570574716 instance=ExtResource("2_hm")]
+transform = Transform3D(5.667, 0, 0, 0, 5.667, 0, 0, 0, 5.667, 0, 0, 0)
 
 [node name="SolidCollision" type="CollisionShape3D" parent="." unique_id=822433627]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CylinderShape3D_cm1")
 
 [node name="InteractArea" type="Area3D" parent="." unique_id=49349327]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+transform = Transform3D(16.989992, 0, 0.016902292, 0, 16.99, 0, -0.016902292, 0, 16.989992, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea" unique_id=955164398]
 transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0.21170446, 0)

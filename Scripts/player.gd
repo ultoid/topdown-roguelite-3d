@@ -24,12 +24,12 @@ var elemental_mastery_bonus_pct: float = 0.0 # Regen 7.5 energy / sec
 var knockback_velocity: Vector3 = Vector3.ZERO
 
 # 6 Base Stats
-var stat_str: int = 5
-var stat_vit: int = 5
-var stat_int: int = 5
-var stat_luk: int = 5
-var stat_agi: int = 5
-var stat_dex: int = 5
+var stat_str: int = 1
+var stat_vit: int = 1
+var stat_int: int = 1
+var stat_luk: int = 1
+var stat_agi: int = 1
+var stat_dex: int = 1
 var stat_points: int = 0
 
 # Derived stats
@@ -39,8 +39,8 @@ var casting_speed: float = 1.0
 var physical_defense: int = 0
 var magic_defense: int = 0
 var critical_chance: float = 0.0
-var walk_speed: float = 1.0
-var run_speed: float = 1.5
+var walk_speed: float = 5.0 * (1000.0 / 3600.0) # 5 km/h
+var run_speed: float = 20.0 * (1000.0 / 3600.0) # 20 km/h
 var attack_speed_multiplier: float = 1.0
 var accuracy: float = 1.0
 
@@ -96,8 +96,9 @@ var target_pos: Vector3 = Vector3.ZERO
 var target_indicator_node: Node3D = null
 
 var dash_timer: float = 0.0
-var dash_duration: float = 0.8
-var dash_speed: float = 2.5
+var dash_duration: float = 0.4
+var dash_anim_length: float = 1.0
+var dash_speed: float = 15.0
 var dash_cooldown: float = 3.0
 var current_dash_cooldown: float = 0.0
 
@@ -105,6 +106,7 @@ var global_movement_scale: float = 1.0
 
 var last_tap_key: String = ""
 var last_tap_time: float = 0.0
+var is_running_from_double_tap: bool = false
 
 var is_jumping: bool = false
 var jump_timer: float = 0.0
@@ -134,6 +136,19 @@ var charge_lunge_timer: float = 0.0
 var is_auto_walking: bool = false
 var auto_walk_target: Vector3 = Vector3.ZERO
 var auto_walk_callback: Callable
+
+var hud_canvas: CanvasLayer = null
+
+func _get_hud_canvas() -> CanvasLayer:
+	if is_instance_valid(hud_canvas):
+		return hud_canvas
+	hud_canvas = get_tree().current_scene.get_node_or_null("PlayerHUDCanvas")
+	if not is_instance_valid(hud_canvas):
+		hud_canvas = CanvasLayer.new()
+		hud_canvas.name = "PlayerHUDCanvas"
+		hud_canvas.layer = 10
+		get_tree().current_scene.add_child(hud_canvas)
+	return hud_canvas
 
 @onready var animation_tree = get_node_or_null("AnimationTree")
 @onready var state_machine = animation_tree.get("parameters/playback") if animation_tree else null
@@ -210,8 +225,8 @@ func recalculate_stats():
 	if max_mana > old_max_mp:
 		current_mana += (max_mana - old_max_mp)
 		
-	walk_speed = 0.8 + (t_agi * 0.04)
-	run_speed = walk_speed * 1.5
+	walk_speed = (10.0 * 1000.0 / 3600.0) + (t_agi * 0.04)
+	run_speed = walk_speed * 2.0
 	attack_speed_multiplier = 1.0 + (t_agi * 0.05)
 	energy_regen = 5.0 + (t_agi * 0.5)
 	
@@ -287,6 +302,24 @@ func _ready():
 	status_manager = StatusEffectManager.new()
 	add_child(status_manager)
 	status_manager.setup(self)
+	
+	# Strip X/Z translation from the dash animation to prevent the visual mesh from moving away from the root collision shape
+	var ap = get_node_or_null("Visuals/HeroModel/AnimationPlayer")
+	if ap:
+		var dash_anim_name = ""
+		for anim_name in ap.get_animation_list():
+			if "dash" in anim_name.to_lower():
+				dash_anim_name = anim_name
+				break
+				
+		if dash_anim_name != "":
+			var anim = ap.get_animation(dash_anim_name)
+			dash_anim_length = anim.length
+			var track_idx = anim.find_track("Skeleton3D:mixamorig_Hips", Animation.TYPE_POSITION_3D)
+			if track_idx != -1:
+				for i in range(anim.track_get_key_count(track_idx)):
+					var val = anim.track_get_key_value(track_idx, i)
+					anim.track_set_key_value(track_idx, i, Vector3(0, val.y, 0))
 	
 	if get_node_or_null("/root/Global"):
 		coins = Global.coins
@@ -676,13 +709,13 @@ func _start_cast_skill(skill_id: String, data: Dictionary, cost: int, t_pos: Vec
 	sb_fg.bg_color = Color(1.0, 0.8, 0.2, 1.0)
 	cast_bar.add_theme_stylebox_override("background", sb_bg)
 	cast_bar.add_theme_stylebox_override("fill", sb_fg)
-	add_child(cast_bar)
+	_get_hud_canvas().add_child(cast_bar)
 	
 	# Visual indikator casting
 	var tween = get_tree().create_tween()
 	tween.set_loops()
-	tween.tween_property(self, "scale", Color(1, 1, 1, 0.5), 0.2)
-	tween.tween_property(self, "scale", Color(1, 1, 1, 1), 0.2)
+	tween.tween_property(self, "modulate", Color(1, 1, 1, 0.5), 0.2)
+	tween.tween_property(self, "modulate", Color(1, 1, 1, 1), 0.2)
 	
 	var aqua_ind = null
 	if skill_id == "aqua_blast":
@@ -818,7 +851,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		circle.material = mat
 		
 		var visual_node = Node3D.new()
-		visual_node.global_position = global_position
+		visual_node.position = global_position
 		visual_node.add_child(circle)
 		get_tree().current_scene.add_child(visual_node)
 		
@@ -848,7 +881,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		var fb_scene = load("res://Scenes/Skills/fire_bolt.tscn")
 		if fb_scene and get_tree().current_scene:
 			var fb = fb_scene.instantiate()
-			fb.global_position = global_position
+			fb.position = global_position
 			fb.damage = int((magic_attack * 2.0 + dmg) * el_multiplier)
 			fb.elements = ["api"]
 			var target = null
@@ -867,7 +900,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		var elements = ["udara"]
 		
 		var cone = Area3D.new()
-		cone.global_position = global_position
+		cone.position = global_position
 		var l_dir = (t_pos - global_position).normalized() if t_pos != Vector3.ZERO else last_direction
 		if l_dir == Vector3.ZERO: l_dir = Vector3.BACK
 		cone.rotation.y = atan2(-l_dir.z, l_dir.x)
@@ -914,7 +947,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 				var hazard = load("res://Scenes/Skills/seismic_fissure_hazard.tscn")
 				if hazard and get_tree().current_scene:
 					var h = hazard.instantiate()
-					h.global_position = p_pos + l_dir * (0.3 + i * 0.4)
+					h.position = p_pos + l_dir * (0.3 + i * 0.4)
 					h.damage = final_dmg
 					h.elements = elements
 					h.slow_duration = dur
@@ -925,7 +958,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 			var hazard = load("res://Scenes/Skills/seismic_fissure_hazard.tscn")
 			if hazard and get_tree().current_scene:
 				var h = hazard.instantiate()
-				h.global_position = t_pos
+				h.position = t_pos
 				h.damage = final_dmg
 				h.elements = elements
 				h.slow_duration = dur
@@ -970,13 +1003,14 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		var fb_scene = load("res://Scenes/Skills/fireball.tscn")
 		if fb_scene and get_tree().current_scene:
 			var fb = fb_scene.instantiate()
-			fb.global_position = t_pos
+			fb.position = t_pos
 			fb.damage = int(magic_attack * 1.5) + dmg
 			fb.aoe_radius = aoe
 			get_tree().current_scene.add_child(fb)
 			
 	elif skill_id == "cyclone_sweep":
 		is_spinning = true
+		is_running_from_double_tap = false # Force walk speed
 		spin_timer = dur
 		max_spin_time = dur
 		
@@ -997,7 +1031,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		sb_fg.bg_color = Color(1.0, 0.4, 0.0, 1.0)
 		spin_bar.add_theme_stylebox_override("background", sb_bg)
 		spin_bar.add_theme_stylebox_override("fill", sb_fg)
-		add_child(spin_bar)
+		_get_hud_canvas().add_child(spin_bar)
 		
 	elif skill_id == "fatal_blow":
 		current_attack_damage = physical_attack + dmg
@@ -1041,7 +1075,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		
 		get_tree().create_timer(0.15).timeout.connect(func():
 			var wave = Area3D.new()
-			wave.global_position = global_position + l_dir * 0.1
+			wave.position = global_position + l_dir * 0.1
 			wave.rotation.y = atan2(-l_dir.z, l_dir.x)
 			
 			var coll = CollisionShape3D.new()
@@ -1146,7 +1180,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		circle.material = mat
 		
 		var visual_node = Node3D.new()
-		visual_node.global_position = global_position
+		visual_node.position = global_position
 		visual_node.add_child(circle)
 		get_tree().current_scene.add_child(visual_node)
 		
@@ -1208,7 +1242,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 				var proj = proj_scene.instantiate()
 				proj.damage = int(dmg * 0.5)
 				proj.atk_elements = atk_elements
-				proj.global_position = global_position
+				proj.position = global_position
 				proj.direction = (target_enemy.global_position - global_position).normalized()
 				
 				var vis = proj.get_node_or_null("Visual")
@@ -1242,7 +1276,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 						proj.damage = dmg
 						proj.scale = Vector3(2.0, 2.0, 2.0)
 					proj.atk_elements = atk_elements
-					proj.global_position = global_position
+					proj.position = global_position
 					proj.direction = (target_enemy.global_position - global_position).normalized()
 						
 					get_tree().current_scene.add_child(proj)
@@ -1266,7 +1300,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 			Engine.time_scale = 1.0
 			
 			var inst = scene.instantiate()
-			inst.global_position = t_pos
+			inst.position = t_pos
 			inst.damage = dmg
 			inst.aoe_radius = float(aoe)
 			inst.duration = dur
@@ -1378,7 +1412,7 @@ func _process(delta):
 			if is_instance_valid(spin_bar):
 				spin_bar.value = spin_timer
 			var t = Engine.get_frames_drawn()
-			sprite.rotation += 15.0 * delta # visual spin
+			sprite.rotation.y += 15.0 * delta # visual spin
 			if t % 15 == 0:
 				var enemies = get_tree().get_nodes_in_group("Enemy")
 				for e in enemies:
@@ -1392,8 +1426,6 @@ func _process(delta):
 					spin_bar.queue_free()
 
 		
-		var is_holding_shift = Input.is_action_pressed("run")
-		
 		var sm_lvl = Global.unlocked_skills.get("spell_mastery", 0) if get_node_or_null("/root/Global") else 0
 		if sm_lvl > 0 and current_mana < max_mana:
 			mana_regen_accumulator += float(sm_lvl) * delta
@@ -1403,9 +1435,10 @@ func _process(delta):
 				current_mana += heal_mp
 				if current_mana > max_mana: current_mana = max_mana
 				emit_signal("mana_changed", current_mana, max_mana)
+				
 		var is_running_now = false
 		
-		if is_holding_shift and not is_attacking and not is_dashing and not is_jumping:
+		if is_running_from_double_tap and not is_attacking and not is_dashing and not is_jumping:
 			var input_dir = Vector3(
 				Input.get_action_strength("move_right") - Input.get_action_strength("move_left"), 0, Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 			)
@@ -1416,7 +1449,7 @@ func _process(delta):
 			current_energy -= 10.0 * delta # Mengurangi 10 EP per detik
 			if current_energy < 0: current_energy = 0
 			emit_signal("energy_changed", current_energy, max_energy)
-		elif not is_holding_shift and current_energy < max_energy:
+		elif not is_running_from_double_tap and current_energy < max_energy:
 			current_energy += energy_regen * delta
 			if current_energy > max_energy: current_energy = max_energy
 			emit_signal("energy_changed", current_energy, max_energy)
@@ -1504,58 +1537,70 @@ func _physics_process(delta):
 			magic_charge_bar.queue_free()
 	
 
-	# Double tap dash
+	# Handle Double Tap Run
 	var move_keys = ["move_up", "move_down", "move_left", "move_right"]
+	var is_any_move_pressed = false
 	for key in move_keys:
+		if Input.is_action_pressed(key):
+			is_any_move_pressed = true
+			
 		if Input.is_action_just_pressed(key):
 			var current_time = Time.get_ticks_msec() / 1000.0
 			if last_tap_key == key and current_time - last_tap_time < 0.3:
-				if not is_dashing and not is_attacking and not is_casting and not is_animating_skill and not is_spinning:
-					if current_dash_cooldown <= 0:
-						if status_manager and not status_manager.can_move():
-							var effect_name = status_manager.get_movement_restriction_name()
-							spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
-							last_tap_key = ""
-							break
-						if current_energy >= 20.0:
-							current_energy -= 20.0
-							emit_signal("energy_changed", current_energy, max_energy)
-							is_dashing = true
-							if state_machine: state_machine.travel("Dash")
-							dash_timer = dash_duration / global_movement_scale
-							current_dash_cooldown = dash_cooldown
-							var dir = Vector3.ZERO
-							if key == "move_up": dir.z = -1
-							elif key == "move_down": dir.z = 1
-							elif key == "move_left": dir.x = -1
-							elif key == "move_right": dir.x = 1
-							last_direction = dir
-							velocity = dir * dash_speed
-							last_tap_key = ""
-							var enemies = get_tree().get_nodes_in_group("Enemy")
-							for e in enemies:
-								if is_instance_valid(e) and e is CollisionObject3D:
-									add_collision_exception_with(e)
-							break
-						else:
-							spawn_floating_text("EP Tidak Cukup!", Color(1, 0.5, 0))
-							last_tap_key = ""
-							break
-					else:
-						spawn_floating_text("Masih Cooldown!", Color(0.4, 0.6, 1))
-						last_tap_key = ""
-						break
+				is_running_from_double_tap = true
 			else:
 				last_tap_key = key
 				last_tap_time = current_time
+				
+	if not is_any_move_pressed:
+		is_running_from_double_tap = false
+				
+	# Single press Shift (run action) to Dash
+	if Input.is_action_just_pressed("run"):
+		if not is_dashing and not is_attacking and not is_casting and not is_animating_skill and not is_spinning:
+			if current_dash_cooldown <= 0:
+				if status_manager and not status_manager.can_move():
+					var effect_name = status_manager.get_movement_restriction_name()
+					spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
+				elif current_energy >= 20.0:
+					current_energy -= 20.0
+					emit_signal("energy_changed", current_energy, max_energy)
+					is_dashing = true
+					if state_machine: state_machine.travel("Dash")
+					dash_timer = dash_duration / global_movement_scale
+					current_dash_cooldown = dash_cooldown
+					var dir = Vector3(
+						Input.get_action_strength("move_right") - Input.get_action_strength("move_left"), 
+						0, 
+						Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+					).normalized()
+					if dir == Vector3.ZERO:
+						dir = last_direction
+					if dir == Vector3.ZERO:
+						dir = Vector3(0, 0, 1) # Fallback
+					last_direction = dir
+					velocity = dir * dash_speed
+					var enemies = get_tree().get_nodes_in_group("Enemy")
+					for e in enemies:
+						if is_instance_valid(e) and e is CollisionObject3D:
+							add_collision_exception_with(e)
+				else:
+					spawn_floating_text("EP Tidak Cukup!", Color(1, 0.5, 0))
+			else:
+				spawn_floating_text("Masih Cooldown!", Color(0.4, 0.6, 1))
 		
 	if is_dashing:
-		velocity = last_direction * (dash_speed * global_movement_scale)
+		var speed_multiplier = (dash_timer / dash_duration) * 2.0
+		velocity = last_direction * (dash_speed * speed_multiplier * global_movement_scale)
 		dash_timer -= delta
 		move_and_slide()
 		modulate.a = 0.5
 		if animation_tree:
-			animation_tree.advance(delta * (2.5 * global_movement_scale - 1.0))
+			# Sesuaikan animasi pas dengan durasi dash
+			var req_speed = (dash_anim_length / dash_duration) * global_movement_scale
+			var extra_advance = delta * (req_speed - 1.0)
+			if extra_advance != 0.0:
+				animation_tree.advance(extra_advance)
 		if dash_timer <= 0:
 			is_dashing = false
 			modulate.a = 1.0
@@ -1623,44 +1668,46 @@ func _physics_process(delta):
 			charge_lunge_timer -= delta
 			velocity = last_direction * dash_speed
 		else:
-			var move_speed = walk_speed
-			if Input.is_action_pressed("run") and current_energy > 0:
-				move_speed = run_speed
-			var physical_speed = (move_speed * global_movement_scale)
-			velocity.x = input_direction.x * physical_speed
-			velocity.z = input_direction.z * physical_speed
+			# Saat menyerang, karakter tidak bisa berlari/berjalan (diam di tempat)
+			velocity.x = 0
+			velocity.z = 0
 			
 		move_and_slide()
 		return
 	
 	var current_speed = walk_speed
+	var anim_stride = 1.6
 	
 	if is_casting:
 		current_speed = walk_speed * 0.5
-	elif Input.is_action_pressed("run") and current_energy > 0:
+	elif is_running_from_double_tap and current_energy > 0:
 		current_speed = run_speed
+		anim_stride = 4.8
 		
 	if status_manager:
 		current_speed *= status_manager.get_speed_multiplier()
 		
 	current_speed *= global_movement_scale
-	var anim_speed = current_speed / 0.8
+	var anim_speed = current_speed / anim_stride
 			
-	if animation_tree and anim_speed != 1.0 and input_direction != Vector3.ZERO:
-		animation_tree.advance(delta * (anim_speed - 1.0))
+	if animation_player:
+		if not is_attacking and not is_casting and not is_dashing and not is_jumping and not is_spinning:
+			animation_player.speed_scale = anim_speed
+		else:
+			animation_player.speed_scale = 1.0
 		
 	if input_direction != Vector3.ZERO:
 		var physical_speed = current_speed
 		velocity = input_direction * physical_speed
 		
-		if sprite and not is_attacking and not is_casting:
+		if sprite and not is_attacking and not is_casting and not is_spinning:
 			var target_angle = atan2(-input_direction.z, input_direction.x)
 			sprite.rotation.y = lerp_angle(sprite.rotation.y, target_angle - PI/2.0, 15.0 * delta)
 			if is_instance_valid(sword_hitbox):
 				sword_hitbox.rotation.y = sprite.rotation.y
 		
 		if state_machine and not is_attacking:
-			if Input.is_action_pressed("run") and current_energy > 0:
+			if is_running_from_double_tap and current_energy > 0:
 				state_machine.travel("Run")
 			else:
 				state_machine.travel("Walk")
@@ -1813,6 +1860,10 @@ func attack(is_charge: bool):
 	if status_manager: current_attack_speed *= status_manager.get_attack_speed_multiplier()
 	
 	var target_state = "HeavyAttack" if is_charge else "Attack"
+	if animation_tree and animation_tree.tree_root is AnimationNodeStateMachine:
+		if not animation_tree.tree_root.has_node(target_state):
+			target_state = "Attack"
+			
 	var actual_len = _get_state_length(target_state, base_attack_duration)
 	current_anim_speed_ratio = actual_len / base_attack_duration
 	
@@ -1864,27 +1915,28 @@ func _get_state_length(state_name: String, fallback: float) -> float:
 func _perform_spin_attack(dmg: int, is_mana_burst: bool = false):
 	# One time spin dealing damage and knockback in an area
 	var spin_area = Area3D.new()
-	spin_area.global_position = global_position
+	spin_area.position = global_position
 	var col = CollisionShape3D.new()
-	var shape = CircleShape2D.new()
-	shape.radius = 45.0
+	var shape = CylinderShape3D.new()
+	shape.radius = 4.5
+	shape.height = 1.0
 	col.shape = shape
 	spin_area.add_child(col)
 	
 	if is_mana_burst:
-		# Mana burst visual (Expanding blue circle)
-		var burst_vis = CSGPolygon3D.new()
-		var points = []
-		for i in range(32):
-			var angle = i * PI * 2.0 / 32.0
-			points.append(Vector3(cos(angle), 0, sin(angle)) * 45.0)
-		burst_vis.polygon = PackedVector3Array(points)
-		burst_vis.color = Color(0.0, 0.8, 1.0, 0.5)
+		var burst_vis = CSGCylinder3D.new()
+		burst_vis.radius = 4.5
+		burst_vis.height = 0.2
+		burst_vis.sides = 32
+		var mat = StandardMaterial3D.new()
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.albedo_color = Color(0.0, 0.8, 1.0, 0.5)
+		burst_vis.material = mat
 		spin_area.add_child(burst_vis)
 		var t = get_tree().create_tween()
-		burst_vis.scale = Vector3(0.1, 0, 0.1)
-		t.tween_property(burst_vis, "scale", Vector3(1.2, 0, 1.2), 0.2)
-		t.tween_property(burst_vis, "color:a", 0.0, 0.2)
+		burst_vis.scale = Vector3(0.1, 1.0, 0.1)
+		t.tween_property(burst_vis, "scale", Vector3(1.2, 1.0, 1.2), 0.2)
+		t.tween_property(mat, "albedo_color:a", 0.0, 0.2)
 	else:
 		# Spin player sprite
 		if sprite:
@@ -1921,7 +1973,7 @@ func _create_charge_bar():
 	sb_fg.bg_color = Color(0.2, 0.8, 1.0, 1.0)
 	magic_charge_bar.add_theme_stylebox_override("background", sb_bg)
 	magic_charge_bar.add_theme_stylebox_override("fill", sb_fg)
-	add_child(magic_charge_bar)
+	_get_hud_canvas().add_child(magic_charge_bar)
 	magic_charge_timer = 0.01
 
 func _release_magic_charge():
@@ -1981,24 +2033,26 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 		
 	var proj_scene = load("res://Scenes/Skills/player_projectile.tscn")
 	if proj_scene and get_tree().current_scene:
-		var spawn_pos = global_position
+		var spawn_pos = global_position + Vector3(0, 0.85, 0)
 		
 		if type == "magic":
 			var proj = proj_scene.instantiate()
-			proj.global_position = spawn_pos
+			proj.position = spawn_pos
 			proj.direction = last_direction
 			proj.damage = magic_attack
 			var vis = proj.get_node_or_null("Visual")
-			if vis: vis.color = Color(0.2, 0.5, 1.0)
+			if vis: 
+				vis.color = Color(0.2, 0.5, 1.0)
+				vis.size = Vector3(0.3, 0.3, 0.3)
 			get_tree().current_scene.add_child(proj)
 			
 		elif type == "magic_charge":
 			var proj = proj_scene.instantiate()
-			proj.global_position = spawn_pos
+			proj.position = spawn_pos
 			proj.direction = last_direction
 			var multiplier = 1.0 + (charge_time / 2.0)
 			proj.damage = int(magic_attack * multiplier)
-			proj.scale = Vector3(1.5, 0, 1.5)
+			proj.scale = Vector3(1.5, 1.5, 1.5)
 			proj.speed = 800.0 # Laser-like speed
 			var vis = proj.get_node_or_null("Visual")
 			if vis: vis.color = Color(0.0, 0.8, 1.0)
@@ -2008,95 +2062,66 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 			_perform_spin_attack(int(magic_attack * 1.5), true) 
 			
 		elif type == "bolt":
+			var arrow_scene = load("res://Scenes/Skills/arrow_projectile.tscn")
+			if not arrow_scene: arrow_scene = proj_scene
+			
 			if is_charge:
 				# Rapid fire 5 bolts
 				for i in range(5):
 					if not is_instance_valid(self): return
-					var proj = proj_scene.instantiate()
-					proj.global_position = spawn_pos
+					var proj = arrow_scene.instantiate()
+					proj.position = spawn_pos
 					proj.direction = last_direction.rotated(Vector3.UP, randf_range(-0.1, 0.1))
 					proj.damage = int(physical_attack * 0.5)
-					proj.speed = 700.0
-					var vis = proj.get_node_or_null("Visual")
-					if vis: 
-						vis.color = Color(0.6, 0.6, 0.6)
-						vis.size = Vector3(5, 0, 2)
-						vis.position = Vector3(-2, 0, -1)
-						proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
+					proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
 					get_tree().current_scene.add_child(proj)
 					await get_tree().create_timer(0.1).timeout
 			else:
-				var proj = proj_scene.instantiate()
-				proj.global_position = spawn_pos
+				var proj = arrow_scene.instantiate()
+				proj.position = spawn_pos
 				proj.direction = last_direction
 				proj.damage = physical_attack
-				proj.speed = 600.0
-				var vis = proj.get_node_or_null("Visual")
-				if vis: 
-					vis.color = Color(0.6, 0.6, 0.6)
-					vis.size = Vector3(5, 0, 2)
-					vis.position = Vector3(-2, 0, -1)
-					proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
+				proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
 				get_tree().current_scene.add_child(proj)
 				
 		elif type == "dagger":
 			for angle_offset in [-0.4, 0.0, 0.4]:
 				var proj = proj_scene.instantiate()
-				proj.global_position = spawn_pos
+				proj.position = spawn_pos
 				proj.direction = last_direction.rotated(Vector3.UP, angle_offset)
 				proj.damage = int(physical_attack * 0.7) 
 				proj.speed = 600.0
 				var vis = proj.get_node_or_null("Visual")
 				if vis: 
 					vis.color = Color(0.4, 0.4, 0.4)
-					vis.size = Vector3(4, 0, 3)
-					vis.position = Vector3(-2, 0, -1.5)
+					vis.size = Vector3(0.3, 0.05, 0.1)
+					vis.position = Vector3(-0.15, 0, 0)
 					proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
 				get_tree().current_scene.add_child(proj)
 				
 		elif type == "arrow":
+			var arrow_scene = load("res://Scenes/Skills/arrow_projectile.tscn")
+			if not arrow_scene: arrow_scene = proj_scene
+			
 			if is_charge:
 				# Piercing Shot (High damage, very fast)
-				var proj = proj_scene.instantiate()
-				proj.global_position = spawn_pos
+				var proj = arrow_scene.instantiate()
+				proj.position = spawn_pos
 				proj.direction = last_direction
 				var multiplier = 1.0 + (charge_time / 2.0)
 				proj.damage = int(physical_attack * 2.0 * multiplier) 
-				proj.speed = 900.0
-				var vis = proj.get_node_or_null("Visual")
-				if vis: 
-					vis.color = Color(0.9, 0.9, 0.9)
-					vis.size = Vector3(16, 0, 3)
-					vis.position = Vector3(-8, 0, -1.5)
-					
-					# Draw arrow head
-					var head = CSGPolygon3D.new()
-					head.polygon = PackedVector3Array([Vector3(8, 0, -3), Vector3(14, 0, 0), Vector3(8, 0, 3)])
-					head.color = Color(0.7, 0.7, 0.7)
-					vis.add_child(head)
-					
-					proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
-				get_tree().current_scene.add_child(proj)
-			else:
-				var proj = proj_scene.instantiate()
-				proj.global_position = spawn_pos
-				proj.direction = last_direction
-				proj.damage = physical_attack
-				proj.speed = 500.0
 				if "atk_elements" in proj:
 					proj.atk_elements = atk_elements.duplicate()
-				var vis = proj.get_node_or_null("Visual")
-				if vis: 
-					vis.color = Color(0.8, 0.5, 0.2) # Wood color
-					vis.size = Vector3(12, 0, 2)
-					vis.position = Vector3(-6, 0, -1)
-					
-					var head = CSGPolygon3D.new()
-					head.polygon = PackedVector3Array([Vector3(6, 0, -2), Vector3(10, 0, 0), Vector3(6, 0, 2)])
-					head.color = Color(0.8, 0.8, 0.8)
-					vis.add_child(head)
-					
-					proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
+				proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
+				get_tree().current_scene.add_child(proj)
+			else:
+				var proj = arrow_scene.instantiate()
+				proj.position = spawn_pos
+				proj.direction = last_direction
+				proj.damage = physical_attack
+				if "atk_elements" in proj:
+					proj.atk_elements = atk_elements.duplicate()
+				proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
 				get_tree().current_scene.add_child(proj)
 				
 	await get_tree().create_timer(duration - spawn_delay).timeout
@@ -2195,9 +2220,8 @@ func spawn_floating_text(msg: String, color: Color):
 	label.outline_size = 12
 	label.text = msg
 	label.modulate = color
-	label.global_position = global_position + Vector3(0, 0.5, 0)
-	 
 	get_tree().current_scene.add_child(label)
+	label.global_position = global_position + Vector3(0, 0.5, 0)
 	var tween = get_tree().create_tween()
 	tween.tween_property(label, "global_position", label.global_position + Vector3(0, 0.5, 0), 0.8).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.8).set_ease(Tween.EASE_IN)
@@ -2272,16 +2296,30 @@ func level_up():
 	emit_signal("exp_changed", current_exp, max_exp, level)
 
 func apply_camera_shake(intensity: float, duration: float):
-	var cam = get_node_or_null("Camera2D")
-	if not cam: return
-	
-	var tween = get_tree().create_tween()
-	var shake_count = max(1, int(duration / 0.05))
-	for i in range(shake_count):
-		var offset = Vector3(randf_range(-intensity, intensity), 0, randf_range(-intensity, intensity))
-		tween.tween_property(cam, "offset", offset, 0.025)
-		tween.tween_property(cam, "offset", Vector3.ZERO, 0.025)
-	tween.tween_property(cam, "offset", Vector3.ZERO, 0.01)
+	var cam3d = get_viewport().get_camera_3d() if is_inside_tree() else null
+	if cam3d:
+		var tween = get_tree().create_tween()
+		var shake_count = max(1, int(duration / 0.05))
+		for i in range(shake_count):
+			var h_off = randf_range(-intensity, intensity) * 0.02
+			var v_off = randf_range(-intensity, intensity) * 0.02
+			tween.tween_property(cam3d, "h_offset", h_off, 0.025)
+			tween.parallel().tween_property(cam3d, "v_offset", v_off, 0.025)
+			tween.tween_property(cam3d, "h_offset", 0.0, 0.025)
+			tween.parallel().tween_property(cam3d, "v_offset", 0.0, 0.025)
+		tween.tween_property(cam3d, "h_offset", 0.0, 0.01)
+		tween.parallel().tween_property(cam3d, "v_offset", 0.0, 0.01)
+		return
+		
+	var cam2d = get_node_or_null("Camera2D")
+	if cam2d:
+		var tween = get_tree().create_tween()
+		var shake_count = max(1, int(duration / 0.05))
+		for i in range(shake_count):
+			var offset = Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
+			tween.tween_property(cam2d, "offset", offset, 0.025)
+			tween.tween_property(cam2d, "offset", Vector2.ZERO, 0.025)
+		tween.tween_property(cam2d, "offset", Vector2.ZERO, 0.01)
 
 
 
@@ -2368,7 +2406,7 @@ func start_life_skill(target_node: Node, required_cycles: int, skill_type: Strin
 	sb_fg.bg_color = Color(0.2, 0.8, 0.2, 1.0)
 	life_skill_bar.add_theme_stylebox_override("background", sb_bg)
 	life_skill_bar.add_theme_stylebox_override("fill", sb_fg)
-	add_child(life_skill_bar)
+	_get_hud_canvas().add_child(life_skill_bar)
 	
 	_life_skill_loop()
 

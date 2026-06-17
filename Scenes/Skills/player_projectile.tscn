@@ -1,21 +1,33 @@
-[gd_scene format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://Scripts/player_projectile.gd" id="1_proj"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_proj"]
-radius = 6.0
+[sub_resource type="SphereShape3D" id="SphereShape3D_proj"]
+radius = 0.4
+
+[sub_resource type="GDScript" id="GDScript_vis"]
+script/source = "extends CSGBox3D
+
+var color: Color:
+	set(v):
+		color = v
+		if not material:
+			material = StandardMaterial3D.new()
+		material.albedo_color = v
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vis"]
+albedo_color = Color(0.9, 0.9, 0.9, 1)
 
 [node name="PlayerProjectile" type="Area3D"]
 collision_layer = 0
 collision_mask = 5
 script = ExtResource("1_proj")
 
-[node name="CollisionShape2D" type="CollisionShape3D" parent="."]
-shape = SubResource("CircleShape2D_proj")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_proj")
 
-[node name="Visual" type="ColorRect" parent="."]
-offset_left = -4.0
-offset_top = -4.0
-offset_right = 4.0
-offset_bottom = 4.0
-color = Color(1, 0.8, 0.2, 1)
+[node name="Visual" type="CSGBox3D" parent="."]
+size = Vector3(0.5, 0.5, 0.5)
+material = SubResource("StandardMaterial3D_vis")
+script = SubResource("GDScript_vis")

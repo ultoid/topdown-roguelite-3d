@@ -1,7 +1,7 @@
 extends Node
 
 var coins: int = 0
-var level: int = 100
+var level: int = 1
 var current_exp: int = 0
 var max_exp: int = 10
 
@@ -10,11 +10,11 @@ var current_mana: float = -1.0
 var current_energy: float = -1.0
 
 # Class Job System
-var current_class: String = "scout"
-var class_levels: Dictionary = {"fighter": 100, "apprentice": 100, "scout": 100}
+var current_class: String = ""
+var class_levels: Dictionary = {"fighter": 1, "apprentice": 1, "scout": 1}
 var class_exp: Dictionary = {"fighter": 0, "apprentice": 0, "scout": 0}
 var class_max_exp: Dictionary = {"fighter": 10, "apprentice": 10, "scout": 10}
-var class_skill_points: Dictionary = {"fighter": 0, "apprentice": 0, "scout": 99}
+var class_skill_points: Dictionary = {"fighter": 0, "apprentice": 0, "scout": 0}
 
 const CLASS_BASE_STATS = {
 	"fighter": {"str": 9, "agi": 3, "vit": 6, "int": 1, "dex": 1, "luk": 5},
@@ -34,18 +34,10 @@ var perm_stat_dex: int = 0
 var inventory: Dictionary = {
 	"potion": 5,
 	"ether": 5,
-	"iron_sword": 1,
-	"leather_armor": 1,
-	"ruby_ring": 1,
-	"holy_sword": 1,
-	"leather_helmet" : 1,
-	"leather_boots" : 1,
-	"fire_sword" : 1,
 	"pickaxe": 1,
 	"axe": 1,
 	"hoe": 1,
 	"watering_can": 1,
-	"potion_recipe": 1,
 	"practice_long_sword": 1,
 	"practice_sword": 1,
 	"practice_gloves": 1,
@@ -70,43 +62,8 @@ var equipment: Dictionary = {
 
 var quick_items = ["", "", "", ""] # item_id slot 1 to 4
 
-var unlocked_skills: Dictionary = {
-	"dash": 1, 
-	"heavy": 1, 
-	"heal": 10, 
-	"fireball": 1,
-	"weapon_mastery": 10,
-	"vitality_mastery": 10,
-	"cyclone_sweep": 5,
-	"fatal_blow": 10,
-	"impact_wave": 5,
-	"endure": 5,
-	"provoke": 5,
-	"fatal_smash": 1,
-	"implosion": 1,
-	"spell_mastery": 10,
-	"elemental_mastery": 10,
-	"aqua_blast": 5,
-	"fire_bolt": 5,
-	"sonic_boom": 5,
-	"seismic_fissure": 1,
-	"holy_veil": 1,
-	"hex": 10,
-	"soul_drain": 1,
-	"hunters_mark": 10,
-	"falcon_dive": 10,
-	"arrow_rain": 5,
-	"agility_mastery": 10,
-	"haste": 5,
-	"mirage_strike": 5,
-	"fortunes_eye": 10,
-	"shadow_walk": 5,
-	"thief": 5,
-	"phantom_strike": 5,
-	"phantom_flurry": 1,
-	"poison_weapon": 5
-} # ID skill : level
-var quick_skills = ["aqua_blast", "fire_bolt", "sonic_boom", "seismic_fissure", "", "", "", ""] # skill slot 1 to 8
+var unlocked_skills: Dictionary = {} # ID skill : level
+var quick_skills = ["", "", "", "", "", "", "", ""] # skill slot 1 to 8
 
 var unlocked_recipes: Array = [""]
 	
@@ -123,6 +80,47 @@ var CRAFTING_RECIPES: Dictionary = {}
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_inputs()
+	_debug_setup_fighter()
+
+func _debug_setup_fighter():
+	# === DEBUG: Fighter Level 40 ===
+	level = 40
+	current_exp = 0
+	max_exp = 9999
+	
+	# Set class to Fighter level 40
+	current_class = "fighter"
+	class_levels["fighter"] = 40
+	class_exp["fighter"] = 0
+	class_max_exp["fighter"] = 9999
+	class_skill_points["fighter"] = 0
+	
+	# Unlock ALL fighter skills at their actual max level
+	unlocked_skills = {
+		"dash": 1,           # max_level = 1 (default)
+		"heavy": 1,          # max_level = 1 (default)
+		"weapon_mastery": 10,
+		"vitality_mastery": 10,
+		"cyclone_sweep": 5,
+		"fatal_blow": 10,
+		"impact_wave": 5,
+		"fatal_smash": 1,    # max_level = 1 (default)
+		"endure": 10,
+		"provoke": 5,
+		"implosion": 1,      # max_level = 1 (default)
+	}
+	
+	# Assign fighter skills to quick slots (8 slots)
+	quick_skills = [
+		"cyclone_sweep",
+		"fatal_blow",
+		"impact_wave",
+		"fatal_smash",
+		"endure",
+		"provoke",
+		"implosion",
+		"",
+	]
 
 func _process(delta):
 	# Farming

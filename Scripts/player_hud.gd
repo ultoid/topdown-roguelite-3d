@@ -319,6 +319,15 @@ func _update_hp_mp_ep():
 func update_class_ui():
 	if get_node_or_null("/root/Global"):
 		var cls = Global.current_class
+		if cls == "":
+			if class_label: class_label.text = "Class: None"
+			if class_exp_bar:
+				class_exp_bar.max_value = 1
+				class_exp_bar.value = 0
+			if class_level_label:
+				class_level_label.text = "No Class"
+			return
+			
 		if class_label: class_label.text = "Class: " + cls.capitalize()
 		if class_exp_bar:
 			class_exp_bar.max_value = Global.class_max_exp[cls]

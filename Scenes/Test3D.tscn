@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://btq87naercs3v"]
 
 [ext_resource type="PackedScene" uid="uid://bcvt2bjn0ien8" path="res://Scenes/Entities/player.tscn" id="1_cvbyu"]
-[ext_resource type="PackedScene" path="res://Scenes/Entities/class_mentor.tscn" id="2_mentor"]
+[ext_resource type="PackedScene" uid="uid://d0jwui04ttby4" path="res://Scenes/Entities/class_mentor.tscn" id="2_mentor"]
+[ext_resource type="PackedScene" uid="uid://cmaaa2olqo8m3" path="res://Assets/Maps/Prontera/prontera.glb" id="3_urjuk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvbyu"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -22,20 +23,26 @@ glow_enabled = true
 environment = SubResource("Environment_urjuk")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=257500958]
+visible = false
 size = Vector3(100, 0.1, 100)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1288150365]
 transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 0, 0, 0)
-shadow_enabled = true
+directional_shadow_mode = 1
+directional_shadow_max_distance = 30.0
 
 [node name="Player" parent="." unique_id=241310391 instance=ExtResource("1_cvbyu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.164402, 0.047925927, -45.6087)
-
-[node name="ClassMentor" parent="." instance=ExtResource("2_mentor")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.0, 0.05, -45.6)
+transform = Transform3D(0.999998, -0.00092737563, -0.0017749032, 0.00092453905, 0.9999983, -0.0016046141, 0.0017763823, 0.0016029764, 0.99999714, 0.4442358, -0.17298165, 14.253019)
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1548398253]
-transform = Transform3D(1, 0, 0, 0, 0.57357645, 0.81915206, 0, -0.81915206, 0.57357645, 0, 1.4238243, 0.85702896)
+transform = Transform3D(1, 0, 0, 0, 0.57357645, 0.81915206, 0, -0.81915206, 0.57357645, 0, 12.235, 7.508)
 current = true
 fov = 55.0
 size = 20.0
+
+[node name="ClassMentor" parent="." unique_id=860663770 instance=ExtResource("2_mentor")]
+transform = Transform3D(-0.9992118, 0, 0.03969571, 0, 1, 0, -0.03969571, 0, -0.9992118, 0.299, -0.18, -0.687)
+dialogue_lines = Array[String](["Halo petualang!", "Jalan mana yang ingin kamu jalani?"])
+
+[node name="prontera" parent="." unique_id=2043884842 instance=ExtResource("3_urjuk")]
+transform = Transform3D(17.195, 0, 0, 0, 17.195, 0, 0, 0, 17.195, 0, 0, 0)

@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://ctgb841b5lojj"]
+
+[ext_resource type="Script" uid="uid://dhfwkyyxuymle" path="res://Scripts/arrow_projectile.gd" id="1_script"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_proj"]
+radius = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.8, 0.5, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
+albedo_color = Color(0.7, 0.7, 0.7, 1)
+
+[node name="ArrowProjectile" type="Area3D" unique_id=987931082]
+collision_layer = 0
+collision_mask = 5
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2112263963]
+shape = SubResource("SphereShape3D_proj")
+
+[node name="Visual" type="Node3D" parent="." unique_id=1802846444]
+
+[node name="Body" type="CSGBox3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.425, 0, 0)
+size = Vector3(0.85, 0.05, 0.05)
+material = SubResource("StandardMaterial3D_wood")
+
+[node name="Head" type="CSGBox3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0, 0)
+size = Vector3(0.11, 0.08, 0.11)
+material = SubResource("StandardMaterial3D_metal")
