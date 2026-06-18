@@ -1,0 +1,2303 @@
+# Blender 4.1.1 MTL File: 'prontera.blend'
+# www.blender.org
+
+newmtl GNDBlack
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 0.000000 0.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl pron-ch1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex0.png
+
+newmtl pron-ch2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex1.png
+
+newmtl pron-ch3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex2.png
+
+newmtl pron-ch4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex3.png
+
+newmtl pron-ch5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex4.png
+
+newmtl pron-ch6
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex5.png
+
+newmtl pron-ch7
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex6.png
+
+newmtl pron-ch8
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model3_Tex7.png
+
+newmtl pron-ch9
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model3_Tex8.png
+map_d textures/prontera_Model3_Tex8_A.png
+
+newmtl _suhao_surue_su_prt__suhaso_su01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex0.png
+
+newmtl _suhao_surue_su_prt__suhaso_su06
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex10.png
+
+newmtl _suhao_surue_su_prt__suhaso_su08
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex11.png
+
+newmtl _suhao_surue_su_prt__suhaso_su09
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex9.png
+
+newmtl _suhao_surue_su_prt__su_su03
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex5.png
+
+newmtl _suhao_surue_su_prt__su_su_su_su01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex4.png
+
+newmtl _suhao_surue_su_prt__su_su_su_su02
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex3.png
+
+newmtl _suhao_surue_su_prt__su_su_su_su03
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex7.png
+
+newmtl _suhao_surue_su_prt__su_su_su_su04
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex2.png
+
+newmtl _suhao_surue_su_prt__su_su_su_su05
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex6.png
+
+newmtl _suhao_surue_su_prt__su_su_su_su08
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex1.png
+
+newmtl _suwakohoshi_sunuu_myo-brd1_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model61_Tex0.png
+map_d textures/prontera_Model61_Tex0_A.png
+
+newmtl _suwakohoshi_sunuu_myo-brd1_2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model62_Tex0.png
+map_d textures/prontera_Model62_Tex0_A.png
+
+newmtl _suwakohoshi_sunuu_myo-msign1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model61_Tex1.png
+map_d textures/prontera_Model61_Tex1_A.png
+
+newmtl _suwakohoshi_sunuu_myo-msign1_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model62_Tex1.png
+map_d textures/prontera_Model62_Tex1_A.png
+
+newmtl _suwakohoshi_sunuu_pron-bench1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model32_Tex0.png
+map_d textures/prontera_Model32_Tex0_A.png
+
+newmtl _suwakohoshi_sunuu_pron-bench2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model32_Tex1.png
+map_d textures/prontera_Model32_Tex1_A.png
+
+newmtl _suwakohoshi_sunuu_pron-bench3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model32_Tex2.png
+map_d textures/prontera_Model32_Tex2_A.png
+
+newmtl _suwakohoshi_sunuu_pron-wag1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model25_Tex0.png
+map_d textures/prontera_Model25_Tex0_A.png
+
+newmtl _suwakohoshi_sunuu_pron-wag2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model25_Tex1.png
+map_d textures/prontera_Model25_Tex1_A.png
+
+newmtl _suwakohoshi_sunuu_pron-wag3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model25_Tex2.png
+map_d textures/prontera_Model25_Tex2_A.png
+
+newmtl _su_sunaku_su_su_su_su_HAND_01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model63_Tex1.png
+
+newmtl _su_sunaku_su_su_su_su_HAND_02
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model63_Tex0.png
+
+newmtl _su_sunaku_su_su_su_su_izld-br2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model64_Tex0.png
+map_d textures/prontera_Model64_Tex0_A.png
+
+newmtl _su_sunaku_su_su_su_su_izld-br3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model64_Tex2.png
+map_d textures/prontera_Model64_Tex2_A.png
+
+newmtl _su_sunaku_su_su_su_su_izld-br5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model64_Tex1.png
+map_d textures/prontera_Model64_Tex1_A.png
+
+newmtl _su_su_suhoshi_sunuu_box2-side
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model39_Tex0.png
+
+newmtl _su_su_suhoshi_sunuu_box2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model46_Tex0.png
+
+newmtl _su_su_suhoshi_sunuu_ch-side1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model57_Tex0.png
+
+newmtl _su_su_suhoshi_sunuu_ch-side2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model57_Tex1.png
+
+newmtl _su_su_suhoshi_sunuu_ch-side3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model57_Tex2.png
+
+newmtl _su_su_suhoshi_sunuu_cha2-side1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model58_Tex0.png
+
+newmtl _su_su_suhoshi_sunuu_cha2-side2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model58_Tex1.png
+
+newmtl _su_su_suhoshi_sunuu_cha2-side3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model58_Tex2.png
+
+newmtl _su_su_suhoshi_sunuu_d-w
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model43_Tex1.png
+
+newmtl _su_su_suhoshi_sunuu_drum-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model43_Tex0.png
+
+newmtl _su_su_suhoshi_sunuu_durm-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model21_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_STONE-UP
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model33_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_UP
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model33_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-r1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model9_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-r1_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model54_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-r1_2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model55_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-sw1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model9_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-sw1_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model54_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model9_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w1_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model55_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model9_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w2_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model55_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model9_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w3_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model54_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w3_2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model55_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model9_Tex3.png
+map_d textures/prontera_Model9_Tex3_A.png
+
+newmtl _su_su_su_su_suraka_su_al-hou-w4_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model55_Tex3.png
+map_d textures/prontera_Model55_Tex3_A.png
+
+newmtl _su_su_su_su_suraka_su_body
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_bri-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model50_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_bri-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model50_Tex1.png
+map_d textures/prontera_Model50_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_bri-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model50_Tex2.png
+map_d textures/prontera_Model50_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_d-side
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model33_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_dong-d-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex7.png
+
+newmtl _su_su_su_su_suraka_su_dong-d-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex6.png
+
+newmtl _su_su_su_su_suraka_su_dong-d-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex8.png
+
+newmtl _su_su_su_su_suraka_su_dong-d-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_dong-d-5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_dong-ho
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_dong-land
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_dong
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model44_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_gid..(side)
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model33_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_gid..down(side)
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model33_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_go-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model30_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_go-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model30_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_go-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model30_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_go-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model30_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_ho-roof-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model26_Tex7.png
+
+newmtl _su_su_su_su_suraka_su_ho-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model26_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model26_Tex1.png
+map_d textures/prontera_Model26_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model26_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model26_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model18_Tex8.png
+map_d textures/prontera_Model18_Tex8_A.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall-4_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model26_Tex9.png
+map_d textures/prontera_Model26_Tex9_A.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall-b-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model26_Tex6.png
+map_d textures/prontera_Model26_Tex6_A.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall-b
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model26_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_ho-wall
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model26_Tex0.png
+map_d textures/prontera_Model26_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_jop-f
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex11.png
+
+newmtl _su_su_su_su_suraka_su_jop-f_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_jop-f_2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex8.png
+
+newmtl _su_su_su_su_suraka_su_jop-f_3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex7.png
+
+newmtl _su_su_su_su_suraka_su_jop-f_4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model26_Tex8.png
+
+newmtl _su_su_su_su_suraka_su_jop-f_5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model30_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_jop-f_6
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex10.png
+
+newmtl _su_su_su_su_suraka_su_jop-open
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex9.png
+
+newmtl _su_su_su_su_suraka_su_jop-roof-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_jop-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_jop-wall-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_jop-wall-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_jop-wall-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model15_Tex6.png
+map_d textures/prontera_Model15_Tex6_A.png
+
+newmtl _su_su_su_su_suraka_su_jop-wall-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex7.png
+
+newmtl _su_su_su_su_suraka_su_jop-wall-5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex8.png
+
+newmtl _su_su_su_su_suraka_su_jop-wall
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model15_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron-bak1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model22_Tex0.png
+map_d textures/prontera_Model22_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-bak2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model22_Tex1.png
+map_d textures/prontera_Model22_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-bgate1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model28_Tex0.png
+map_d textures/prontera_Model28_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-bgate2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model28_Tex1.png
+map_d textures/prontera_Model28_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-bgate3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model36_Tex0.png
+map_d textures/prontera_Model36_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model0_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model48_Tex0.png
+map_d textures/prontera_Model48_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model48_Tex1.png
+map_d textures/prontera_Model48_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle2_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model49_Tex0.png
+map_d textures/prontera_Model49_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model48_Tex2.png
+map_d textures/prontera_Model48_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model48_Tex3.png
+map_d textures/prontera_Model48_Tex3_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model48_Tex4.png
+map_d textures/prontera_Model48_Tex4_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle6
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model48_Tex5.png
+map_d textures/prontera_Model48_Tex5_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle6_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model49_Tex1.png
+map_d textures/prontera_Model49_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-castle7
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model48_Tex6.png
+
+newmtl _su_su_su_su_suraka_su_pron-ctwr4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_prontera_Tex8.png
+
+newmtl _su_su_su_su_suraka_su_pron-ctwr4_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model27_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-fishm1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model47_Tex0.png
+map_d textures/prontera_Model47_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-fishm2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model47_Tex1.png
+map_d textures/prontera_Model47_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-flo-bloc
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model31_Tex0.png
+map_d textures/prontera_Model31_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-flo-bloc_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model35_Tex0.png
+map_d textures/prontera_Model35_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-flo-f
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model31_Tex2.png
+map_d textures/prontera_Model31_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-floshp1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model38_Tex0.png
+map_d textures/prontera_Model38_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-floshp2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model38_Tex1.png
+map_d textures/prontera_Model38_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-floshp3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model38_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron-floshp4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model38_Tex3.png
+map_d textures/prontera_Model38_Tex3_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-frm1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model23_Tex0.png
+map_d textures/prontera_Model23_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-frm2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model23_Tex1.png
+map_d textures/prontera_Model23_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-guar
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model4_Tex1.png
+map_d textures/prontera_Model4_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-guaw1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model4_Tex0.png
+map_d textures/prontera_Model4_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-house-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron-house-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_pron-house-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_pron-house-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex6.png
+
+newmtl _su_su_su_su_suraka_su_pron-house-5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex7.png
+
+newmtl _su_su_su_su_suraka_su_pron-house-roof-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_pron-house-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron-house
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model16_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-roof-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall-5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex6.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall-6
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex7.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall-7
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex8.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall-8
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex9.png
+
+newmtl _su_su_su_su_suraka_su_pron-ju-wall
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model42_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-lamp1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model34_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-lamp2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model34_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron-lamp3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model34_Tex2.png
+map_d textures/prontera_Model34_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-lib-r
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model14_Tex3.png
+map_d textures/prontera_Model14_Tex3_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-lib-w1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model14_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-lib-w2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model14_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron-lib-w3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model14_Tex2.png
+map_d textures/prontera_Model14_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-meatm1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model45_Tex0.png
+map_d textures/prontera_Model45_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-meatm2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model45_Tex1.png
+map_d textures/prontera_Model45_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-roof-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-roof-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex9.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-wall-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model8_Tex5.png
+map_d textures/prontera_Model8_Tex5_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-wall-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model8_Tex6.png
+map_d textures/prontera_Model8_Tex6_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-wall-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex7.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-wall-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex8.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-wall-5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex10.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai-wall
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_pron-nai
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model8_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model0_Tex0.png
+map_d textures/prontera_Model0_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model0_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-2_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model1_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model2_Tex1.png
+map_d textures/prontera_Model2_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model2_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-6
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model2_Tex3.png
+map_d textures/prontera_Model2_Tex3_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-7
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model2_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-8
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model2_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-9
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model2_Tex6.png
+map_d textures/prontera_Model2_Tex6_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model2_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron-newcastle
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model1_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron-trader1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model6_Tex2.png
+map_d textures/prontera_Model6_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-trader1_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model7_Tex1.png
+map_d textures/prontera_Model7_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-tradew1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model6_Tex0.png
+map_d textures/prontera_Model6_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-tradew1_1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model7_Tex0.png
+map_d textures/prontera_Model7_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-tradew2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model6_Tex1.png
+map_d textures/prontera_Model6_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-tradew3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model7_Tex2.png
+map_d textures/prontera_Model7_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_pron-zang
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model17_Tex0.png
+map_d textures/prontera_Model17_Tex0_A.png
+
+newmtl _su_su_su_su_suraka_su_pron_min02_01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model10_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron_min02_02
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model10_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron_min02_03
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model10_Tex2.png
+map_d textures/prontera_Model10_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_pron_min02_04
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model10_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_pron_min03_01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model11_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron_min03_02
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model11_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron_min03_03
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model11_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron_min04_01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model12_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_pron_min04_02
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model12_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_pron_min04_03
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model12_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_pron_min04_04
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model12_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_pron_min04_05
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model12_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_pron_min04_06
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model12_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_pronmok_01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model37_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_prontomb01_01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model41_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_rponsramp_08
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model33_Tex6.png
+map_d textures/prontera_Model33_Tex6_A.png
+
+newmtl _su_su_su_su_suraka_su_stone-down
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model33_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_tomb(side1)
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model40_Tex2.png
+
+newmtl _su_su_su_su_suraka_su_tomb(side2)
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model40_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_tomb(stone)up
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model40_Tex0.png
+
+newmtl _su_su_su_su_suraka_su_weed
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model31_Tex1.png
+
+newmtl _su_su_su_su_suraka_su_wepon-roof
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex6.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall-1
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model18_Tex1.png
+map_d textures/prontera_Model18_Tex1_A.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall-2
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model18_Tex2.png
+map_d textures/prontera_Model18_Tex2_A.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall-3
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex3.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall-4
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex4.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall-5
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex5.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall-6
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex9.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall-7
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex10.png
+
+newmtl _su_su_su_su_suraka_su_wepon-wall
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model18_Tex0.png
+
+newmtl _su_su_su_su_suraka_sako_su_h1-door
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model51_Tex0.png
+
+newmtl _su_su_su_su_suraka_sako_su_h2-door
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model53_Tex0.png
+
+newmtl _su_su_su_su_suraka_sako_su_h3-door
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model52_Tex0.png
+
+newmtl _su_su_su_su_su_su_suhai_su_mo-tree-block
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model20_Tex0.png
+
+newmtl _su_su_su_su_su_su_suhai_su_newtree_01
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd textures/prontera_Model19_Tex0.png
+
+newmtl _su_su_su_su_su_su_suhai_su_newtree_02
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd textures/prontera_Model19_Tex1.png
+map_d textures/prontera_Model19_Tex1_A.png
+
