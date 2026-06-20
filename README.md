@@ -6,10 +6,14 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
 
 ## To Do List
 - [ ] Menyelesaikan Migrasi 2D ke 3D all component and system
+  - [ ] Fix Skill Apprentice
+  - [ ] Fix Skill Scout
 - [ ] Melengkapi animasi model 3d
 - [ ] Implementasi animasi ke game
 
 ## Change Log
+
+### 20 Juni 2026
 - Memperbaiki arah rotasi dan *lunge* pada skill `Fatal Blow` agar mengikuti arah kursor mouse.
 - Memperbaiki lompatan pada skill `Implosion` dan menyempurnakan indikator lingkaran *pull* musuh dengan radius akurat 5 meter.
 - Menambahkan indikator visual merah transparan pada radius 5 meter untuk skill `Provoke`.
