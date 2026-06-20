@@ -160,6 +160,7 @@ func _get_hud_canvas() -> CanvasLayer:
 @onready var animation_tree = get_node_or_null("AnimationTree")
 @onready var state_machine = animation_tree.get("parameters/playback") if animation_tree else null
 @onready var sword_hitbox = get_node_or_null("SwordHitBox/CollisionShape3D")
+@onready var sword_hitbox_area = get_node_or_null("SwordHitBox") # Area3D — untuk rotasi
 @onready var nav_agent = get_node_or_null("NavigationAgent3D")
 @onready var animation_player = get_node_or_null("AnimationPlayer")
 @onready var sprite = get_node_or_null("Visuals") # To offset jump
@@ -310,6 +311,8 @@ func _ready():
 	add_child(status_manager)
 	status_manager.setup(self)
 	
+
+
 	# Strip X/Z translation from the dash animation to prevent the visual mesh from moving away from the root collision shape
 	var ap = get_node_or_null("Visuals/HeroModel/AnimationPlayer")
 	if ap:
@@ -1064,8 +1067,8 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 			if sprite:
 				var target_angle = atan2(-dir.z, dir.x)
 				sprite.rotation.y = target_angle - PI/2.0
-				if is_instance_valid(sword_hitbox):
-					sword_hitbox.rotation.y = sprite.rotation.y
+				if is_instance_valid(sword_hitbox_area):
+					sword_hitbox_area.rotation.y = sprite.rotation.y
 		else:
 			dir = last_direction
 		
@@ -1114,52 +1117,37 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		var slow_dur = dur if dur > 0 else 3.0
 		
 		get_tree().create_timer(0.15).timeout.connect(func():
-			var wave = Area3D.new()
-			var start_pos = p_pos + l_dir * 1.0 # Mulai dari 1 meter di depan karakter
+			var wave = Node3D.new() # Cukup Node3D biasa, tidak perlu Area3D
+			var start_pos = p_pos + l_dir * 1.0
 			wave.position = start_pos
-			wave.rotation.y = atan2(-l_dir.z, l_dir.x)
+			wave.rotation.y = atan2(-l_dir.z, l_dir.x) # Hadapkan sabit ke arah tembak
 			
-			var coll = CollisionShape3D.new()
-			var box = BoxShape3D.new()
-			box.size = Vector3(1.0, 0.5, 3.0) # Lebar 3 meter (sumbu Z karena orientasi X depan)
-			coll.shape = box
-			coll.position.x = 0.4 # Posisikan agak maju supaya pas dengan mesh sabit
-			wave.add_child(coll)
-			
-			# Bentuk Sabit menggunakan CSGPolygon3D yang diextrude
+			# Visual sabit
 			var visual = CSGPolygon3D.new()
 			var pts = PackedVector2Array()
-			pts.append(Vector2(0.0, -1.5)) # Bawah kiri (belakang)
-			pts.append(Vector2(0.6, 0.0))  # Tengah dalam (melengkung ke depan)
-			pts.append(Vector2(0.0, 1.5))  # Atas kiri (belakang)
-			pts.append(Vector2(0.4, 1.5))  # Atas kanan (depan)
-			pts.append(Vector2(1.0, 0.0))  # Tengah luar (lebih ke depan)
-			pts.append(Vector2(0.4, -1.5)) # Bawah kanan (depan)
+			pts.append(Vector2(0.0, -1.5))
+			pts.append(Vector2(0.4, -1.5))
+			pts.append(Vector2(1.0, 0.0))
+			pts.append(Vector2(0.4, 1.5))
+			pts.append(Vector2(0.0, 1.5))
+			pts.append(Vector2(0.6, 0.0))
 			visual.polygon = pts
 			visual.mode = CSGPolygon3D.MODE_DEPTH
 			visual.depth = 0.1
-			visual.rotation_degrees.x = -90 # Putar agar rata dengan tanah (XZ plane)
+			visual.rotation.x = deg_to_rad(-90)
+			visual.position.y = 0.5
 			
 			var mat = StandardMaterial3D.new()
-			mat.albedo_color = Color(0.1, 0.8, 0.9, 0.9) # Warna sabit energi biru es (cocok dengan efek slow)
+			mat.albedo_color = Color(0.1, 0.8, 0.9, 0.9)
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 			visual.material = mat
 			wave.add_child(visual)
 			
 			get_tree().current_scene.add_child(wave)
 			
-			var hit_enemies = {}
-			wave.body_entered.connect(func(body):
-				if body.is_in_group("Enemy") and not hit_enemies.has(body):
-					hit_enemies[body] = true
-					if body.has_method("take_damage"):
-						body.take_damage(p_attack + wave_dmg, p_pos)
-					if body.get("status_manager") != null:
-						body.status_manager.apply_effect("slow", slow_dur)
-			)
-			
-			# Bergerak 4 meter lagi kedepan sehingga total menempuh 5 meter dari player
+			# Gerakkan wave dengan tween
 			var dest = start_pos + l_dir * 4.0
 			var tween = get_tree().create_tween()
 			tween.set_parallel(true)
@@ -1167,7 +1155,35 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 			tween.tween_property(mat, "albedo_color:a", 0.0, 0.4).set_ease(Tween.EASE_IN)
 			tween.set_parallel(false)
 			tween.tween_callback(wave.queue_free)
+			
+			# Deteksi damage: cek jarak langsung ke semua musuh setiap frame
+			# Tidak butuh Area3D, collision layer, atau signal sama sekali
+			var hit_enemies = {}
+			var elapsed = 0.0
+			var hit_radius = 2.0 # Radius jangkauan sabit dalam meter
+			
+			while elapsed < 0.4:
+				await get_tree().physics_frame
+				elapsed += get_physics_process_delta_time()
+				# Cek validitas SEBELUM akses property — simpan posisi ke var lokal
+				if not is_instance_valid(wave):
+					break
+				var wave_pos = wave.global_position  # Snapshot posisi aman
+				var all_enemies = get_tree().get_nodes_in_group("Enemy")
+				for enemy in all_enemies:
+					if not is_instance_valid(enemy): continue
+					if hit_enemies.has(enemy): continue
+					var dist = wave_pos.distance_to(enemy.global_position)
+					if dist <= hit_radius:
+						hit_enemies[enemy] = true
+						if enemy.has_method("take_damage"):
+							enemy.take_damage(p_attack + wave_dmg, p_pos)
+						if enemy.get("status_manager") != null:
+							enemy.status_manager.apply_effect("slow", slow_dur)
 		)
+
+
+
 		
 
 		
@@ -1548,8 +1564,9 @@ func _process(delta):
 			sprite.rotation.y += 15.0 * delta # visual spin
 			if t % 15 == 0:
 				var enemies = get_tree().get_nodes_in_group("Enemy")
+				var sweep_radius = 3.0 # Radius putaran pedang
 				for e in enemies:
-					if e.global_position.distance_to(global_position) <= 0.4:
+					if e.global_position.distance_to(global_position) <= sweep_radius:
 						if e.has_method("take_damage"):
 							e.take_damage(physical_attack * 0.5, global_position)
 			if spin_timer <= 0:
@@ -1670,36 +1687,21 @@ func _physics_process(delta):
 			magic_charge_bar.queue_free()
 	
 
-	# Handle Double Tap Run
+	# Handle Run (Hold Shift + Direction)
 	var move_keys = ["move_up", "move_down", "move_left", "move_right"]
 	var is_any_move_pressed = false
 	for key in move_keys:
 		if Input.is_action_pressed(key):
 			is_any_move_pressed = true
 			
-		if Input.is_action_just_pressed(key):
-			var current_time = Time.get_ticks_msec() / 1000.0
-			if last_tap_key == key and current_time - last_tap_time < 0.3:
-				if not is_spinning:
-					is_running_from_double_tap = true
-			else:
-				last_tap_key = key
-				last_tap_time = current_time
-				
-	if not is_any_move_pressed or is_spinning:
+	if is_any_move_pressed and Input.is_action_pressed("run") and not is_spinning:
+		is_running_from_double_tap = true
+	else:
 		is_running_from_double_tap = false
 				
 	# --- DIRECTIONAL DASH ---
-	# Trigger 1: Shift baru ditekan (arah dari tombol yang sedang ditekan, atau arah hadap jika tidak ada)
-	# Trigger 2: Shift sudah ditekan lalu tombol arah baru ditekan -> dash ke arah itu
-	var direction_just_pressed = false
-	for _dk in ["move_up", "move_down", "move_left", "move_right"]:
-		if Input.is_action_just_pressed(_dk):
-			direction_just_pressed = true
-			break
-
-	var should_trigger_dash = Input.is_action_just_pressed("run") or \
-		(Input.is_action_pressed("run") and direction_just_pressed and not is_dashing)
+	# Trigger: Spasi ditekan (jump)
+	var should_trigger_dash = Input.is_action_just_pressed("jump")
 
 	if should_trigger_dash:
 		# is_casting diizinkan jika itu state aim/charge ranged (magic_charge_timer > 0)
@@ -1874,11 +1876,14 @@ func _physics_process(delta):
 		var physical_speed = current_speed
 		velocity = input_direction * physical_speed
 		
+		# Selalu simpan arah terakhir agar dash/attack yang dilakukan saat diam mengarah ke arah yang benar
+		last_direction = input_direction
+		
 		if sprite and not is_attacking and not is_casting and not is_spinning:
 			var target_angle = atan2(-input_direction.z, input_direction.x)
 			sprite.rotation.y = lerp_angle(sprite.rotation.y, target_angle - PI/2.0, 15.0 * delta)
-			if is_instance_valid(sword_hitbox):
-				sword_hitbox.rotation.y = sprite.rotation.y
+			if is_instance_valid(sword_hitbox_area):
+				sword_hitbox_area.rotation.y = sprite.rotation.y
 		
 		if state_machine and not is_attacking:
 			if is_running_from_double_tap and current_energy > 0:
@@ -1934,18 +1939,6 @@ func _physics_process(delta):
 							attack(true)
 		else:
 			spawn_floating_text("Masih Cooldown!", Color(0.4, 0.6, 1))
-		
-	if Input.is_action_just_pressed("jump") and not is_jumping and not is_attacking and not is_casting and jump_cooldown <= 0 and magic_charge_timer == 0.0:
-		if status_manager and not status_manager.can_move():
-			var effect_name = status_manager.get_movement_restriction_name()
-			spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
-		else:
-			is_jumping = true
-			jump_timer = jump_duration
-			jump_cooldown = 1.0
-			# Preserve velocity for the jump
-			if input_direction != Vector3.ZERO:
-				velocity = input_direction * current_speed
 
 func toggle_menu():
 	var existing_menu = get_tree().current_scene.get_node_or_null("CharacterMenu")
@@ -1973,8 +1966,8 @@ func _update_aim_to_mouse(instant: bool = false):
 				sprite.rotation.y = target_angle - PI/2.0
 			else:
 				sprite.rotation.y = lerp_angle(sprite.rotation.y, target_angle - PI/2.0, 15.0 * get_physics_process_delta_time())
-			if is_instance_valid(sword_hitbox):
-				sword_hitbox.rotation.y = sprite.rotation.y
+			if is_instance_valid(sword_hitbox_area):
+				sword_hitbox_area.rotation.y = sprite.rotation.y
 
 func attack(is_charge: bool):
 	if status_manager and not status_manager.can_attack(): return
@@ -2025,8 +2018,9 @@ func attack(is_charge: bool):
 		current_attack_damage = int(current_attack_damage * 2.0)
 		print("CRITICAL HIT!")
 		
+	# Bersihkan hit list SEKARANG agar siap, tapi hitbox baru aktif setelah delay
 	if sword_hitbox:
-		sword_hitbox.set_deferred("disabled", false)
+		sword_hitbox.set_deferred("disabled", true) # Pastikan mati dulu
 		var area = sword_hitbox.get_parent()
 		if area and area.has_method("clear_hit_list"):
 			area.clear_hit_list()
@@ -2048,12 +2042,20 @@ func attack(is_charge: bool):
 		state_machine.travel(target_state)
 		
 	var current_attack_duration = base_attack_duration / current_attack_speed
-	
+
+	# Bersihkan hit list agar musuh bisa kena hit lagi di serangan berikutnya
+	if sword_hitbox:
+		var area = sword_hitbox.get_parent()
+		if area and area.has_method("clear_hit_list"):
+			area.clear_hit_list()
+	# Timing aktif/nonaktif hitbox diatur lewat keyframe animasi (property: disabled)
+	# Tambahkan track "CollisionShape3D > disabled" di custom/attack AnimationPlayer
+
 	if is_charge and should_lunge:
 		charge_lunge_timer = current_attack_duration * 0.2
-		
+
 	if is_dual_wield:
-		# Double hit logic: Wait half duration, clear hit list so it hits again
+		# Double hit: bersihkan hit list di tengah animasi agar hit kedua bisa detect
 		await get_tree().create_timer(current_attack_duration / 2.0).timeout
 		if sword_hitbox:
 			var area = sword_hitbox.get_parent()
@@ -2062,7 +2064,7 @@ func attack(is_charge: bool):
 		await get_tree().create_timer(current_attack_duration / 2.0).timeout
 	else:
 		await get_tree().create_timer(current_attack_duration).timeout
-	
+
 	if is_attacking:
 		attack_finished()
 
@@ -2357,8 +2359,10 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_e
 	spawn_damage_text(final_damage, dmg_color)
 	
 	if knockback_source != Vector3.ZERO and not is_charge_attacking and not falcon_dive_active:
-		var knockback_direction = (global_position - knockback_source).normalized()
-		var knockback_strength = max(0.5, 2.5 - (stat_vit * 0.1))
+		var knockback_direction = (global_position - knockback_source)
+		knockback_direction.y = 0 # Jangan pantulkan ke atas/bawah agar tidak menembus tanah
+		knockback_direction = knockback_direction.normalized()
+		var knockback_strength = 40.0 # 40^2 / (2 * 800) = 1 meter
 		knockback_velocity = knockback_direction * knockback_strength
 		
 	modulate = Color(1, 0, 0)

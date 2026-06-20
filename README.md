@@ -15,3 +15,8 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
 - Menambahkan indikator visual merah transparan pada radius 5 meter untuk skill `Provoke`.
 - Memperbaiki bug visual sisa *render* 2D di mana icon pedang (atau *sprite* lainnya dari *Autoload* `ItemDB` & `SkillDB`) tidak sengaja melayang dan bocor ke UI versi 3D.
 - Memperbaiki bug pada `PlayerHUD` di mana teks dan overlay gelap *cooldown* masih tertinggal di slot yang telah dikosongkan (contoh: mengganti *class* saat skill masih dalam masa *cooldown*).
+- Menghapus pembuatan hitbox secara *hardcoded* dan memperbaiki hierarki rotasi `SwordHitBox` (menggunakan rotasi `Area3D` alih-alih `CollisionShape3D`) agar serangan bisa mengenai musuh dari segala arah.
+- Memindahkan timing aktivasi hitbox pedang sepenuhnya ke dalam *AnimationPlayer* agar lebih responsif dan akurat terhadap visual ayunan pedang.
+- Mengubah mekanisme deteksi damage pada skill `Impact Wave` (sabit energi) dari sinyal `body_entered` ke pengecekan radius metrik secara *real-time*, sekaligus memperbaiki rotasi visual sabit agar sesuai arah tembak.
+- Merombak kontrol input pemain: Lari sekarang menggunakan *Hold Shift* + Arah (menggantikan *double tap*), *Dash* sekarang terikat pada tombol Spasi (sekaligus menghapus mekanik lompat), dan akurasi arah *dash* saat diam telah diperbaiki.
+- Menyesuaikan *hitbox radius* pada skill `Cyclone Sweep` ke skala 3D (dari 0.4m menjadi 3.0m), mengembalikan fungsionalitas *damage* dan efek pantulan (*knockback*) secara penuh.
