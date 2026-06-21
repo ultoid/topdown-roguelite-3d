@@ -307,7 +307,7 @@ func update_visuals():
 	if is_player:
 		if has_effect("blind"):
 			if not is_instance_valid(blind_overlay_node):
-				var BlindScript = load("res://Scripts/blind_overlay.gd")
+				var BlindScript = load("res://Scripts/Player/blind_overlay.gd")
 				if BlindScript:
 					blind_overlay_node = BlindScript.new()
 					target.get_tree().current_scene.add_child(blind_overlay_node)

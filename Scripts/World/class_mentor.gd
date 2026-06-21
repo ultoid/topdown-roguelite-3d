@@ -1,4 +1,4 @@
-extends "res://Scripts/npc.gd"
+extends "res://Scripts/World/npc.gd"
 
 func _ready():
 	# Timpa perilaku NPC dasar

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bxjtp36h3cxcg"]
 
-[ext_resource type="Script" uid="uid://c23y1nggdw64h" path="res://Scripts/boss_enemy.gd" id="1_boss"]
+[ext_resource type="Script" uid="uid://c23y1nggdw64h" path="res://Scripts/Enemy/boss_enemy.gd" id="1_boss"]
 [ext_resource type="Texture2D" uid="uid://bl0oep1rxur4h" path="res://Assets/enemy.png" id="2_boss"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boss1"]

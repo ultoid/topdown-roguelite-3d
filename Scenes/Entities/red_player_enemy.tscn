@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d1pc87wkevgk"]
 
-[ext_resource type="Script" uid="uid://08xnc7lwrdx0" path="res://Scripts/red_enemy.gd" id="1_4gyqm"]
+[ext_resource type="Script" uid="uid://08xnc7lwrdx0" path="res://Scripts/Enemy/red_enemy.gd" id="1_4gyqm"]
 [ext_resource type="PackedScene" path="res://Scenes/Entities/HeroModel.tscn" id="2_hero"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_enemy"]

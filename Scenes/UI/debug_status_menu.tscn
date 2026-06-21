@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://debug_status_menu"]
 
-[ext_resource type="Script" path="res://Scripts/debug_status_menu.gd" id="1_dsm"]
+[ext_resource type="Script" path="res://Scripts/UI/debug_status_menu.gd" id="1_dsm"]
 
 [node name="DebugStatusMenu" type="CanvasLayer"]
 process_mode = 3

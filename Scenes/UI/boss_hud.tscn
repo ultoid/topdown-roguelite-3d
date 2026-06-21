@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://csovqxvf15o0y"]
 
-[ext_resource type="Script" path="res://Scripts/boss_hud.gd" id="1_37p78"]
+[ext_resource type="Script" path="res://Scripts/UI/boss_hud.gd" id="1_37p78"]
 
 [node name="BossHUD" type="CanvasLayer" unique_id=576414922]
 script = ExtResource("1_37p78")

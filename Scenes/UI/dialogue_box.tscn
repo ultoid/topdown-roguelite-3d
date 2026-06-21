@@ -1,7 +1,7 @@
 [gd_scene load_steps=2 format=3 uid="uid://dialogue_box_123"]
 
 [ext_resource type="Theme" uid="uid://wooden_theme_123" path="res://Assets/Themes/wooden_theme.tres" id="1_theme_wood"]
-[ext_resource type="Script" path="res://Scripts/dialogue_box.gd" id="1_dlog"]
+[ext_resource type="Script" path="res://Scripts/UI/dialogue_box.gd" id="1_dlog"]
 
 [node name="DialogueBox" type="CanvasLayer"]
 theme = ExtResource("1_theme_wood")

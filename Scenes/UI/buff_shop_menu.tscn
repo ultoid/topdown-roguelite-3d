@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://buff_shop_scene"]
 
-[ext_resource type="Script" path="res://Scripts/buff_shop_menu.gd" id="1_buff"]
+[ext_resource type="Script" path="res://Scripts/UI/buff_shop_menu.gd" id="1_buff"]
 
 [node name="BuffShopMenu" type="CanvasLayer"]
 process_mode = 3

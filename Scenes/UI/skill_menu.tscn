@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c06ixc6u5uaiu"]
 
-[ext_resource type="Script" uid="uid://bi1v2rrr80tmr" path="res://Scripts/skill_menu.gd" id="1"]
+[ext_resource type="Script" uid="uid://bi1v2rrr80tmr" path="res://Scripts/UI/skill_menu.gd" id="1"]
 
 [node name="SkillMenu" type="CanvasLayer" unique_id=667765192]
 process_mode = 3

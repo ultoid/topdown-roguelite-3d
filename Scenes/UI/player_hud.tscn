@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bku6i0ukmcat8"]
 
-[ext_resource type="Script" uid="uid://bo7ppse18q2nt" path="res://Scripts/player_hud.gd" id="1_37p78"]
+[ext_resource type="Script" uid="uid://bo7ppse18q2nt" path="res://Scripts/Player/player_hud.gd" id="1_37p78"]
 [ext_resource type="PackedScene" uid="uid://b8y1o0gq5k2q3" path="res://Scenes/UI/status_icon_manager.tscn" id="2_sim"]
 
 [node name="PlayerHUD" type="CanvasLayer" unique_id=576414922]

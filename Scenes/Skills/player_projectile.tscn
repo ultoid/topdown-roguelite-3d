@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://Scripts/player_projectile.gd" id="1_proj"]
+[ext_resource type="Script" path="res://Scripts/Player/player_projectile.gd" id="1_proj"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_proj"]
 radius = 0.4

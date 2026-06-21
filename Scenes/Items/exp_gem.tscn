@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://Scripts/collectible.gd" id="1_exp"]
+[ext_resource type="Script" path="res://Scripts/World/collectible.gd" id="1_exp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_exp"]
 size = Vector3(1, 1, 1)

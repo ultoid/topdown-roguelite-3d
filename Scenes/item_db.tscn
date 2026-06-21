@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cxdbitemdb001"]
 
-[ext_resource type="Script" uid="uid://dcmheegxgo0i" path="res://Scripts/item_db.gd" id="1_itemdb"]
+[ext_resource type="Script" uid="uid://dcmheegxgo0i" path="res://Scripts/System/item_db.gd" id="1_itemdb"]
 [ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_icon"]
-[ext_resource type="Script" uid="uid://b3c0fwmvh160j" path="res://Scripts/item_data.gd" id="3_itemdata"]
+[ext_resource type="Script" uid="uid://b3c0fwmvh160j" path="res://Scripts/System/item_data.gd" id="3_itemdata"]
 
 [node name="ItemDB" type="Node" unique_id=570287595]
 script = ExtResource("1_itemdb")

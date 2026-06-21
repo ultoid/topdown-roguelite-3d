@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cbt5y2l3gcb7h"]
 
-[ext_resource type="Script" uid="uid://biu4pugcrbob5" path="res://Scripts/skill_db.gd" id="1_skilldb"]
+[ext_resource type="Script" uid="uid://biu4pugcrbob5" path="res://Scripts/Skills/skill_db.gd" id="1_skilldb"]
 [ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_icon"]
-[ext_resource type="Script" uid="uid://dgcbgjpi4jhby" path="res://Scripts/skill_data.gd" id="3_skilldata"]
+[ext_resource type="Script" uid="uid://dgcbgjpi4jhby" path="res://Scripts/Skills/skill_data.gd" id="3_skilldata"]
 
 [node name="SkillDB" type="Node" unique_id=1678488479]
 script = ExtResource("1_skilldb")

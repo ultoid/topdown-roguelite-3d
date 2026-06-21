@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b3xucdqvgdxxm"]
 
-[ext_resource type="Script" path="res://Scripts/ranged_enemy.gd" id="1_4gyqm"]
+[ext_resource type="Script" path="res://Scripts/Enemy/ranged_enemy.gd" id="1_4gyqm"]
 [ext_resource type="Texture2D" uid="uid://bl0oep1rxur4h" path="res://Assets/enemy.png" id="2_qi2p4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iifgy"]

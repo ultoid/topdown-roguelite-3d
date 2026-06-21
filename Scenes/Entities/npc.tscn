@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://or78ktjmua4q"]
 
-[ext_resource type="Script" uid="uid://dk71t3g14ob14" path="res://Scripts/npc.gd" id="1_npc"]
+[ext_resource type="Script" uid="uid://dk71t3g14ob14" path="res://Scripts/World/npc.gd" id="1_npc"]
 [ext_resource type="Texture2D" uid="uid://0r3th46w7qkj" path="res://Assets/player.png" id="2_xxsvc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_solid"]
