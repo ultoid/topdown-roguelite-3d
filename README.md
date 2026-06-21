@@ -6,7 +6,7 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
 
 ## To Do List
 - [ ] Menyelesaikan Migrasi 2D ke 3D all component and system
-  - [ ] Fix Skill Apprentice
+  - [x] Fix Skill Apprentice
   - [ ] Fix Skill Scout
 - [ ] Melengkapi animasi model 3d
 - [ ] Implementasi animasi ke game
