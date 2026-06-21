@@ -80,7 +80,46 @@ var CRAFTING_RECIPES: Dictionary = {}
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_inputs()
-	_debug_setup_fighter()
+	_debug_setup_apprentice()
+
+func _debug_setup_apprentice():
+	# === DEBUG: Apprentice Level 40 ===
+	level = 40
+	current_exp = 0
+	max_exp = 9999
+	
+	# Set class to Apprentice level 40
+	current_class = "apprentice"
+	class_levels["apprentice"] = 40
+	class_exp["apprentice"] = 0
+	class_max_exp["apprentice"] = 9999
+	class_skill_points["apprentice"] = 0
+	
+	# Unlock ALL apprentice skills at their actual max level (only the ones in the skill tree)
+	unlocked_skills = {
+		"heal": 10,
+		"spell_mastery": 10,
+		"elemental_mastery": 10,
+		"aqua_blast": 5,
+		"fire_bolt": 5,
+		"sonic_boom": 5,
+		"seismic_fissure": 1,
+		"holy_veil": 1,
+		"hex": 10,
+		"soul_drain": 1,
+	}
+	
+	# Assign apprentice skills to quick slots (8 slots)
+	quick_skills = [
+		"heal",
+		"aqua_blast",
+		"fire_bolt",
+		"sonic_boom",
+		"seismic_fissure",
+		"holy_veil",
+		"hex",
+		"soul_drain",
+	]
 
 func _debug_setup_fighter():
 	# === DEBUG: Fighter Level 40 ===

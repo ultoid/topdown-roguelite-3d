@@ -1,6 +1,7 @@
 extends Area3D
 
 var hit_enemies = []
+var is_active: bool = true
 
 func _ready():
 	# Memastikan Area3D ini bisa mendeteksi tabrakan
@@ -11,10 +12,12 @@ func clear_hit_list():
 	hit_enemies.clear()
 
 func _on_body_entered(body):
+	if not is_active: return
 	if body.is_in_group("Enemy"):
 		_deal_damage(body)
 
 func _on_area_entered(area):
+	if not is_active: return
 	var parent = area.get_parent()
 	if parent and parent.is_in_group("Enemy"):
 		_deal_damage(parent)
