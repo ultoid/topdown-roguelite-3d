@@ -80,7 +80,7 @@ var CRAFTING_RECIPES: Dictionary = {}
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_inputs()
-	_debug_setup_apprentice()
+	_debug_setup_scout()
 
 func _debug_setup_apprentice():
 	# === DEBUG: Apprentice Level 40 ===
@@ -159,6 +159,48 @@ func _debug_setup_fighter():
 		"provoke",
 		"implosion",
 		"",
+	]
+
+func _debug_setup_scout():
+	# === DEBUG: Scout Level 40 ===
+	level = 40
+	current_exp = 0
+	max_exp = 9999
+	
+	# Set class to Scout level 40
+	current_class = "scout"
+	class_levels["scout"] = 40
+	class_exp["scout"] = 0
+	class_max_exp["scout"] = 9999
+	class_skill_points["scout"] = 0
+	
+	# Unlock ALL scout skills at their actual max level
+	unlocked_skills = {
+		"dodge": 1,
+		"evasion_mastery": 10,
+		"agility_mastery": 10,
+		"hunters_mark": 5,
+		"falcon_dive": 5,
+		"arrow_rain": 5,
+		"haste": 5,
+		"mirage_strike": 5,
+		"poison_weapon": 5,
+		"shadow_walk": 5,
+		"thief": 1,
+		"phantom_strike": 5,
+		"phantom_flurry": 1,
+	}
+	
+	# Assign scout skills to quick slots (8 slots)
+	quick_skills = [
+		"falcon_dive",
+		"arrow_rain",
+		"hunters_mark",
+		"phantom_strike",
+		"shadow_walk",
+		"mirage_strike",
+		"poison_weapon",
+		"haste",
 	]
 
 func _process(delta):
