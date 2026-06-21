@@ -97,6 +97,14 @@ func _physics_process(delta):
 					if status_manager: move_speed *= status_manager.get_speed_multiplier()
 					if not is_chasing: move_speed *= 0.8
 					velocity = direction * move_speed
+					# Hadapkan musuh ke arah gerakan (sumbu Y saja agar tidak miring)
+					var look_target = global_position + Vector3(direction.x, 0, direction.z)
+					if look_target.distance_to(global_position) > 0.01:
+						var visuals = get_node_or_null("Visuals")
+						if visuals:
+							visuals.look_at(look_target, Vector3.UP)
+							visuals.rotation.x = 0
+							visuals.rotation.z = 0
 				else:
 					velocity = Vector3.ZERO
 				
@@ -119,10 +127,6 @@ func _physics_process(delta):
 				var atk_speed_mult = 1.0
 				if status_manager: atk_speed_mult = status_manager.get_attack_speed_multiplier()
 				attack_cooldown = 1.0 / atk_speed_mult # Jeda antar gigitan
-				
-				# Efek menerkam mundur setelah menggigit
-				var bounce_dir = (global_position - player.global_position).normalized()
-				knockback_velocity = bounce_dir * 120.0
 
 func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elements: Array = ["netral"]):
 	var multiplier = 1.0
@@ -156,9 +160,11 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elem
 	# Kalkulasi efek pantulan (Knockback)
 	if knockback_source != Vector3.ZERO:
 		# Cari arah menjauh dari sumber serangan
-		var knockback_direction = (global_position - knockback_source).normalized()
-		# Terapkan daya pantul (angka 200 bisa diubah sesuai selera)
-		knockback_velocity = knockback_direction * 2.0
+		var knockback_direction = (global_position - knockback_source)
+		knockback_direction.y = 0 # Jangan pantulkan ke atas/bawah
+		knockback_direction = knockback_direction.normalized()
+		# Terapkan daya pantul (3.464 m/s dengan friksi 6.0 menghasilkan tepat 1 meter)
+		knockback_velocity = knockback_direction * 3.464
 	
 	# Efek visual sederhana (berkedip)
 	modulate = Color(1, 0, 0) # Warna merah

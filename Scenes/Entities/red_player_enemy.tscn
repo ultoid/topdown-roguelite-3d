@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://d1pc87wkevgk"]
+
+[ext_resource type="Script" uid="uid://08xnc7lwrdx0" path="res://Scripts/red_enemy.gd" id="1_4gyqm"]
+[ext_resource type="PackedScene" path="res://Scenes/Entities/HeroModel.tscn" id="2_hero"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_enemy"]
+radius = 0.38427734
+height = 2.3729491
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hurtbox"]
+radius = 0.8354492
+height = 2.403418
+
+[node name="red_player_enemy" type="CharacterBody3D" unique_id=612183066]
+script = ExtResource("1_4gyqm")
+max_health = 100
+damage = 15
+chase_radius = 10.0
+
+[node name="Visuals" type="Node3D" parent="." unique_id=1197783884]
+transform = Transform3D(5.667, 0, 0, 0, 5.667, 0, 0, 0, 5.667, 0, 0, 0)
+
+[node name="HeroModel" parent="Visuals" unique_id=2070164346 instance=ExtResource("2_hero")]
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=667609792]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1864746, 0)
+shape = SubResource("CapsuleShape3D_enemy")
+disabled = true
+
+[node name="Hurtbox" type="Area3D" parent="." unique_id=2026798835]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" unique_id=1227541942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1517091, 0)
+shape = SubResource("CapsuleShape3D_hurtbox")
+
+[connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]

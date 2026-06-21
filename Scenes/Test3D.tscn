@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bcvt2bjn0ien8" path="res://Scenes/Entities/player.tscn" id="1_cvbyu"]
 [ext_resource type="PackedScene" uid="uid://d0jwui04ttby4" path="res://Scenes/Entities/class_mentor.tscn" id="2_mentor"]
 [ext_resource type="PackedScene" uid="uid://cmaaa2olqo8m3" path="res://Assets/Maps/Prontera/prontera.glb" id="3_urjuk"]
+[ext_resource type="PackedScene" uid="uid://d1pc87wkevgk" path="res://Scenes/Entities/red_player_enemy.tscn" id="red_enemy_res"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvbyu"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -32,7 +33,7 @@ directional_shadow_mode = 1
 directional_shadow_max_distance = 30.0
 
 [node name="Player" parent="." unique_id=241310391 instance=ExtResource("1_cvbyu")]
-transform = Transform3D(0.999998, -0.00092737563, -0.0017749032, 0.00092453905, 0.9999983, -0.0016046141, 0.0017763823, 0.0016029764, 0.99999714, 0.4442358, -0.17298165, 14.253019)
+transform = Transform3D(0.999998, -0.00092737563, -0.0017749032, 0.00092453905, 0.9999983, -0.0016046141, 0.0017763823, 0.0016029764, 0.99999714, 0.4442358, -0.17298165, 27.6565)
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1548398253]
 transform = Transform3D(1, 0, 0, 0, 0.57357645, 0.81915206, 0, -0.81915206, 0.57357645, 0, 12.235, 7.508)
@@ -46,3 +47,38 @@ dialogue_lines = Array[String](["Halo petualang!", "Jalan mana yang ingin kamu j
 
 [node name="prontera" parent="." unique_id=2043884842 instance=ExtResource("3_urjuk")]
 transform = Transform3D(17.195, 0, 0, 0, 17.195, 0, 0, 0, 17.195, 0, 0, 0)
+
+[node name="RedPlayerEnemy" parent="." unique_id=733080257 instance=ExtResource("red_enemy_res")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.44, 0, 12.5)
+speed = 3.0
+max_health = 9999999
+damage = 1
+
+[node name="RedPlayerEnemy4" parent="." unique_id=612183066 instance=ExtResource("red_enemy_res")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4640777, 0, 12.5)
+speed = 2.0
+max_health = 9999999
+damage = 1
+
+[node name="RedPlayerEnemy5" parent="." unique_id=1464891217 instance=ExtResource("red_enemy_res")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5323544, 0, 12.5)
+speed = 3.0
+max_health = 9999999
+damage = 1
+
+[node name="RedPlayerEnemy3" parent="." unique_id=1721909877 instance=ExtResource("red_enemy_res")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.710031, 0, 12.5)
+speed = 3.0
+max_health = 9999999
+damage = 1
+
+[node name="RedPlayerEnemy6" parent="." unique_id=10039343 instance=ExtResource("red_enemy_res")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.0956283, 0, 12.5)
+speed = 3.0
+max_health = 9999999
+damage = 1
+
+[node name="RedPlayerEnemy2" parent="." unique_id=1191913724 instance=ExtResource("red_enemy_res")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.44, 0, 19.162493)
+speed = 3.0
+damage = 1

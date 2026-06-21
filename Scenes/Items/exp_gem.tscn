@@ -2,19 +2,22 @@
 
 [ext_resource type="Script" path="res://Scripts/collectible.gd" id="1_exp"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_exp"]
-size = Vector2(6, 6)
+[sub_resource type="BoxShape3D" id="BoxShape3D_exp"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_exp"]
+albedo_color = Color(0, 0.5, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_exp"]
+material = SubResource("StandardMaterial3D_exp")
+size = Vector3(0.2, 0.2, 0.2)
 
 [node name="ExpGem" type="Area3D"]
 script = ExtResource("1_exp")
 type = 1
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = -3.0
-offset_top = -3.0
-offset_right = 3.0
-offset_bottom = 3.0
-color = Color(0, 0.5, 1, 1)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_exp")
 
-[node name="CollisionShape2D" type="CollisionShape3D" parent="."]
-shape = SubResource("RectangleShape2D_exp")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_exp")
