@@ -13,6 +13,7 @@ var radius: float = 0.6
 
 func _ready():
 	body_entered.connect(_on_body_entered)
+	area_entered.connect(_on_area_entered)
 	if is_circle:
 		var visual = CSGCylinder3D.new()
 		visual.radius = radius
@@ -62,15 +63,27 @@ func _physics_process(delta):
 		dot_timer -= delta
 		if dot_timer <= 0:
 			dot_timer = 0.5 # Tick rate DoT
-			var overlapping = get_overlapping_bodies()
-			for body in overlapping:
+			var all_targets = []
+			all_targets.append_array(get_overlapping_bodies())
+			for area in get_overlapping_areas():
+				if area.get_parent() != null and not area.get_parent() in all_targets:
+					all_targets.append(area.get_parent())
+					
+			for body in all_targets:
 				if body.is_in_group("Enemy"):
 					if body.has_method("take_damage"):
 						body.take_damage(int(damage * 0.5), Vector3.ZERO, elements)
 					if body.get("status_manager") != null:
-						body.status_manager.apply_effect("slow", 1.0) # Refresh slow
+						body.status_manager.apply_effect("slow", 1.0, {"amount": 0.1}) # Refresh slow (90% slow)
 
 func _on_body_entered(body):
+	_apply_damage(body)
+
+func _on_area_entered(area):
+	var parent = area.get_parent()
+	if parent: _apply_damage(parent)
+
+func _apply_damage(body):
 	if body.is_in_group("Enemy"):
 		if not is_circle:
 			if not body in hit_enemies:
@@ -78,10 +91,10 @@ func _on_body_entered(body):
 				if body.has_method("take_damage"):
 					body.take_damage(damage, Vector3.ZERO, elements)
 				if body.get("status_manager") != null:
-					body.status_manager.apply_effect("slow", slow_duration)
+					body.status_manager.apply_effect("slow", slow_duration, {"amount": 0.1})
 		else:
 			if body.get("status_manager") != null:
-				body.status_manager.apply_effect("slow", 1.0)
+				body.status_manager.apply_effect("slow", 1.0, {"amount": 0.1})
 
 func _shake_camera(intensity: float, duration: float):
 	var players = get_tree().get_nodes_in_group("Player")

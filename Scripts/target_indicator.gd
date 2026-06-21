@@ -35,10 +35,6 @@ func _ready():
 
 func _process(_delta):
 	if indicator_type == "single" and not frozen:
-		var mouse_pos = Vector3.ZERO
-		if is_instance_valid(player_node) and player_node.has_method("get_mouse_3d_pos"):
-			mouse_pos = player_node.get_mouse_3d_pos()
-			
 		var closest_enemy = null
 		var closest_dist = 99999.0
 		var enemies = get_tree().get_nodes_in_group("Enemy")
@@ -46,18 +42,21 @@ func _process(_delta):
 			if not e.get("is_dead"):
 				# check if within max_range of player
 				var p_pos = player_node.global_position if is_instance_valid(player_node) else global_position
-				if e.global_position.distance_to(p_pos) <= max_range:
-					var dist = e.global_position.distance_to(mouse_pos)
-					if dist < closest_dist and dist < 100.0: # 100px snap radius
-						closest_dist = dist
-						closest_enemy = e
+				var dist = e.global_position.distance_to(p_pos)
+				if dist <= max_range and dist < closest_dist:
+					closest_dist = dist
+					closest_enemy = e
 		single_target_node = closest_enemy
 		
 	_update_mesh()
 
 func start_casting(target_global: Vector3):
 	frozen = true
-	global_target_pos = target_global
+	
+	if indicator_type == "single" and is_instance_valid(single_target_node):
+		global_target_pos = single_target_node.global_position
+	else:
+		global_target_pos = target_global
 	
 	# Efek kedip
 	var tween = create_tween()
@@ -88,21 +87,25 @@ func _update_mesh():
 		_draw_arc(mouse_pos, aoe_radius, 32, Color(1.0, 0.2, 0.2, 0.9 * modulate.a))
 		
 	elif indicator_type == "single":
-		if frozen:
-			var loc = to_local(global_target_pos)
-			_draw_circle_filled(loc, 30.0, 16, Color(1.0, 0.8, 0.0, 0.6 * modulate.a))
-			_draw_arc(loc, 30.0, 32, Color(1.0, 0.8, 0.0, 1.0 * modulate.a))
-		elif is_instance_valid(single_target_node):
+		if is_instance_valid(single_target_node):
 			var loc = to_local(single_target_node.global_position)
-			_draw_circle_filled(loc, 30.0, 16, Color(1.0, 0.2, 0.2, 0.5 * modulate.a))
-			_draw_arc(loc, 30.0, 32, Color(1.0, 0.2, 0.2, 0.9 * modulate.a))
+			if frozen:
+				_draw_circle_filled(loc, 1.0, 16, Color(1.0, 0.2, 0.2, 0.6 * modulate.a))
+				_draw_arc(loc, 1.0, 32, Color(1.0, 0.2, 0.2, 1.0 * modulate.a))
+			else:
+				_draw_circle_filled(loc, 1.0, 16, Color(1.0, 0.2, 0.2, 0.5 * modulate.a))
+				_draw_arc(loc, 1.0, 32, Color(1.0, 0.2, 0.2, 0.9 * modulate.a))
+		elif frozen:
+			var loc = to_local(global_target_pos)
+			_draw_circle_filled(loc, 1.0, 16, Color(1.0, 0.2, 0.2, 0.6 * modulate.a))
+			_draw_arc(loc, 1.0, 32, Color(1.0, 0.2, 0.2, 1.0 * modulate.a))
 		else:
 			var mouse_pos = Vector3.ZERO
 			if is_instance_valid(player_node) and player_node.has_method("get_mouse_3d_pos"):
 				mouse_pos = to_local(player_node.get_mouse_3d_pos())
 			if mouse_pos.length() > max_range:
 				mouse_pos = mouse_pos.normalized() * max_range
-			_draw_arc(mouse_pos, 20.0, 16, Color(0.5, 0.5, 0.5, 0.5 * modulate.a))
+			_draw_arc(mouse_pos, 1.0, 16, Color(0.5, 0.5, 0.5, 0.5 * modulate.a))
 			
 	elif indicator_type == "cone":
 		var mouse_pos = Vector3.ZERO
@@ -113,7 +116,7 @@ func _update_mesh():
 				mouse_pos = to_local(player_node.get_mouse_3d_pos())
 				
 		var dir = mouse_pos.normalized()
-		var angle = atan2(-dir.z, dir.x)
+		var angle = atan2(dir.z, dir.x)
 		var fov = deg_to_rad(45.0) # 45 degree cone
 		
 		# Cone filled

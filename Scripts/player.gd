@@ -416,7 +416,13 @@ func _unhandled_input(event):
 						var data = skill_db.get_skill(current_targeting_skill)
 						var cur_lvl_r = Global.unlocked_skills.get(current_targeting_skill, 0) if get_node_or_null("/root/Global") else 0
 						var max_range = skill_db.get_skill_val(current_targeting_skill, "ranges", cur_lvl_r)
-						if max_range <= 0: max_range = 2.5  # Fallback
+						if max_range <= 0: 
+							if current_targeting_skill == "fatal_smash": max_range = 10.0
+							elif current_targeting_skill == "fire_bolt": max_range = 8.0
+							elif current_targeting_skill == "sonic_boom": max_range = 5.0
+							elif current_targeting_skill == "seismic_fissure": max_range = 10.0
+							elif current_targeting_skill == "hex": max_range = 5.0
+							else: max_range = 2.5
 						if global_position.distance_to(target_pos) > max_range:
 							target_pos = global_position + (target_pos - global_position).normalized() * max_range
 				
@@ -665,8 +671,17 @@ func _use_skill(slot_index: int):
 			var custom_range = skill_db.get_skill_val(skill_id, "ranges", cur_lvl)
 			var custom_aoe = skill_db.get_skill_val(skill_id, "aoe_radiuses", cur_lvl)
 			
-			if custom_range == 0: custom_range = 10.0 if skill_id == "fatal_smash" else 2.5
-			if custom_aoe == 0: custom_aoe = 3.0 if skill_id == "fatal_smash" else 0.6
+			if custom_range == 0: 
+				if skill_id == "fatal_smash": custom_range = 10.0
+				elif skill_id == "fire_bolt": custom_range = 8.0
+				elif skill_id == "sonic_boom": custom_range = 5.0
+				elif skill_id == "seismic_fissure": custom_range = 10.0
+				elif skill_id == "hex": custom_range = 5.0
+				else: custom_range = 2.5
+			if custom_aoe == 0: 
+				if skill_id == "fatal_smash": custom_aoe = 3.0
+				elif skill_id == "seismic_fissure": custom_aoe = 2.0
+				else: custom_aoe = 0.6
 			
 			target_indicator_node.max_range = float(custom_range)
 			target_indicator_node.aoe_radius = float(custom_aoe)
@@ -711,7 +726,16 @@ func _start_cast_skill(skill_id: String, data: Dictionary, cost: int, t_pos: Vec
 	base_cast_time = float(base_cast_time) * (1.0 - cdr_pct)
 	var final_cast_time = base_cast_time / casting_speed
 	
-	var max_range = data.get("range", 2.5)
+	var max_range = 0.0
+	if skill_db:
+		var cur_lvl = Global.unlocked_skills.get(skill_id, 0)
+		max_range = skill_db.get_skill_val(skill_id, "ranges", cur_lvl)
+	if max_range == 0.0:
+		if skill_id == "fatal_smash": max_range = 10.0
+		elif skill_id == "fire_bolt": max_range = 8.0
+		elif skill_id == "sonic_boom": max_range = 5.0
+		elif skill_id == "seismic_fissure": max_range = 10.0
+		else: max_range = 2.5
 	
 	# Membuat Casting Bar
 	cast_bar = ProgressBar.new()
@@ -857,44 +881,17 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		
 	elif skill_id == "aqua_blast":
 		var final_dmg = int((magic_attack * 1.5 + dmg) * el_multiplier)
-		var elements = ["air"]
 		
-		var circle = CSGCylinder3D.new()
-		circle.radius = 0.1
-		circle.height = 0.05
-		circle.sides = 32
+		var wave = Area3D.new()
+		wave.position = global_position
+		wave.set_script(load("res://Scripts/aqua_blast_wave.gd"))
+		wave.damage = final_dmg
+		wave.max_radius = 5.0
+		wave.duration = 0.5
 		
-		var mat = StandardMaterial3D.new()
-		mat.albedo_color = Color(0.1, 0.4, 0.8, 0.4)
-		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-		circle.material = mat
-		
-		var visual_node = Node3D.new()
-		visual_node.position = global_position
-		visual_node.add_child(circle)
-		get_tree().current_scene.add_child(visual_node)
-		
-		var visual_tween = get_tree().create_tween()
-		visual_tween.set_parallel(true)
-		visual_tween.tween_property(circle, "radius", float(aoe), 0.3).set_ease(Tween.EASE_OUT)
-		is_animating_skill = true
-		visual_tween.chain().tween_property(mat, "albedo_color:a", 0.0, 0.2)
-		visual_tween.tween_callback(func():
-			is_animating_skill = false
-			if is_instance_valid(visual_node):
-				visual_node.queue_free()
-		)
+		get_tree().current_scene.add_child(wave)
 		
 		apply_camera_shake(10.0, 0.2)
-		
-		var enemies = get_tree().get_nodes_in_group("Enemy")
-		for e in enemies:
-			if e.global_position.distance_to(global_position) <= aoe:
-				if e.has_method("take_damage"):
-					e.take_damage(final_dmg, global_position, elements)
-					if e.get("velocity") != null:
-						var push_dir = (e.global_position - global_position).normalized()
-						e.velocity = push_dir * 800
 
 	elif skill_id == "fire_bolt":
 		var fb_scene = load("res://Scenes/Skills/fire_bolt.tscn")
@@ -903,14 +900,18 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 			fb.position = global_position
 			fb.damage = int((magic_attack * 2.0 + dmg) * el_multiplier)
 			fb.elements = ["api"]
+			
 			var target = null
-			var min_dist = 9999.0
-			var enemies = get_tree().get_nodes_in_group("Enemy")
-			for e in enemies:
-				var dist = e.global_position.distance_to(global_position)
-				if dist < min_dist and dist <= 300.0:
-					target = e
-					min_dist = dist
+			if indicator and indicator.get("single_target_node") != null:
+				target = indicator.single_target_node
+			else:
+				var min_dist = 9999.0
+				var enemies = get_tree().get_nodes_in_group("Enemy")
+				for e in enemies:
+					var dist = e.global_position.distance_to(global_position)
+					if dist < min_dist and dist <= 8.0:
+						target = e
+						min_dist = dist
 			fb.target = target
 			get_tree().current_scene.add_child(fb)
 
@@ -922,18 +923,21 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		cone.position = global_position
 		var l_dir = (t_pos - global_position).normalized() if t_pos != Vector3.ZERO else last_direction
 		if l_dir == Vector3.ZERO: l_dir = Vector3.BACK
-		cone.rotation.y = atan2(-l_dir.z, l_dir.x)
 		
+		var angle = atan2(l_dir.x, l_dir.z) # Correct 3D Y rotation
+		cone.rotation.y = angle
+		
+		# 5m range, 45 degree cone (half width = 5 * tan(22.5) = ~2.07)
 		var poly = CollisionPolygon3D.new()
-		poly.polygon = PackedVector2Array([Vector2.ZERO, Vector2(1.5, -0.8), Vector2(1.5, 0.8)])
-		poly.rotation.x = deg_to_rad(-90)
+		poly.polygon = PackedVector2Array([Vector2.ZERO, Vector2(-2.07, 5.0), Vector2(2.07, 5.0)])
+		poly.rotation.x = deg_to_rad(90) # Lay flat
 		cone.add_child(poly)
 		
 		var visual = CSGPolygon3D.new()
 		visual.polygon = poly.polygon
-		visual.rotation.x = deg_to_rad(-90)
+		visual.rotation.x = deg_to_rad(90)
 		var mat = StandardMaterial3D.new()
-		mat.albedo_color = Color(0.8, 1.0, 0.8, 0.5)
+		mat.albedo_color = Color(1.0, 1.0, 1.0, 0.5) # White
 		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		visual.material = mat
 		cone.add_child(visual)
@@ -944,13 +948,19 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		tween.tween_callback(cone.queue_free)
 		
 		var hit_enemies = {}
-		cone.body_entered.connect(func(body):
+		
+		var apply_dmg = func(body):
 			if body.is_in_group("Enemy") and not hit_enemies.has(body):
 				hit_enemies[body] = true
 				if body.has_method("take_damage"):
 					body.take_damage(final_dmg, global_position, elements)
 				if body.get("status_manager") != null:
-					body.status_manager.apply_effect("paralyze", dur)
+					var stun_dur = clamp(2.0 + (cur_lvl - 1) * 1.0, 2.0, 5.0)
+					body.status_manager.apply_effect("stun", stun_dur)
+					
+		cone.body_entered.connect(apply_dmg)
+		cone.area_entered.connect(func(area):
+			if area.get_parent(): apply_dmg.call(area.get_parent())
 		)
 
 	elif skill_id == "seismic_fissure":
@@ -961,19 +971,22 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		if l_dir == Vector3.ZERO: l_dir = Vector3.BACK
 		var p_pos = global_position
 		
-		for i in range(5):
+		var dist = global_position.distance_to(t_pos)
+		var steps = max(1, int(dist)) # 1 meter per square
+		
+		for i in range(steps):
 			get_tree().create_timer(i * 0.1).timeout.connect(func():
 				var hazard = load("res://Scenes/Skills/seismic_fissure_hazard.tscn")
 				if hazard and get_tree().current_scene:
 					var h = hazard.instantiate()
-					h.position = p_pos + l_dir * (0.3 + i * 0.4)
+					h.position = p_pos + l_dir * (1.0 + i * 1.0)
 					h.damage = final_dmg
 					h.elements = elements
 					h.slow_duration = dur
 					get_tree().current_scene.add_child(h)
 			)
 			
-		get_tree().create_timer(0.5).timeout.connect(func():
+		get_tree().create_timer(steps * 0.1).timeout.connect(func():
 			var hazard = load("res://Scenes/Skills/seismic_fissure_hazard.tscn")
 			if hazard and get_tree().current_scene:
 				var h = hazard.instantiate()
@@ -982,7 +995,7 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 				h.elements = elements
 				h.slow_duration = dur
 				h.is_circle = true
-				h.radius = aoe if aoe > 0 else 0.6
+				h.radius = 2.0
 				get_tree().current_scene.add_child(h)
 		)
 
@@ -993,11 +1006,35 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 		spawn_floating_text("Holy Veil!", Color(1.0, 1.0, 0.5))
 
 	elif skill_id == "hex":
+		var target = null
 		if is_instance_valid(indicator) and is_instance_valid(indicator.get("single_target_node")):
-			var target = indicator.get("single_target_node")
-			if target.get("status_manager") != null:
-				target.status_manager.apply_effect("curse", dur)
+			target = indicator.get("single_target_node")
+		else:
+			var enemies = get_tree().get_nodes_in_group("Enemy")
+			var min_dist = 999.0
+			for e in enemies:
+				if not e.is_dead:
+					var dist = global_position.distance_to(e.global_position)
+					if dist < 5.0 and dist < min_dist:
+						target = e
+						min_dist = dist
+		
+		if target and target.get("status_manager") != null:
+			target.status_manager.apply_effect("curse", dur)
 			spawn_floating_text("Hex!", Color(0.3, 0.0, 0.4))
+			# Visual effect on target
+			var vis = CSGSphere3D.new()
+			vis.radius = 0.5
+			var mat = StandardMaterial3D.new()
+			mat.albedo_color = Color(0.4, 0.0, 0.6, 0.8)
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			vis.material = mat
+			target.add_child(vis)
+			vis.position = Vector3(0, 1.0, 0)
+			var tw = get_tree().create_tween()
+			tw.tween_property(vis, "scale", Vector3(1.5, 1.5, 1.5), 0.3)
+			tw.tween_property(mat, "albedo_color:a", 0.0, 0.3)
+			tw.tween_callback(vis.queue_free)
 
 	elif skill_id == "soul_drain":
 		var final_dmg = int((magic_attack * 1.5 + dmg) * el_multiplier)
@@ -1012,11 +1049,30 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 				if e.has_method("take_damage"):
 					e.take_damage(final_dmg, global_position, elements)
 				total_heal += final_dmg
+				
+				# Drain Visual Projectile
+				var soul = CSGSphere3D.new()
+				soul.radius = 0.2
+				var mat = StandardMaterial3D.new()
+				mat.albedo_color = Color(0.6, 0.0, 0.8, 0.8)
+				mat.emission_enabled = true
+				mat.emission = Color(0.6, 0.0, 0.8)
+				mat.emission_energy = 2.0
+				soul.material = mat
+				get_tree().current_scene.add_child(soul)
+				soul.global_position = e.global_position + Vector3(0, 1.0, 0)
+				
+				var tw = get_tree().create_tween()
+				tw.tween_property(soul, "global_position", global_position + Vector3(0, 1.0, 0), 0.4).set_ease(Tween.EASE_IN_OUT)
+				tw.tween_callback(soul.queue_free)
 		
 		if drained:
 			if total_heal > 0:
-				restore_hp(total_heal)
-			spawn_floating_text("Soul Drain!", Color(0.5, 0.0, 0.5))
+				# Tunda heal agar sinkron dengan sampainya visual
+				get_tree().create_timer(0.4).timeout.connect(func():
+					restore_hp(total_heal)
+					spawn_floating_text("Soul Drain!", Color(0.5, 0.0, 0.5))
+				)
 		
 	elif skill_id == "fireball":
 		var fb_scene = load("res://Scenes/Skills/fireball.tscn")
@@ -1530,29 +1586,9 @@ func _process(delta):
 		
 		if has_holy_veil:
 			modulate = Color(1.5, 1.5, 0.8)
-			var hv_vis = get_node_or_null("HolyVeilVisual")
-			if not hv_vis:
-				hv_vis = Node3D.new()
-				hv_vis.name = "HolyVeilVisual"
-				add_child(hv_vis)
-				for i in range(5):
-					var p = CSGPolygon3D.new()
-					var cp = []
-					for j in range(8):
-						var a = j * (PI * 2.0 / 8.0)
-						cp.append(Vector3(cos(a), 0, sin(a)) * 3.5)
-					p.polygon = PackedVector3Array(cp)
-					p.color = Color(1.5, 1.5, 0.8, 0.8)
-					var a = i * (PI * 2.0 / 5.0)
-					p.position = Vector3(cos(a), 0, sin(a)) * 25.0
-					hv_vis.add_child(p)
-			else:
-				hv_vis.rotation += delta * 4.0
 		elif has_endure:
-			if get_node_or_null("HolyVeilVisual"): get_node("HolyVeilVisual").queue_free()
 			modulate = Color(1.0, 0.8, 0.2)
 		else:
-			if get_node_or_null("HolyVeilVisual"): get_node("HolyVeilVisual").queue_free()
 			if modulate == Color(1.0, 0.8, 0.2) or modulate == Color(1.5, 1.5, 0.8):
 				modulate = Color(1, 1, 1)
 		
@@ -1856,6 +1892,7 @@ func _physics_process(delta):
 	var anim_stride = 1.6
 	
 	if is_casting:
+		_update_aim_to_mouse(false)
 		current_speed = walk_speed * 0.5
 	elif is_running_from_double_tap and current_energy > 0:
 		current_speed = run_speed

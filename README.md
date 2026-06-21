@@ -32,3 +32,12 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
 - Mengubah sistem gerak saat merapal serangan: Pemain kini dikunci agar hanya bisa berjalan (tidak bisa lari) ketika sedang menahan *charge attack*, sekaligus membuat arah pandang karakter secara *real-time* terus membidik mengikuti kursor *mouse*.
 - Membedakan jangkauan maksimal tembakan (*lifetime* proyektil) berdasarkan senjata: Staff dipatok pada jangkauan maksimal 15 meter, sementara Rod 10 meter.
 - Menyesuaikan daya pantul (*knockback*) proyektil dasar dari Staff dan Rod menjadi lebih halus pada jarak tepat 0.5 meter.
+- Memigrasi jajaran *Skill* khusus kelas **Apprentice** ke mekanika 3D secara komprehensif:
+  - **Aqua Blast**: Ombak 3D radial kini menyapu musuh hingga ujung maksimal 5 meter tanpa *knockback* sisa berlebih, disertai efek *slow* pengurangan kecepatan 50%.
+  - **Fire Bolt**: Menghadirkan proyektil bola api merah tajam berkecepatan 100km/jam dengan kemampuan kejar (*homing*), serta dilengkapi auto-lock pada radius 8 meter jika *cast* meleset.
+  - **Sonic Boom**: Membenahi kalkulasi rotasi area kerucut 3D sejauh 5 meter agar presisi dengan bidikan *mouse*.
+  - **Seismic Fissure**: Rentetan retakan memanjang dinamis kini akurat sejauh maksimal 10 meter, ledakan ujung diperbesar menjadi diameter 4m, dan menjebak musuh di dalamnya dengan efek *slow* berat hingga 90%.
+  - **Holy Veil**: Menghapus render 2D usang penyebab *crash*, digantikan oleh silinder energi keemasan yang melindungi karakter.
+  - **Hex**: Diselaraskan dengan sistem bidik jarak dekat Fire Bolt (5 meter) dan dihiasi dengan partikel ledakan kecil ungu penanda kutukan.
+  - **Soul Drain**: Merombak eksekusi penyerapan HP; kini bola proyektil energi roh melesat keluar dari musuh yang terkutuk dan masuk ke tubuh pemain secara dramatis.
+- Memoles sistem *Casting* dan Indikator: Lingkaran target merah sekarang dengan mulus terus menempel di kaki musuh bergerak selama jeda *casting*. Arah tatapan tubuh karakter juga kini interaktif mengikuti rotasi kursor *mouse* secara seketika meski tubuhnya terkunci saat sedang merapal mantra.

@@ -15,6 +15,7 @@ var confused_timer: float = 0.0
 
 var blind_overlay_node: Node = null
 var curse_icon_node: Node3D = null
+var holy_veil_node: CSGCylinder3D = null
 
 func setup(t: Node3D):
 	target = t
@@ -169,6 +170,10 @@ func get_speed_multiplier() -> float:
 	var mult = 1.0
 	if has_effect("chill"): mult *= 0.6
 	if has_effect("burn"): mult *= 0.8
+	if has_effect("slow"):
+		var amt = active_effects["slow"].get("amount", 0.0)
+		if amt <= 0.0: amt = 0.5 # Default 50% slow
+		mult *= amt
 	return mult
 
 func get_attack_speed_multiplier() -> float:
@@ -282,6 +287,22 @@ func update_visuals():
 		if is_instance_valid(curse_icon_node):
 			curse_icon_node.queue_free()
 			curse_icon_node = null
+
+	if has_effect("holy_veil"):
+		if not is_instance_valid(holy_veil_node):
+			holy_veil_node = CSGCylinder3D.new()
+			holy_veil_node.radius = 0.8
+			holy_veil_node.height = 2.0
+			holy_veil_node.position = Vector3(0, 1.0, 0)
+			var mat = StandardMaterial3D.new()
+			mat.albedo_color = Color(1.0, 1.0, 0.2, 0.4) # Yellow transparent
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			holy_veil_node.material = mat
+			target.add_child(holy_veil_node)
+	else:
+		if is_instance_valid(holy_veil_node):
+			holy_veil_node.queue_free()
+			holy_veil_node = null
 
 	if is_player:
 		if has_effect("blind"):
