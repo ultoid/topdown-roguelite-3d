@@ -1,33 +1,33 @@
 [gd_scene format=3 uid="uid://bxjtp36h3cxcg"]
 
-[ext_resource type="Script" uid="uid://c23y1nggdw64h" path="res://Scripts/Enemy/boss_enemy.gd" id="1_boss"]
-[ext_resource type="Texture2D" uid="uid://bl0oep1rxur4h" path="res://Assets/enemy.png" id="2_boss"]
+[ext_resource type="Script" path="res://Scripts/Enemy/boss_enemy.gd" id="1_boss"]
+[ext_resource type="PackedScene" uid="uid://cwxo62rhd3kl0" path="res://Assets/Models/Enemy/enemy.glb" id="2_p0l6d"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_boss1"]
-size = Vector2(22, 36)
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_enemy"]
+radius = 0.768554
+height = 4.7459
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_boss2"]
-size = Vector2(28, 43)
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hurtbox"]
+radius = 0.938476
+height = 3.46884
 
-[node name="BossEnemy" type="CharacterBody3D" unique_id=1134540342]
-y_sort_enabled = true
+[node name="BossEnemy" type="CharacterBody3D"]
 script = ExtResource("1_boss")
 
-[node name="Sprite2D" type="Sprite3D" parent="." unique_id=362020591]
-modulate = Color(1, 0.5, 0.5, 1)
-scale = Vector2(2, 2)
-texture = ExtResource("2_boss")
-hframes = 6
-vframes = 10
+[node name="Visuals" type="Node3D" parent="."]
+transform = Transform3D(11.334, 0, 0, 0, 11.334, 0, 0, 0, 11.334, 0, 0, 0)
 
-[node name="CollisionShape2D" type="CollisionShape3D" parent="." unique_id=1955268166]
-position = Vector2(1, -4)
-shape = SubResource("RectangleShape2D_boss1")
+[node name="enemy_model" parent="Visuals" instance=ExtResource("2_p0l6d")]
+transform = Transform3D(1.84224, 0, 0, 0, 1.84224, 0, 0, 0, 1.84224, 0.001, 0, 0)
 
-[node name="Hurtbox" type="Area3D" parent="." unique_id=113946060]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.37294, 0)
+shape = SubResource("CapsuleShape3D_enemy")
 
-[node name="CollisionShape2D" type="CollisionShape3D" parent="Hurtbox" unique_id=845098697]
-position = Vector2(1, -3.5)
-shape = SubResource("RectangleShape2D_boss2")
+[node name="Hurtbox" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63442, 0)
+shape = SubResource("CapsuleShape3D_hurtbox")
 
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]

@@ -27,14 +27,17 @@ func _ready():
 	status_manager.setup(self)
 	current_health = max_health
 	
+	var sub_viewport = SubViewport.new()
+	sub_viewport.size = Vector2(100, 15)
+	sub_viewport.transparent_bg = true
+	sub_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	
 	hp_bar = ProgressBar.new()
 	hp_bar.min_value = 0
 	hp_bar.max_value = max_health
 	hp_bar.value = current_health
 	hp_bar.show_percentage = false
-	hp_bar.custom_minimum_size = Vector2(30, 4)
-	hp_bar.position = Vector2(-15, -25) # Di atas kepala
-	hp_bar.z_index = 50
+	hp_bar.custom_minimum_size = Vector2(100, 15)
 	
 	var sb_bg = StyleBoxFlat.new()
 	sb_bg.bg_color = Color(0.1, 0.1, 0.1, 0.8)
@@ -43,7 +46,16 @@ func _ready():
 	hp_bar.add_theme_stylebox_override("background", sb_bg)
 	hp_bar.add_theme_stylebox_override("fill", sb_fg)
 	
-	add_child(hp_bar)
+	sub_viewport.add_child(hp_bar)
+	add_child(sub_viewport)
+	
+	var hp_sprite = Sprite3D.new()
+	hp_sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	hp_sprite.position = Vector3(0, 1.5, 0) # Di atas kepala
+	hp_sprite.texture = sub_viewport.get_texture()
+	hp_sprite.no_depth_test = true
+	hp_sprite.pixel_size = 0.01
+	add_child(hp_sprite)
 	spawn_position = global_position # Ingat posisi lahir/awal
 	# Masukkan musuh ke grup Enemy agar bisa diserang pedang
 	add_to_group("Enemy")
@@ -113,15 +125,7 @@ func _physics_process(delta):
 				
 	move_and_slide()
 	
-	if is_instance_valid(hp_bar):
-		var cam = get_viewport().get_camera_3d()
-		if cam and cam.is_position_in_frustum(global_position):
-			hp_bar.visible = true
-			var screen_pos = cam.unproject_position(global_position + Vector3(0, 1.5, 0))
-			hp_bar.position = screen_pos + Vector2(-15, -25)
-		else:
-			hp_bar.visible = false
-	
+	# HP bar Sprite3D otomatis mengikuti posisi parent (musuh)
 	# Logika Serangan Berkelanjutan
 	if attack_cooldown <= 0.0:
 		if not status_manager or status_manager.can_attack():

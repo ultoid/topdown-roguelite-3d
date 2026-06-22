@@ -1,24 +1,28 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxdbitemdb002"]
 
-[ext_resource type="Script" uid="uid://xyz1" path="res://Scripts/LifeSkills/resource_node.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://bkfgay7cvtnmh" path="res://Assets/item_icon.png" id="2_icon"]
+[ext_resource type="Script" path="res://Scripts/LifeSkills/resource_node.gd" id="1_script"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(32, 32)
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(1, 1, 1)
 
-[node name="ResourceNode" type="Area3D"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ore"]
+albedo_color = Color(0.3, 0.3, 0.3, 1)
+metallic = 0.8
+roughness = 0.4
+
+[node name="ResourceNode" type="Area3D" groups=["Interactable"]]
 script = ExtResource("1_script")
 
-[node name="Sprite2D" type="Sprite3D" parent="."]
-texture = ExtResource("2_icon")
-hframes = 16
-vframes = 137
-frame = 837
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+material = SubResource("StandardMaterial3D_ore")
 
-[node name="CollisionShape2D" type="CollisionShape3D" parent="."]
-shape = SubResource("RectangleShape2D_1")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_1")
 
-[node name="StaticBody2D" type="StaticBody3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape3D" parent="StaticBody2D"]
-shape = SubResource("RectangleShape2D_1")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_1")

@@ -134,20 +134,17 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 		p.spawn_floating_text("Shadow Walk", Color(0.3, 0.3, 0.3))
 		
 	elif skill_id == "thief":
-		if not p.status_manager.has_effect("shadow_walk"):
-			p.spawn_floating_text("Harus Stealth!", Color(1, 0.5, 0))
-		else:
-			var enemies = p.get_tree().get_nodes_in_group("Enemy")
-			var stole = false
-			for e in enemies:
-				if p.global_position.distance_to(e.global_position) < 0.5:
-					if e.has_method("drop_loot"):
-						e.drop_loot()
-					p.spawn_floating_text("Item Stolen!", Color(1, 1, 0))
-					stole = true
-					break
-			if not stole:
-				p.spawn_floating_text("Missed!", Color(0.5, 0.5, 0.5))
+		var enemies = p.get_tree().get_nodes_in_group("Enemy")
+		var stole = false
+		for e in enemies:
+			if p.global_position.distance_to(e.global_position) <= 2.0:
+				if e.has_method("drop_loot"):
+					e.drop_loot()
+				p.spawn_floating_text("Item Stolen!", Color(1, 1, 0))
+				stole = true
+				break
+		if not stole:
+			p.spawn_floating_text("Missed! (Target > 2m)", Color(0.5, 0.5, 0.5))
 				
 	elif skill_id == "phantom_strike":
 		var target_enemy = indicator.single_target_node if is_instance_valid(indicator) and indicator.get("single_target_node") != null and is_instance_valid(indicator.single_target_node) else null

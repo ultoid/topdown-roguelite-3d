@@ -11,6 +11,7 @@ var modulate: Color = Color(1, 1, 1) # Dummy for 3D
 @export var ideal_max_dist: float = 2.0
 
 var current_health: int
+var hp_bar: ProgressBar = null
 var knockback_velocity: Vector3 = Vector3.ZERO
 
 var is_chasing: bool = false
@@ -29,6 +30,37 @@ func _ready():
 	add_child(status_manager)
 	status_manager.setup(self)
 	current_health = max_health
+	
+	var sub_viewport = SubViewport.new()
+	sub_viewport.size = Vector2(100, 15)
+	sub_viewport.transparent_bg = true
+	sub_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	
+	hp_bar = ProgressBar.new()
+	hp_bar.min_value = 0
+	hp_bar.max_value = max_health
+	hp_bar.value = current_health
+	hp_bar.show_percentage = false
+	hp_bar.custom_minimum_size = Vector2(100, 15)
+	
+	var sb_bg = StyleBoxFlat.new()
+	sb_bg.bg_color = Color(0.1, 0.1, 0.1, 0.8)
+	var sb_fg = StyleBoxFlat.new()
+	sb_fg.bg_color = Color(0.8, 0.1, 0.1, 1.0)
+	hp_bar.add_theme_stylebox_override("background", sb_bg)
+	hp_bar.add_theme_stylebox_override("fill", sb_fg)
+	
+	sub_viewport.add_child(hp_bar)
+	add_child(sub_viewport)
+	
+	var hp_sprite = Sprite3D.new()
+	hp_sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	hp_sprite.position = Vector3(0, 1.5, 0) # Di atas kepala
+	hp_sprite.texture = sub_viewport.get_texture()
+	hp_sprite.no_depth_test = true
+	hp_sprite.pixel_size = 0.01
+	add_child(hp_sprite)
+	
 	spawn_position = global_position
 	add_to_group("Enemy")
 	
@@ -139,6 +171,8 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elem
 		status_manager.handle_damage_taken()
 		
 	current_health -= final_damage
+	if is_instance_valid(hp_bar):
+		hp_bar.value = current_health
 	
 	var dmg_color = Color(1, 1, 1) # Putih
 	if multiplier > 1.0: dmg_color = Color(1, 0.2, 0.2) # Merah (Super Effective)

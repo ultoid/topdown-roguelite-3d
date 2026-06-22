@@ -9,6 +9,11 @@
 [ext_resource type="Animation" uid="uid://cq1kab7j5lfgf" path="res://Assets/Models/run.res" id="5_2hnfo"]
 [ext_resource type="Texture2D" uid="uid://dogptjo6tymc1" path="res://Assets/3DS - Pokemon Omega Ruby _ Alpha Sapphire - Trainer Classes - Bird Keeper/boy_1.png" id="5_85s6f"]
 [ext_resource type="Animation" uid="uid://d30l5mroyacm4" path="res://Assets/Models/walk.res" id="6_y18yp"]
+[ext_resource type="Script" path="res://Scripts/Player/player_stats.gd" id="99_stats"]
+[ext_resource type="Script" path="res://Scripts/Player/player_combat.gd" id="99_combat"]
+[ext_resource type="Script" path="res://Scripts/Player/player_life_skill.gd" id="99_lifeskill"]
+[ext_resource type="Script" path="res://Scripts/Player/player_ui_manager.gd" id="99_uimanager"]
+
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y18yp"]
 size = Vector3(1.1383743, 1.447998, 0.85266113)
@@ -29,7 +34,7 @@ animation = &"custom/run"
 animation = &"custom/walk"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yqx0t"]
-advance_mode = 0
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ofjh0"]
 advance_mode = 0
@@ -553,6 +558,18 @@ _data = {
 
 [node name="Player" type="CharacterBody3D" unique_id=241310391]
 script = ExtResource("1_i3pqv")
+
+[node name="PlayerStats" type="Node" parent="." unique_id=990001]
+script = ExtResource("99_stats")
+
+[node name="PlayerCombat" type="Node" parent="." unique_id=990002]
+script = ExtResource("99_combat")
+
+[node name="PlayerLifeSkill" type="Node" parent="." unique_id=990003]
+script = ExtResource("99_lifeskill")
+
+[node name="PlayerUIManager" type="Node" parent="." unique_id=990004]
+script = ExtResource("99_uimanager")
 
 [node name="SwordHitBox" type="Area3D" parent="." unique_id=1600738519]
 script = ExtResource("3_sweqy")

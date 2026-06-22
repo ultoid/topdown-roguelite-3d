@@ -1,40 +1,39 @@
 [gd_scene format=3 uid="uid://or78ktjmua4q"]
 
-[ext_resource type="Script" uid="uid://dk71t3g14ob14" path="res://Scripts/World/npc.gd" id="1_npc"]
-[ext_resource type="Texture2D" uid="uid://0r3th46w7qkj" path="res://Assets/player.png" id="2_xxsvc"]
+[ext_resource type="Script" path="res://Scripts/World/npc.gd" id="1_npc"]
+[ext_resource type="PackedScene" uid="uid://cwxo62rhd3kl0" path="res://Assets/Models/Enemy/enemy.glb" id="2_p0l6d"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_solid"]
-size = Vector2(13, 18)
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_npc"]
+radius = 0.384277
+height = 2.37295
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_npc"]
-radius = 22.0
+[sub_resource type="SphereShape3D" id="SphereShape3D_npc"]
+radius = 2.0
 
-[node name="NPC" type="StaticBody3D" unique_id=477499049]
+[node name="NPC" type="StaticBody3D"]
 script = ExtResource("1_npc")
 
-[node name="Sprite2D" type="Sprite3D" parent="." unique_id=2095500675]
-modulate = Color(0.5, 1, 0.5, 1)
-texture = ExtResource("2_xxsvc")
-hframes = 6
-vframes = 10
+[node name="Visuals" type="Node3D" parent="."]
+transform = Transform3D(5.667, 0, 0, 0, 5.667, 0, 0, 0, 5.667, 0, 0, 0)
 
-[node name="SolidCollision" type="CollisionShape3D" parent="." unique_id=1911752350]
-position = Vector2(-0.5, -2)
-shape = SubResource("RectangleShape2D_solid")
+[node name="npc_model" parent="Visuals" instance=ExtResource("2_p0l6d")]
+transform = Transform3D(1.84224, 0, 0, 0, 1.84224, 0, 0, 0, 1.84224, 0.001, 0, 0)
 
-[node name="InteractArea" type="Area3D" parent="." unique_id=1738724831]
+[node name="SolidCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18647, 0)
+shape = SubResource("CapsuleShape3D_npc")
 
-[node name="CollisionShape2D" type="CollisionShape3D" parent="InteractArea" unique_id=839265827]
-shape = SubResource("CircleShape2D_npc")
+[node name="InteractArea" type="Area3D" parent="."]
 
-[node name="Label" type="Label" parent="." unique_id=800346141]
-offset_left = -200.0
-offset_top = -25.0
-offset_right = 200.0
-offset_bottom = -5.0
-scale = Vector2(0.5, 0.5)
-pivot_offset = Vector2(200, 10)
-theme_override_font_sizes/font_size = 12
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18647, 0)
+shape = SubResource("SphereShape3D_npc")
+
+[node name="Label" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
+pixel_size = 0.005
+billboard = 1
+no_depth_test = true
 text = "NPC"
-horizontal_alignment = 1
-vertical_alignment = 1
+font_size = 64
+outline_size = 12

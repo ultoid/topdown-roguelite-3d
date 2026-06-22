@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://cxxcwf77ptnv6"]
+[gd_scene format=3 uid="uid://b65a12mjbm3cq"]
 
 [ext_resource type="Texture2D" uid="uid://dfo25vna0md1g" path="res://Assets/Tiles/Path_Tile.png" id="1_r8pf4"]
-[ext_resource type="PackedScene" uid="uid://sy2ukho5e1yy" path="res://Scenes/Entities/player.tscn" id="2_d45j6"]
+[ext_resource type="PackedScene" uid="uid://bcvt2bjn0ien8" path="res://Scenes/Entities/player.tscn" id="2_d45j6"]
 [ext_resource type="Texture2D" uid="uid://nor1vjy7uk4h" path="res://Assets/Tiles/Grass_Middle.png" id="2_j1ru8"]
 [ext_resource type="Texture2D" uid="uid://d2e3y1dt32k26" path="res://Assets/Tiles/Path_Middle.png" id="3_557ox"]
 [ext_resource type="Texture2D" uid="uid://bcq04jmgfiuht" path="res://Assets/Tilesets/exterior.png" id="3_nic6f"]
@@ -957,65 +957,75 @@ layer_1/name = "object"
 layer_1/tile_data = PackedInt32Array(589831, 10, 3, 655367, 10, 4, 720903, 10, 5, 786439, 10, 6, 393224, 65546, 0, 458760, 65546, 1, 524296, 65546, 2, 589832, 65546, 3, 655368, 65546, 4, 720904, 65546, 5, 786440, 65546, 6, 851976, 65546, 7, 393225, 131082, 0, 458761, 131082, 1, 524297, 131082, 2, 589833, 131082, 3, 655369, 131082, 4, 720905, 131082, 5, 786441, 131082, 6, 851977, 131082, 7, 393226, 196618, 0, 458762, 196618, 1, 524298, 196618, 2, 589834, 196618, 3, 655370, 196618, 4, 720906, 196618, 5, 786442, 196618, 6, 851978, 196618, 7, 393227, 262154, 0, 458763, 262154, 1, 524299, 262154, 2, 589835, 262154, 3, 655371, 262154, 4, 720907, 262154, 5, 786443, 262154, 6, 851979, 262154, 7, 393228, 327690, 0, 458764, 327690, 1, 524300, 327690, 2, 589836, 327690, 3, 655372, 327690, 4, 720908, 327690, 5, 786444, 327690, 6, 851980, 327690, 7, 458765, 393226, 1, 524301, 393226, 2, 589837, 393226, 3, 655373, 393226, 4, 720909, 393226, 5, 786445, 393226, 6, 851981, 393226, 7, 524302, 458762, 2, 589838, 458762, 3, 655374, 458762, 4, 720910, 458762, 5, 786446, 458762, 6, 851982, 458762, 7, 524303, 524298, 2, 589839, 524298, 3, 655375, 524298, 4, 720911, 524298, 5, 786447, 524298, 6, 851983, 524298, 7, 917525, 10, 3, 983061, 10, 4, 1048597, 917514, 1, 1114133, 655370, 7, 720918, 65546, 0, 786454, 65546, 1, 851990, 65546, 2, 917526, 65546, 3, 983062, 65546, 4, 1048598, 65546, 5, 1114134, 65546, 6, 1179670, 65546, 7, 720919, 131082, 0, 786455, 131082, 1, 851991, 131082, 2, 917527, 131082, 3, 983063, 131082, 4, 1048599, 131082, 5, 1114135, 131082, 6, 1179671, 131082, 7, 720920, 196618, 0, 786456, 196618, 1, 851992, 196618, 2, 917528, 196618, 3, 983064, 196618, 4, 1048600, 196618, 5, 1114136, 196618, 6, 1179672, 196618, 7, 720921, 262154, 0, 786457, 262154, 1, 851993, 262154, 2, 917529, 262154, 3, 983065, 262154, 4, 1048601, 262154, 5, 1114137, 262154, 6, 1179673, 262154, 7, 720922, 327690, 0, 786458, 327690, 1, 851994, 327690, 2, 917530, 327690, 3, 983066, 327690, 4, 1048602, 327690, 5, 1114138, 327690, 6, 1179674, 327690, 7, 786459, 393226, 1, 851995, 393226, 2, 917531, 393226, 3, 983067, 393226, 4, 1048603, 393226, 5, 1114139, 393226, 6, 1179675, 393226, 7, 851996, 458762, 2, 917532, 458762, 3, 983068, 458762, 4, 1048604, 458762, 5, 1114140, 458762, 6, 1179676, 458762, 7, 851997, 524298, 2, 917533, 524298, 3, 983069, 524298, 4, 1048605, 524298, 5, 1114141, 524298, 6, 1179677, 524298, 7, 589827, 10, 20, 655363, 10, 21, 720899, 10, 22, 786435, 10, 23, 851971, 10, 24, 589828, 65546, 20, 655364, 65546, 21, 720900, 65546, 22, 786436, 65546, 23, 851972, 65546, 24, 589829, 131082, 20, 655365, 131082, 21, 720901, 131082, 22, 786437, 131082, 23, 851973, 131082, 24, 589830, 196618, 20, 655366, 196618, 21, 720902, 196618, 22, 786438, 196618, 23, 917519, 262154, 20, 983055, 262154, 21, 1048591, 262154, 22, 1114127, 262154, 23, 1179663, 262154, 24, 917520, 327690, 20, 983056, 327690, 21, 1048592, 327690, 22, 1114128, 327690, 23, 1179664, 327690, 24, 917521, 393226, 20, 983057, 393226, 21, 1048593, 393226, 22, 1114129, 393226, 23, 1179665, 393226, 24, 917522, 458762, 20, 983058, 458762, 21, 1048594, 458762, 22, 1114130, 458762, 23, 1179666, 458762, 24, 1507332, 262154, 20, 1572868, 262154, 21, 1638404, 262154, 22, 1703940, 262154, 23, 1769476, 262154, 24, 1507333, 327690, 20, 1572869, 327690, 21, 1638405, 327690, 22, 1703941, 327690, 23, 1769477, 327690, 24, 1507334, 393226, 20, 1572870, 393226, 21, 1638406, 393226, 22, 1703942, 393226, 23, 1769478, 393226, 24, 1507335, 458762, 20, 1572871, 458762, 21, 1638407, 458762, 22, 1703943, 458762, 23, 1769479, 458762, 24, 1638416, 262154, 41, 1703952, 262154, 42, 1769488, 262154, 43, 1835024, 262154, 44, 1638417, 327690, 41, 1703953, 327690, 42, 1769489, 327690, 43, 1835025, 327690, 44, 1638418, 393226, 41, 1703954, 393226, 42, 1769490, 393226, 43, 1835026, 393226, 44, 1638419, 458762, 41, 1703955, 458762, 42, 1769491, 458762, 43, 1835027, 458762, 44, 1048596, 917514, 1, 1048595, 655370, 1, 1114131, 655370, 2, 1179667, 655370, 2, 1245203, 655370, 3, 1245206, 720906, 3, 1245207, 720906, 3, 1245208, 720906, 3, 1245209, 720906, 3, 1245210, 720906, 3, 1245213, 720906, 3, 1245214, 720906, 3, 1245215, 786442, 3, 1179679, 786442, 2, 1114143, 786442, 2, 1048607, 786442, 1, 1048606, 917514, 1, 1245204, 720906, 3, 1114132, 589834, 7, 1638421, 262154, 41, 1703957, 262154, 42, 1769493, 262154, 43, 1835029, 262154, 44, 1638422, 327690, 41, 1703958, 327690, 42, 1769494, 327690, 43, 1835030, 327690, 44, 1638423, 393226, 41, 1703959, 393226, 42, 1769495, 393226, 43, 1835031, 393226, 44, 1638424, 458762, 41, 1703960, 458762, 42, 1769496, 458762, 43, 1835032, 458762, 44)
 
 [node name="Player" parent="." unique_id=777104917 instance=ExtResource("2_d45j6")]
-position = Vector2(156, 299)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 156, 299, 0)
+max_health = null
+base_attack_duration = null
 
 [node name="MerchantNPC" parent="." unique_id=148960342 instance=ExtResource("5_npc")]
-position = Vector2(345, 309)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 345, 309, 0)
 npc_name = "Pedagang"
 dialogue_lines = Array[String](["Halo petualang! Aku adalah menjual keperluan petualangan.", "Ada yang bisa aku bantu?"])
 npc_type = "Merchant"
 merchant_items = Array[String](["potion", "ether", "energy_drink", "ruby_ringb"])
 
 [node name="LoreNPC" parent="." unique_id=1297570221 instance=ExtResource("5_npc")]
-position = Vector2(191, 225)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 191, 225, 0)
 npc_name = "Tetua Desa"
 dialogue_lines = Array[String](["Ah, anak muda...", "Dulu Nusvanir adalah tempat yang sangat indah.", "Namun sejak 'Kegelapan' datang, monster-monster mulai bermunculan dari Dungeon itu.", "Berhati-hatilah, dan jangan pernah meremehkan kekuatan mereka."])
 
 [node name="PortalNPC" parent="." unique_id=1626135919 instance=ExtResource("5_npc")]
-position = Vector2(329, 442)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 329, 442, 0)
 npc_name = "Penjaga Portal"
 dialogue_lines = Array[String](["Aku adalah penjaga portal menuju Thalantira", "Apa kau ingin masuk?", "Bersiaplah, kau akan masuk sekarang..."])
 npc_type = "Portal"
 
 [node name="NPC" parent="." unique_id=477499049 instance=ExtResource("5_npc")]
-position = Vector2(125, 433)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 125, 433, 0)
 npc_name = "Tukang Permen Aneh"
 dialogue_lines = Array[String](["Halo, mau nyoba permen? ", "Mau yang mana?"])
 npc_type = "DebugStatus"
+
+[node name="SolidCollision" parent="NPC" index="1" unique_id=1911752350]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -2, 0)
+shape = null
+
+[node name="CollisionShape2D" parent="NPC/InteractArea" parent_id_path=PackedInt32Array(477499049, 1738724831) index="0" unique_id=839265827]
+shape = null
 
 [node name="Label" parent="NPC" index="3" unique_id=800346141]
 metadata/_edit_use_anchors_ = true
 
 [node name="MentorNPC" parent="." unique_id=987654321 instance=ExtResource("5_npc")]
-position = Vector2(68, 436)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68, 436, 0)
 npc_name = "Mentor Guild"
 dialogue_lines = Array[String](["Ingin mempelajari jalur keahlian yang baru?", "Pilihlah jalanmu."])
 npc_type = "ClassChanger"
 
 [node name="HealerNPC" parent="." unique_id=1122334455 instance=ExtResource("5_npc")]
-position = Vector2(250, 300)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250, 300, 0)
 npc_name = "Tabib Desa"
 dialogue_lines = Array[String](["Kamu terlihat kelelahan, biarkan aku menyembuhkanmu..."])
 npc_type = "Healer"
 
 [node name="FarmingZone" parent="." unique_id=1591451921 instance=ExtResource("14_7bv7m")]
-position = Vector2(893, 395)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 893, 395, 0)
 
 [node name="CollisionShape2D" parent="FarmingZone" index="0" unique_id=1794878348]
-position = Vector2(19.5, -9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, -9, 0)
+shape = null
 
 [node name="herb1" parent="." unique_id=1263058584 instance=ExtResource("15_nic6f")]
-position = Vector2(826, 582)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 826, 582, 0)
 
 [node name="herb2" parent="." unique_id=1029013139 instance=ExtResource("15_nic6f")]
-position = Vector2(853, 604)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 853, 604, 0)
 yield_item = "seed"
 
 [node name="herb3" parent="." unique_id=1047282615 instance=ExtResource("15_nic6f")]
-position = Vector2(821, 620)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 821, 620, 0)
 
 [node name="stone" parent="." unique_id=202833620 instance=ExtResource("16_ks1ma")]
-position = Vector2(1004, 569)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1004, 569, 0)
 
 [node name="Sprite2D" parent="stone" index="0"]
 texture = ExtResource("17_s6xpr")
@@ -1023,8 +1033,14 @@ hframes = 7
 vframes = 12
 frame = 16
 
+[node name="CollisionShape2D" parent="stone" index="1"]
+shape = null
+
+[node name="CollisionShape2D" parent="stone/StaticBody2D" index="0"]
+shape = null
+
 [node name="iron ore" parent="." unique_id=532580247 instance=ExtResource("16_ks1ma")]
-position = Vector2(980, 613)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 980, 613, 0)
 yield_item = "iron_ore"
 required_cycles = 5
 
@@ -1034,8 +1050,14 @@ hframes = 7
 vframes = 12
 frame = 24
 
+[node name="CollisionShape2D" parent="iron ore" index="1"]
+shape = null
+
+[node name="CollisionShape2D" parent="iron ore/StaticBody2D" index="0"]
+shape = null
+
 [node name="tree" parent="." unique_id=4271324 instance=ExtResource("16_ks1ma")]
-position = Vector2(995, 481)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 995, 481, 0)
 yield_item = "wood"
 required_cycles = 3
 
@@ -1045,16 +1067,25 @@ hframes = 1
 vframes = 1
 frame = 0
 
+[node name="CollisionShape2D" parent="tree" index="1"]
+shape = null
+
+[node name="CollisionShape2D" parent="tree/StaticBody2D" index="0"]
+shape = null
+
 [node name="water" parent="." unique_id=2081288722 instance=ExtResource("15_nic6f")]
-position = Vector2(937, 522)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 937, 522, 0)
 yield_item = "water"
 
 [node name="Sprite2D" parent="water" index="0" unique_id=1379732051]
-scale = Vector2(0.5, 0.5)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0)
 texture = ExtResource("8_3uwwr")
 hframes = 1
 vframes = 2
 frame = 0
+
+[node name="CollisionShape2D" parent="water" index="1" unique_id=1663910309]
+shape = null
 
 [editable path="NPC"]
 [editable path="FarmingZone"]

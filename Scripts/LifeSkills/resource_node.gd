@@ -6,7 +6,7 @@ extends Area3D
 @export var respawn_time: float = 10.0
 @export var yield_amount: int = 1
 
-@onready var sprite = $MeshInstance3D
+@onready var sprite = $CSGBox3D
 @onready var collision = $CollisionShape3D
 
 var is_active = true
