@@ -616,6 +616,22 @@ func _use_skill(slot_index: int):
 	var skill_id = Global.quick_skills[slot_index]
 	if skill_id == "": return
 	
+	# Cek persyaratan senjata untuk skill tertentu
+	const BOW_SKILLS = ["falcon_dive", "arrow_rain"]
+	if skill_id in BOW_SKILLS:
+		var has_bow = false
+		var item_db = get_node_or_null("/root/ItemDB")
+		if item_db:
+			var main_w = Global.equipment.get("main_weapon", "")
+			if main_w != "":
+				var w_data = item_db.get_item(main_w)
+				if typeof(w_data) == TYPE_DICTIONARY:
+					if w_data.get("weapon_type", "None") in ["long_bow", "crossbow"]:
+						has_bow = true
+		if not has_bow:
+			spawn_floating_text("Butuh Bow/Crossbow!", Color(1, 0.3, 0.2))
+			return
+	
 	if active_skill_cooldowns.get(skill_id, 0.0) > 0:
 		spawn_floating_text("Skill Cooldown!", Color(0.5, 0.5, 1))
 		return
@@ -1310,6 +1326,8 @@ func _update_aim_to_mouse(instant: bool = false):
 
 func attack(is_charge: bool):
 	if status_manager and not status_manager.can_attack(): return
+	if status_manager and status_manager.has_effect("shadow_walk"):
+		status_manager.remove_effect("shadow_walk")
 	_update_aim_to_mouse(true)
 	is_attacking = true
 	is_charge_attacking = is_charge
@@ -1570,6 +1588,8 @@ func _release_magic_charge():
 func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 	if type.begins_with("magic") and status_manager and not status_manager.can_cast(): return
 	if not type.begins_with("magic") and status_manager and not status_manager.can_attack(): return
+	if status_manager and status_manager.has_effect("shadow_walk"):
+		status_manager.remove_effect("shadow_walk")
 	_update_aim_to_mouse(true)
 	is_attacking = true
 	var fire_dir = last_direction
@@ -1786,6 +1806,7 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_e
 	if current_health <= 0: die()
 
 func spawn_damage_text(amount: int, color: Color):
+	if not is_inside_tree(): return
 	var label = Label3D.new()
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true
@@ -1803,6 +1824,7 @@ func spawn_damage_text(amount: int, color: Color):
 	tween.tween_callback(label.queue_free)
 
 func spawn_floating_text(msg: String, color: Color):
+	if not is_inside_tree(): return
 	print("--- SPAWN TEXT: ", msg, " ---")
 	var label = Label3D.new()
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED

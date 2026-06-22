@@ -21,6 +21,20 @@ func setup(t: Node3D):
 	target = t
 	is_player = target.is_in_group("Player")
 	
+func _process(delta: float):
+	for effect in active_effects.keys():
+		var data = active_effects[effect]
+		if data.duration > 0:
+			data.duration -= delta
+			if data.duration <= 0:
+				remove_effect(effect)
+
+func _set_node_transparency(node: Node, val: float):
+	if node is GeometryInstance3D:
+		node.transparency = val
+	for child in node.get_children():
+		_set_node_transparency(child, val)
+
 func apply_effect(effect_id: String, duration: float, extra_data: Dictionary = {}):
 	var amount = extra_data.get("amount", 0.0)
 	var source_pos = extra_data.get("source_pos", Vector3.ZERO)
@@ -270,7 +284,13 @@ func update_visuals():
 	else: target.modulate = Color(1, 1, 1)
 	
 	if has_effect("shadow_walk"):
-		target.modulate.a = 0.5
+		if "modulate" in target: target.modulate.a = 0.5
+		if target.get("sprite") != null:
+			_set_node_transparency(target.sprite, 0.5)
+	else:
+		if "modulate" in target: target.modulate.a = 1.0
+		if target.get("sprite") != null:
+			_set_node_transparency(target.sprite, 0.0)
 	
 	if has_effect("curse"):
 		if not is_instance_valid(curse_icon_node):

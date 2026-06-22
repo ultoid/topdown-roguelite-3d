@@ -51,6 +51,9 @@ func _physics_process(delta):
 		var actual_chase_radius = chase_radius
 		if status_manager and status_manager.has_effect("blind"):
 			actual_chase_radius = chase_radius * 0.2
+		if player.get("status_manager") and player.status_manager.has_effect("shadow_walk"):
+			actual_chase_radius = -1.0
+			is_chasing = false
 			
 		if dist <= actual_chase_radius:
 			is_chasing = true
@@ -158,6 +161,7 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elem
 		queue_free()
 
 func drop_loot():
+	if not is_inside_tree(): return
 	if randf() > 0.5:
 		var coin_scene = load("res://Scenes/Items/coin.tscn")
 		if coin_scene:
@@ -172,6 +176,7 @@ func drop_loot():
 		get_tree().current_scene.call_deferred("add_child", exp_gem)
 
 func spawn_damage_text(text_val: Variant, color: Color):
+	if not is_inside_tree(): return
 	var label = Label3D.new()
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true

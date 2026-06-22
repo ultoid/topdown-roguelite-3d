@@ -288,6 +288,35 @@ func _update_quick_skills():
 						skill_name = data["name"].substr(0, 3)
 					else:
 						skill_name = skill_id.substr(0, 3).capitalize()
+				
+			# Cek persyaratan senjata -> gelap jika tidak terpenuhi
+			const BOW_SKILLS_HUD = ["falcon_dive", "arrow_rain"]
+			var weapon_locked = false
+			if skill_id in BOW_SKILLS_HUD and get_node_or_null("/root/Global") and get_node_or_null("/root/ItemDB"):
+				var main_w = Global.equipment.get("main_weapon", "")
+				var has_bow = false
+				if main_w != "":
+					var w_data = ItemDB.get_item(main_w)
+					if typeof(w_data) == TYPE_DICTIONARY and w_data.get("weapon_type", "None") in ["long_bow", "crossbow"]:
+						has_bow = true
+				weapon_locked = not has_bow
+			
+			if tex_rect:
+				tex_rect.modulate = Color(0.3, 0.3, 0.3, 1.0) if weapon_locked else Color(1, 1, 1, 1)
+			if slot_node:
+				var lock_label = slot_node.get_node_or_null("LockLabel")
+				if weapon_locked:
+					if not lock_label:
+						lock_label = Label.new()
+						lock_label.name = "LockLabel"
+						lock_label.text = "🔒"
+						lock_label.set_anchors_preset(Control.PRESET_CENTER)
+						lock_label.add_theme_font_size_override("font_size", 14)
+						lock_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+						slot_node.add_child(lock_label)
+				else:
+					if lock_label: lock_label.queue_free()
+				
 			quick_skill_labels[i].text = skill_name
 
 func _on_health_changed(current: int, maximum: int):

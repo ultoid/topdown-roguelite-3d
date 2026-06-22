@@ -386,6 +386,7 @@ ep_costs = Array[int]([15, 15, 15, 15, 15, 15, 15, 15, 15, 15])
 cooldowns = Array[float]([15.0, 14.0, 13.0, 12.0, 11.0, 10.0, 9.0, 8.0, 6.5, 5.0])
 cast_times = Array[float]([1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.0])
 effect_durations = Array[float]([10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0])
+ranges = Array[float]([12.0, 12.0, 12.0, 12.0, 12.0, 12.0, 12.0, 12.0, 12.0, 12.0])
 
 [node name="falcon_dive" type="Sprite2D" parent="Scout" unique_id=1198879749]
 position = Vector2(-513, -597)
@@ -405,6 +406,7 @@ ep_costs = Array[int]([25, 25, 25, 25, 25, 25, 25, 25, 25, 25])
 cooldowns = Array[float]([12.0, 11.5, 11.0, 10.0, 9.5, 9.0, 8.5, 8.0, 7.0, 6.0])
 cast_times = Array[float]([2.0, 1.8, 1.6, 1.4, 1.2, 1.0, 0.9, 0.8, 0.6, 0.5])
 damages = Array[int]([50, 60, 75, 90, 110, 130, 155, 180, 210, 250])
+ranges = Array[float]([8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0])
 
 [node name="arrow_rain" type="Sprite2D" parent="Scout" unique_id=1928024689]
 position = Vector2(-380, -596)
@@ -424,8 +426,8 @@ ep_costs = Array[int]([35, 35, 35, 35, 35])
 cooldowns = Array[float]([20.0, 17.5, 15.0, 12.5, 10.0])
 cast_times = Array[float]([3.0, 2.5, 2.0, 1.5, 1.0])
 damages = Array[int]([100, 130, 160, 200, 250])
-aoe_radiuses = Array[float]([0.5, 0.5, 0.5, 0.5, 0.5])
-ranges = Array[float]([1.5, 1.5, 1.5, 1.5, 1.5])
+aoe_radiuses = Array[float]([2.0, 2.0, 2.0, 2.0, 2.0])
+ranges = Array[float]([10.0, 10.0, 10.0, 10.0, 10.0])
 
 [node name="agility_mastery" type="Sprite2D" parent="Scout" unique_id=1226623340]
 position = Vector2(-771, -488)
@@ -545,7 +547,7 @@ ep_costs = Array[int]([25, 25, 25, 25, 25])
 cooldowns = Array[float]([15.0, 13.0, 11.0, 9.0, 8.0])
 cast_times = Array[float]([0.0, 0.0, 0.0, 0.0, 0.0])
 damages = Array[int]([150, 200, 260, 330, 420])
-ranges = Array[float]([0.5, 0.5, 0.5, 0.5, 0.5])
+ranges = Array[float]([5.0, 5.0, 5.0, 5.0, 5.0])
 
 [node name="phantom_flurry" type="Sprite2D" parent="Scout" unique_id=1771431185]
 position = Vector2(-377, -256)

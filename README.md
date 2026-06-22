@@ -7,7 +7,7 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
 ## To Do List
 - [ ] Menyelesaikan Migrasi 2D ke 3D all component and system
   - [x] Fix Skill Apprentice
-  - [ ] Fix Skill Scout
+  - [x] Fix Skill Scout
 - [ ] Melengkapi animasi model 3d
 - [ ] Implementasi animasi ke game
 
@@ -43,3 +43,12 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
 - Memoles sistem *Casting* dan Indikator: Lingkaran target merah sekarang dengan mulus terus menempel di kaki musuh bergerak selama jeda *casting*. Arah tatapan tubuh karakter juga kini interaktif mengikuti rotasi kursor *mouse* secara seketika meski tubuhnya terkunci saat sedang merapal mantra.
 - **Refactoring Arsitektur Skrip**: Mengorganisir ulang struktur proyek dengan memindahkan ratusan file `.gd` ke dalam folder hierarkis yang lebih teratur (`Scripts/System/`, `Scripts/Player/`, `Scripts/Enemy/`, `Scripts/Skills/`, `Scripts/UI/`, `Scripts/Debug/`, dan `DevTools/`). Memperbarui secara presisi semua referensi file *path* lama di dalam `.tscn`, `.tres`, dan `project.godot` (Autoload) dengan aman.
 - **Refactoring player.gd**: Memecah dan mendeligasikan modul *skill* tempur raksasa dari `player.gd` (memangkas lebih dari 700 baris kode) menjadi tiga *helper class* mandiri: `ApprenticeSkills`, `FighterSkills`, dan `ScoutSkills` di dalam folder baru `Scripts/PlayerClasses/`, guna memudahkan pembacaan dan pembaruan AI di masa mendatang.
+
+### 22 Juni 2026
+- Memigrasi jajaran *Skill* khusus kelas **Scout** ke mekanika 3D secara komprehensif:
+  - **Falcon Dive**: Merombak total logika proyektil; karakter kini menembakkan **3 anak panah** awal berkecepatan 80 km/jam, diikuti **1 panah besar** penutup berkecepatan 100 km/jam yang disertai animasi karakter **melompat setinggi 1 meter**. Jangkauan *single-target* diperluas menjadi radius **8 meter**.
+  - **Hunter's Mark**: Jangkauan penandaan target diperluas signifikan menjadi radius **12 meter**.
+  - **Arrow Rain**: Skill hujan panah dirombak total — area *casting* kini selebar radius **10 meter**, anak panah jatuh secara **acak (random)** di banyak titik berbeda dalam zona radius **2 meter**, menggantikan mekanisme lama yang hanya menarget satu titik. *Damage* kini menggunakan kalkulasi jarak metrik bebas *bug*. Musuh yang terkena mendapat efek *chill* dan **super slow** (kecepatan tersisa 10%) sehingga kesulitan keluar dari area badai panah. **Tanpa efek knockback.**
+  - **Phantom Strike**: Jangkauan serangan diperluas menjadi radius **5 meter**.
+  - **Shadow Walk**: Saat aktif, karakter menjadi **transparan 50%** (menggunakan `GeometryInstance3D.transparency` untuk model 3D) dan **tidak bisa terdeteksi musuh** (musuh kehilangan jejak dan berhenti mengejar). Efek stealth **otomatis berakhir** ketika pemain melakukan serangan dasar, tembak proyektil, atau menggunakan skill serang.
+- Menambahkan **persyaratan senjata** untuk skill `Falcon Dive` dan `Arrow Rain`: kedua skill kini hanya bisa digunakan jika pemain memakai *long bow* atau *crossbow*. Slot quick skill akan otomatis **menggelap dan menampilkan ikon 🔒** jika senjata yang terpasang tidak sesuai. Notif "Butuh Bow/Crossbow!" muncul saat skill diklik tanpa senjata yang sesuai.

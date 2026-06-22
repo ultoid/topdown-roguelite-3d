@@ -15,11 +15,13 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 			p.spawn_floating_text("No target!", Color(1, 0.5, 0))
 			return
 		
-		var proj_scene = load("res://Scenes/Skills/player_projectile.tscn")
+		var proj_scene = load("res://Scenes/Skills/arrow_projectile.tscn")
+		if not proj_scene: proj_scene = load("res://Scenes/Skills/player_projectile.tscn")
 		if proj_scene:
+			if p.status_manager and p.status_manager.has_effect("shadow_walk"): p.status_manager.remove_effect("shadow_walk")
 			p.falcon_dive_active = true
 			
-			for i in range(4):
+			for i in range(3):
 				if not is_instance_valid(target_enemy) or target_enemy.get("is_dead") or p.is_dead: break
 				
 				p.last_direction = (target_enemy.global_position - p.global_position).normalized()
@@ -37,12 +39,14 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 				
 				var proj = proj_scene.instantiate()
 				proj.damage = int(dmg * 0.5)
+				if "speed" in proj: proj.speed = 22.22
 				proj.atk_elements = p.atk_elements
 				proj.position = p.global_position
 				proj.direction = (target_enemy.global_position - p.global_position).normalized()
+				proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
 				
 				var vis = proj.get_node_or_null("Visual")
-				if vis:
+				if vis and "color" in vis:
 					vis.color = Color(0.8, 0.5, 0.2)
 					
 				p.get_tree().current_scene.add_child(proj)
@@ -53,7 +57,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 				Engine.time_scale = 0.3
 				
 				var tween = p.get_tree().create_tween().set_ignore_time_scale(true)
-				tween.tween_property(p.sprite, "position:y", p.base_y_offset - 0.4, 0.1).set_ease(Tween.EASE_OUT)
+				tween.tween_property(p.sprite, "position:y", p.base_y_offset + 1.0, 0.1).set_ease(Tween.EASE_OUT)
 				tween.tween_property(p.sprite, "position:y", p.base_y_offset, 0.1).set_ease(Tween.EASE_IN)
 				
 				if p.state_machine: p.state_machine.travel("Attack")
@@ -71,9 +75,11 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 					else:
 						proj.damage = dmg
 						proj.scale = Vector3(2.0, 2.0, 2.0)
+					if "speed" in proj: proj.speed = 27.77
 					proj.atk_elements = p.atk_elements
 					proj.position = p.global_position
 					proj.direction = (target_enemy.global_position - p.global_position).normalized()
+					proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
 						
 					p.get_tree().current_scene.add_child(proj)
 					
@@ -82,13 +88,14 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 	elif skill_id == "arrow_rain":
 		var scene = load("res://Scenes/Skills/arrow_rain.tscn")
 		if scene:
+			if p.status_manager and p.status_manager.has_effect("shadow_walk"): p.status_manager.remove_effect("shadow_walk")
 			Engine.time_scale = 0.3
 			if p.animation_tree:
 				p.animation_tree.set("parameters/Attack/blend_position", Vector2(0, -1))
 			if p.state_machine: p.state_machine.travel("Attack")
 			
 			var tween = p.get_tree().create_tween().set_ignore_time_scale(true).set_parallel(true)
-			tween.tween_property(p.sprite, "position:y", p.base_y_offset - 0.5, 0.2).set_ease(Tween.EASE_OUT)
+			tween.tween_property(p.sprite, "position:y", p.base_y_offset + 2.0, 0.2).set_ease(Tween.EASE_OUT)
 			tween.tween_property(p.sprite, "rotation:y", deg_to_rad(360), 0.4)
 			tween.chain().tween_property(p.sprite, "position:y", p.base_y_offset, 0.2).set_ease(Tween.EASE_IN)
 			tween.parallel().tween_property(p.sprite, "rotation:y", deg_to_rad(0), 0.0)
@@ -147,6 +154,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 		if target_enemy == null:
 			p.spawn_floating_text("No target!", Color(1, 0.5, 0))
 		else:
+			if p.status_manager and p.status_manager.has_effect("shadow_walk"): p.status_manager.remove_effect("shadow_walk")
 			var dir = (target_enemy.global_position - p.global_position).normalized()
 			p.global_position = target_enemy.global_position + dir * 0.3
 			target_enemy.take_damage(dmg * 2, p.global_position, p.atk_elements)
@@ -158,6 +166,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 		if target_enemy == null:
 			p.spawn_floating_text("No target!", Color(1, 0.5, 0))
 		else:
+			if p.status_manager and p.status_manager.has_effect("shadow_walk"): p.status_manager.remove_effect("shadow_walk")
 			p.is_invincible = true
 			for i in range(10):
 				if not is_instance_valid(target_enemy) or target_enemy.get("is_dead"):

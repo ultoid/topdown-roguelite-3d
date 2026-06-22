@@ -178,6 +178,7 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elem
 		queue_free()
 
 func drop_loot():
+	if not is_inside_tree(): return
 	# Boss menjatuhkan banyak hadiah
 	for i in range(5):
 		var coin_scene = load("res://Scenes/Items/coin.tscn")
@@ -194,6 +195,7 @@ func drop_loot():
 			get_tree().current_scene.call_deferred("add_child", exp_gem)
 
 func spawn_damage_text(text_val: Variant, color: Color):
+	if not is_inside_tree(): return
 	var label = Label3D.new()
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.no_depth_test = true

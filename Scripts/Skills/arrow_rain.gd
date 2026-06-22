@@ -12,6 +12,10 @@ var arrow_timer: float = 0.0
 var visual_cylinder: CSGCylinder3D
 
 func _ready():
+	monitoring = true
+	monitorable = false
+	collision_layer = 0
+	for i in range(1, 10): set_collision_mask_value(i, true)
 	var shape = CylinderShape3D.new()
 	shape.radius = aoe_radius
 	shape.height = 4.0
@@ -45,6 +49,7 @@ func _physics_process(delta):
 	tick_timer -= delta
 	if tick_timer <= 0:
 		tick_timer = tick_rate
+		# Force physics update if needed, but monitoring=true should handle it
 		_deal_damage()
 		
 	arrow_timer -= delta
@@ -53,45 +58,50 @@ func _physics_process(delta):
 		_spawn_visual_arrow()
 
 func _spawn_visual_arrow():
-	var arrow = CSGBox3D.new()
-	arrow.size = Vector3(0.05, 0.5, 0.05)
-	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.8, 0.8, 1.0, 1.0)
-	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	arrow.material = mat
+	var wrapper = Node3D.new()
+	var arrow_scene = load("res://Scenes/Skills/arrow_projectile.tscn")
+	if arrow_scene:
+		var arrow = arrow_scene.instantiate()
+		arrow.rotation.z = -PI/2.0 # Arrow mesh points along +X, rotate around Z to point down
+		arrow.rotation.x = 0.0
+		arrow.set_script(null) # Remove projectile script ALWAYS
+		if arrow is Area3D or arrow is RigidBody3D or arrow is CharacterBody3D:
+			if "monitoring" in arrow: arrow.monitoring = false
+			if "monitorable" in arrow: arrow.monitorable = false
+			# Make it purely visual, remove script if any to prevent normal projectile logic
+			arrow.set_script(null)
+		wrapper.add_child(arrow)
 	
 	var script = GDScript.new()
 	script.source_code = """
-extends CSGBox3D
+extends Node3D
 var target_y = 0.0
 func _process(delta):
 	position.y -= 15.0 * delta
 	if position.y <= target_y:
-		position.y = target_y
-		var mat = material as StandardMaterial3D
-		if mat:
-			var tween = create_tween()
-			tween.tween_property(mat, "albedo_color:a", 0.0, 0.1)
-			tween.tween_callback(queue_free)
-		else:
-			queue_free()
+		queue_free()
 		set_process(false)
 """
 	script.reload()
-	arrow.set_script(script)
+	wrapper.set_script(script)
 	
 	var angle = randf() * PI * 2
 	var r = sqrt(randf()) * aoe_radius
 	var offset = Vector3(cos(angle) * r, 0, sin(angle) * r)
 	
-	arrow.set("target_y", 0.0)
-	arrow.position = offset + Vector3(0, 5.0, 0)
-	add_child(arrow)
+	wrapper.set("target_y", 0.0)
+	wrapper.position = offset + Vector3(0, 5.0, 0)
+	add_child(wrapper)
 
 func _deal_damage():
-	var bodies = get_overlapping_bodies()
-	for body in bodies:
-		if body.is_in_group("Enemy") and body.has_method("take_damage"):
-			body.take_damage(damage, Vector3.ZERO, elements)
-			if body.get("status_manager") != null:
-				body.status_manager.apply_effect("chill", 2.0) # Apply slow
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	for enemy in enemies:
+		if not is_instance_valid(enemy) or enemy.get("is_dead"): continue
+		
+		var flat_dist = Vector2(global_position.x, global_position.z).distance_to(Vector2(enemy.global_position.x, enemy.global_position.z))
+		if flat_dist <= aoe_radius and abs(global_position.y - enemy.global_position.y) < 5.0:
+			if enemy.has_method("take_damage"):
+				enemy.take_damage(damage, Vector3.ZERO, elements)
+				if enemy.get("status_manager") != null:
+					enemy.status_manager.apply_effect("chill", 2.0)
+					enemy.status_manager.apply_effect("slow", 2.0, {"amount": 0.1})
