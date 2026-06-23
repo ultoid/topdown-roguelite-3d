@@ -17,9 +17,10 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 	var manual_anim_skills = ["aqua_blast", "cyclone_sweep", "fatal_blow", "impact_wave", "fatal_smash", "implosion"]
 	if not skill_id in manual_anim_skills:
 		player.is_animating_skill = true
-		var anim_time = 0.3
+		var anim_state = skill_id.capitalize().replace(" ", "")
+		var anim_time = player._get_state_length(anim_state, 0.3)
 		if skill_id == "seismic_fissure":
-			anim_time = 0.6
+			anim_time = player._get_state_length(anim_state, 0.6)
 		player.get_tree().create_timer(anim_time).timeout.connect(func(): player.is_animating_skill = false)
 	
 	var c_name = Global.current_class
@@ -356,10 +357,10 @@ func attack(is_charge: bool):
 			
 	if player.status_manager: player.current_attack_speed *= player.status_manager.get_attack_speed_multiplier()
 	
-	var target_state = "HeavyAttack" if is_charge else "Attack"
+	var target_state = player.get_anim_state("HeavyAttack" if is_charge else "Attack")
 	if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
 		if not player.animation_tree.tree_root.has_node(target_state):
-			target_state = "Attack"
+			target_state = player.get_anim_state("Attack")
 			
 	var actual_len = player._get_state_length(target_state, player.base_attack_duration)
 	player.current_anim_speed_ratio = actual_len / player.base_attack_duration
@@ -402,7 +403,7 @@ func attack_finished():
 	player.is_attacking = false
 	player.current_attack_speed = 1.0
 	if player.sword_hitbox: player.sword_hitbox.set_deferred("disabled", true)
-	if player.state_machine: player.state_machine.travel("Idle")
+	if player.state_machine: player.state_machine.travel(player.get_anim_state("Idle"))
 
 
 func _get_state_length(state_name: String, fallback: float) -> float:
@@ -579,13 +580,14 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 		
 	if player.status_manager: player.current_attack_speed *= player.status_manager.get_attack_speed_multiplier()
 		
-	var actual_len = player._get_state_length("Attack", player.base_attack_duration)
+	var target_state = player.get_anim_state("Attack")
+	var actual_len = player._get_state_length(target_state, player.base_attack_duration)
 	player.current_anim_speed_ratio = actual_len / player.base_attack_duration
 	
 	if player.animation_tree:
 		player.animation_tree.set("parameters/AttackTimeScale/scale", player.current_attack_speed * player.current_anim_speed_ratio)
 	if player.state_machine:
-		player.state_machine.travel("Attack")
+		player.state_machine.travel(target_state)
 		
 	var duration = (player.base_attack_duration / player.current_attack_speed)
 	var spawn_delay = duration * 0.5
@@ -715,7 +717,7 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 	await get_tree().create_timer(duration - spawn_delay).timeout
 	if player.is_attacking:
 		player.is_attacking = false
-		if player.state_machine: player.state_machine.travel("Idle")
+		if player.state_machine: player.state_machine.travel(player.get_anim_state("Idle"))
 
 
 func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_element: String = "netral", kb_force: float = 200.0):

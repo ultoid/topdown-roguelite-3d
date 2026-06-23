@@ -261,9 +261,10 @@ func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicato
 	var manual_anim_skills = ["aqua_blast", "cyclone_sweep", "fatal_blow", "impact_wave", "fatal_smash", "implosion"]
 	if not skill_id in manual_anim_skills:
 		is_animating_skill = true
-		var anim_time = 0.3
+		var anim_state = skill_id.capitalize().replace(" ", "")
+		var anim_time = _get_state_length(anim_state, 0.3)
 		if skill_id == "seismic_fissure":
-			anim_time = 0.6
+			anim_time = _get_state_length(anim_state, 0.6)
 		get_tree().create_timer(anim_time).timeout.connect(func(): is_animating_skill = false)
 	
 	var c_name = Global.current_class
@@ -282,6 +283,24 @@ func attack_finished():
 	player_combat.attack_finished()
 func _get_state_length(state_name: String, fallback: float) -> float:
 	return player_combat._get_state_length(state_name, fallback)
+
+func get_anim_state(base_state: String) -> String:
+	var item_db = get_node_or_null("/root/ItemDB")
+	var w_type = "None"
+	if item_db and Global.equipment.get("main_weapon", "") != "":
+		var w_data = item_db.get_item(Global.equipment["main_weapon"])
+		w_type = w_data.get("weapon_type", "None")
+	
+	if w_type == "None" or w_type == "":
+		return base_state
+		
+	var specific_state = w_type + "_" + base_state
+	
+	if animation_tree and animation_tree.tree_root is AnimationNodeStateMachine:
+		if animation_tree.tree_root.has_node(specific_state):
+			return specific_state
+	
+	return base_state
 func _perform_spin_attack(dmg: int, is_mana_burst: bool = false):
 	player_combat._perform_spin_attack(dmg, is_mana_burst)
 func _create_charge_bar():

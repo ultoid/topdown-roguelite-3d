@@ -12,6 +12,15 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [ ] Long Sword Animation
 - [ ] Implementasi animasi ke game
 
+## Architecture & Dev Notes
+
+### Dynamic Animation System
+Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** dan menyesuaikan dengan senjata yang dipakai secara otomatis, tanpa *hardcode*.
+1. Skrip `player.gd` memiliki fungsi `get_anim_state(base_state)` yang otomatis mendeteksi tipe senjata dari `ItemDB` (misal: `long_sword`).
+2. Kode akan memanggil state `[weapon_type]_[base_state]` ke `AnimationTree`. Contoh: jika memanggil `Attack` dengan pedang, ia akan otomatis mencari node `long_sword_Attack`.
+3. Jika node tersebut tidak ditemukan di *AnimationTree*, sistem akan melakukan *fallback* dengan selamat ke state `Attack` biasa.
+4. **Skill Animasi**: Durasi skill didapatkan dengan membaca durasi state animasi yang namanya persis seperti nama skill (contoh: skill `seismic_fissure` akan mencari state bernama `SeismicFissure`).
+
 ## Change Log
 
 ### 20 Juni 2026
