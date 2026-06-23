@@ -294,10 +294,6 @@ func _start_cast_skill(skill_id: String, data: Dictionary, cost: int, t_pos: Vec
 	
 	player._execute_skill(skill_id, data, t_pos, indicator)
 
-var is_spinning = false
-var spin_timer = 0.0
-var max_spin_time = 0.0
-var spin_bar: ProgressBar = null
 
 
 func attack(is_charge: bool):

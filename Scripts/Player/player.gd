@@ -139,6 +139,7 @@ var smash_total_dur: float = 0.6
 
 var is_spinning: bool = false
 var spin_timer: float = 0.0
+var max_spin_time: float = 0.0
 var spin_bar: ProgressBar = null
 
 var status_manager: StatusEffectManager = null

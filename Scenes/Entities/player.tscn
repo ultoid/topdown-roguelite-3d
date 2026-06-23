@@ -87,6 +87,15 @@ advance_mode = 0
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_abjg5"]
 advance_mode = 0
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_heavy"]
+animation = &"custom/attack"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_heavy1"]
+advance_mode = 0
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_heavy2"]
+advance_mode = 0
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_f5ba2"]
 states/Attack/node = SubResource("AnimationNodeAnimation_qbyki")
 states/Attack/position = Vector2(509, 100)
@@ -100,7 +109,9 @@ states/Run/position = Vector2(706, 161)
 states/Start/position = Vector2(172, 100)
 states/Walk/node = SubResource("AnimationNodeAnimation_svftf")
 states/Walk/position = Vector2(547, 201)
-transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_yqx0t"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_ofjh0"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_2hnfo"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_y18yp"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_85s6f"), "Idle", "Run", SubResource("AnimationNodeStateMachineTransition_14y0q"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_f5ba2"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_kvkok"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_at1v1"), "Idle", "Dash", SubResource("AnimationNodeStateMachineTransition_pm2yg"), "Dash", "Idle", SubResource("AnimationNodeStateMachineTransition_43gew"), "Walk", "Dash", SubResource("AnimationNodeStateMachineTransition_udx2w"), "Dash", "Walk", SubResource("AnimationNodeStateMachineTransition_aqs8i"), "Run", "Dash", SubResource("AnimationNodeStateMachineTransition_vbauc"), "Dash", "Run", SubResource("AnimationNodeStateMachineTransition_p6fni"), "Attack", "Dash", SubResource("AnimationNodeStateMachineTransition_w4uu0"), "Dash", "Attack", SubResource("AnimationNodeStateMachineTransition_abjg5")]
+states/HeavyAttack/node = SubResource("AnimationNodeAnimation_heavy")
+states/HeavyAttack/position = Vector2(509, 200)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_yqx0t"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_ofjh0"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_2hnfo"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_y18yp"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_85s6f"), "Idle", "Run", SubResource("AnimationNodeStateMachineTransition_14y0q"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_f5ba2"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_kvkok"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_at1v1"), "Idle", "Dash", SubResource("AnimationNodeStateMachineTransition_pm2yg"), "Dash", "Idle", SubResource("AnimationNodeStateMachineTransition_43gew"), "Walk", "Dash", SubResource("AnimationNodeStateMachineTransition_udx2w"), "Dash", "Walk", SubResource("AnimationNodeStateMachineTransition_aqs8i"), "Run", "Dash", SubResource("AnimationNodeStateMachineTransition_vbauc"), "Dash", "Run", SubResource("AnimationNodeStateMachineTransition_p6fni"), "Attack", "Dash", SubResource("AnimationNodeStateMachineTransition_w4uu0"), "Dash", "Attack", SubResource("AnimationNodeStateMachineTransition_abjg5"), "Idle", "HeavyAttack", SubResource("AnimationNodeStateMachineTransition_heavy1"), "HeavyAttack", "Idle", SubResource("AnimationNodeStateMachineTransition_heavy2")]
 graph_offset = Vector2(-182, 47)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qbyki"]

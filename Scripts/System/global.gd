@@ -80,7 +80,7 @@ var CRAFTING_RECIPES: Dictionary = {}
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_inputs()
-	_debug_setup_scout()
+	_debug_setup_fighter()
 
 func _debug_setup_apprentice():
 	# === DEBUG: Apprentice Level 40 ===
