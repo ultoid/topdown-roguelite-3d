@@ -9,12 +9,12 @@ NPC di game ini sangat fleksibel (`Scenes/Entities/npc.tscn`). Anda bisa membuat
 
 ### Langkah-langkah:
 1. Buka *scene* di mana Anda ingin meletakkan NPC (contoh: `Scenes/Maps/maincity.tscn`).
-2. Tarik (*drag and drop*) file `Scenes/Entities/npc.tscn` dari panel FileSystem ke dalam layar kerja 2D Anda.
-3. **Mengganti Visual/Gambar NPC**:
+2. Tarik (*drag and drop*) file `Scenes/Entities/npc.tscn` dari panel FileSystem ke dalam layar kerja 3D Anda.
+3. **Mengganti Visual/Model NPC**:
    - Klik NPC yang baru Anda masukkan.
    - Centang opsi **Editable Children** (klik kanan pada node NPC -> centang *Editable Children*).
-   - Klik node `Sprite2D` yang muncul di dalam NPC tersebut.
-   - Di bagian Inspector sebelah kanan, pada properti **Texture**, tarik gambar/sprite karakter baru Anda ke sana. Anda juga bisa mengatur *hframes*, *vframes*, dan *frame* jika menggunakan *spritesheet*.
+   - Klik node `Sprite3D` atau `MeshInstance3D` yang muncul di dalam NPC tersebut.
+   - Di bagian Inspector sebelah kanan, sesuaikan model 3D atau gambar *Sprite3D* karakter baru Anda.
 4. **Mengubah Fungsi & Teks Percakapan NPC**:
    - Klik node utama NPC tersebut (yang bernama `NPC`).
    - Di panel Inspector paling atas, lihat bagian **Script Variables**.
@@ -33,9 +33,9 @@ Musuh biasa diatur oleh `enemy.tscn` (tipe memukul/dekat) atau `ranged_enemy.tsc
 ### Langkah-langkah (Contoh membuat monster baru):
 1. Buka file `Scenes/Entities/enemy.tscn`. Di menu paling atas kiri, klik **Scene -> Save As...** dan simpan dengan nama baru, misalnya `Scenes/Entities/orc_enemy.tscn`.
 2. Buka *scene* `orc_enemy.tscn` yang baru dibuat.
-3. **Mengganti Sprite (Visual)**:
-   - Klik node `Sprite2D` milik musuh tersebut, ganti **Texture**-nya dengan gambar Orc Anda.
-   - Jangan lupa sesuaikan ukuran `CollisionShape2D` (bentuk kotak biru) agar ukurannya pas dengan gambar tubuh Orc tersebut.
+3. **Mengganti Visual**:
+   - Klik node `Visual` (atau `Sprite3D`/`MeshInstance3D`) milik musuh tersebut, sesuaikan model atau *texture*-nya dengan wujud monster baru Anda.
+   - Jangan lupa sesuaikan ukuran `CollisionShape3D` agar ukurannya pas dengan volume tubuh monster tersebut.
 4. **Mengatur Kekuatan Musuh**:
    - Klik node `Enemy` paling atas.
    - Di panel Inspector (Script Variables), Anda bisa mengatur sesuka hati:
@@ -53,7 +53,7 @@ Boss memiliki pergerakan yang lebih pintar dan serangan yang lebih berbahaya (`S
 
 ### Langkah-langkah:
 1. Sama seperti musuh biasa, duplikat `boss_enemy.tscn` menjadi `boss_dragon.tscn`.
-2. Ganti `Sprite2D` menjadi gambar naga Anda.
+2. Ganti wujud/visual naga Anda di dalam *scene* tersebut.
 3. **Membuat *Script* Khusus Boss**:
    - Duplikat *script* `boss_enemy.gd` menjadi `boss_dragon.gd`.
    - Di *scene* `boss_dragon.tscn`, seret *script* `boss_dragon.gd` ke node paling atas untuk mengganti *script* bawaan.
@@ -182,3 +182,23 @@ Kini Anda dapat membuat resep rakitan langsung dari Inspector tanpa mengedit glo
    - **Req Mat 2**: wood
    - **Req Amount 2**: 2
 7. Simpan *scene*! Game akan otomatis membacanya sebagai resep iron_sword. Anda hanya perlu memastikan item resep blueprint-nya ada agar pemain bisa mempelajarinya!
+
+---
+
+## 6. Panduan Menyetel Animasi Senjata & Skill Karakter (Sistem Dinamis 3D)
+
+Game Nusvanir kini menggunakan sistem animasi 3D mutakhir yang tidak membutuhkan *hardcoding*. Skrip karakter akan secara otomatis melacak senjata apa yang sedang dipakai dan menyesuaikannya dengan *AnimationTree*.
+
+### Langkah-langkah Menambah Animasi Senjata Baru:
+1. Anda membuat tipe senjata baru di `item_db.tscn` bernama `battle_axe`.
+2. Buka file *scene* karakter utama (`Scenes/Entities/player.tscn`).
+3. Buka tab **AnimationTree**. 
+4. Buat *state* baru di dalamnya, dan beri nama persis dengan format **`[Tipe_Senjata]_[Aksi]`**.
+   - Contoh untuk kapak perang: `battle_axe_Idle`, `battle_axe_Walk`, `battle_axe_Run`, `battle_axe_Dash`, `battle_axe_Attack`, `battle_axe_HeavyAttack`.
+5. Hubungkan wujud animasi 3D `.glb` Anda ke masing-masing *state* tersebut.
+6. Selesai! Jika pemain memakai `battle_axe`, maka *script* akan otomatis memainkan animasi kapak tersebut. Jika belum ada, karakter akan *fallback* menggunakan *state* `Idle` atau `Attack` biasa agar tidak *crash*.
+
+### Langkah-langkah Mengatur Durasi Animasi Skill:
+1. Jika Anda mendesain *skill* bernama "Meteoric Smash" (ID: `meteoric_smash`).
+2. Masukkan durasi animasinya dengan membuat state di *AnimationTree* bernama sama, tapi tanpa spasi dan kapital di tiap awal kata (`MeteoricSmash`).
+3. Sistem akan membaca berapa panjang (*length*) animasi tersebut dalam detik, lalu secara dinamis menjeda interaksi karakter (*is_animating_skill*) hingga animasinya selesai 100%. Anda tidak perlu mengira-ngira durasinya di dalam kodingan.
