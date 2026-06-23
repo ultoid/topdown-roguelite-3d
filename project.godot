@@ -41,4 +41,3 @@ theme/custom_font="res://Assets/Fonts/final-fantasy-advance-ds.otf"
 
 textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
-

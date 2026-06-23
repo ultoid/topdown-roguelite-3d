@@ -191,14 +191,14 @@ func drop_loot():
 		var coin_scene = load("res://Scenes/Items/coin.tscn")
 		if coin_scene:
 			var coin = coin_scene.instantiate()
-			coin.global_position = global_position
+			coin.position = global_position
 			get_tree().current_scene.call_deferred("add_child", coin)
 			
 	# Drop EXP (Pasti drop 1 EXP)
 	var exp_scene = load("res://Scenes/Items/exp_gem.tscn")
 	if exp_scene:
 		var exp_gem = exp_scene.instantiate()
-		exp_gem.global_position = global_position
+		exp_gem.position = global_position
 		get_tree().current_scene.call_deferred("add_child", exp_gem)
 
 func spawn_damage_text(text_val: Variant, color: Color):
@@ -209,7 +209,7 @@ func spawn_damage_text(text_val: Variant, color: Color):
 	label.pixel_size = 0.05
 	label.text = str(text_val)
 	label.modulate = color
-	label.global_position = global_position + Vector3(0, 2.0, 0)
+	label.position = global_position + Vector3(0, 2.0, 0)
 	 
 	
 	get_tree().current_scene.add_child(label)

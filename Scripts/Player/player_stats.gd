@@ -1,10 +1,7 @@
 extends Node
 class_name PlayerStats
 
-var player: CharacterBody3D
-
-func setup(p_player: CharacterBody3D):
-	player = p_player
+@onready var player: CharacterBody3D = get_parent()
 
 func get_equipment_bonuses() -> Dictionary:
 	var bonuses = {
@@ -36,8 +33,9 @@ func get_equipment_bonuses() -> Dictionary:
 			
 	return bonuses
 
+
 func recalculate_stats():
-	var bonuses = get_equipment_bonuses()
+	var bonuses = player.get_equipment_bonuses()
 	var old_max_hp = player.max_health
 	var old_max_mp = player.max_mana
 	var cls = Global.current_class if get_node_or_null("/root/Global") else "fighter"
@@ -93,7 +91,8 @@ func recalculate_stats():
 		Global.perm_stat_agi = player.stat_agi
 		Global.perm_stat_dex = player.stat_dex
 
-	_recalculate_elemental_stats()
+	player._recalculate_elemental_stats()
+
 
 func _recalculate_elemental_stats():
 	player.atk_elements.clear()
@@ -105,6 +104,7 @@ func _recalculate_elemental_stats():
 	var item_db = get_node_or_null("/root/ItemDB")
 	if not item_db: return
 	
+	# Get main weapon for player.attack element
 	var main_wp_id = Global.equipment.get("main_weapon", "")
 	if main_wp_id != "":
 		var data = item_db.get_item(main_wp_id)
@@ -115,6 +115,7 @@ func _recalculate_elemental_stats():
 	if player.atk_elements.is_empty():
 		player.atk_elements.append("netral")
 		
+	# Get artifact for defense element
 	var artifact_id = Global.equipment.get("artifact", "")
 	if artifact_id != "":
 		var data = item_db.get_item(artifact_id)
@@ -122,14 +123,20 @@ func _recalculate_elemental_stats():
 		if d_elem != "netral" and d_elem != "":
 			player.def_element = d_elem
 		
+	# Get resistances and dmg bonuses from ALL equipment
 	for slot in Global.equipment.keys():
-		var item_id = Global.equipment[slot]
+		var item_id = Global.equipment.get(slot, "")
 		if item_id != "":
 			var data = item_db.get_item(item_id)
-			var res = data.get("elemental_resistances", {})
-			for k in res.keys():
-				if not player.def_resistances.has(k): player.def_resistances[k] = 0.0
-				player.def_resistances[k] += res[k]
+			
+			var resists = data.get("resistances", {})
+			for k in resists.keys():
+				if not player.def_resistances.has(k):
+					if player.def_resistances.size() < 3: # Max 3 types
+						player.def_resistances[k] = 0.0
+				if player.def_resistances.has(k):
+					player.def_resistances[k] += resists[k]
+					if player.def_resistances[k] > 100.0: player.def_resistances[k] = 100.0
 					
 			var dmg_bonus = data.get("dmg_bonus", {})
 			for k in dmg_bonus.keys():
@@ -138,22 +145,17 @@ func _recalculate_elemental_stats():
 	
 	player.emit_signal("health_changed", player.current_health, player.max_health)
 
-func level_up():
-	player.level += 1
-	player.current_exp -= player.max_exp
-	player.max_exp = int(player.max_exp * 1.5)
-	player.stat_points += 1
-	player.spawn_floating_text("LEVEL UP!", Color(1.0, 1.0, 0.0))
-	
-	if get_node_or_null("/root/Global"):
-		Global.level = player.level
-		Global.current_exp = player.current_exp
-		Global.max_exp = player.max_exp
-		Global.stat_points = player.stat_points
-		
-	player.emit_signal("exp_changed", player.current_exp, player.max_exp, player.level)
-	recalculate_stats()
-	player.current_health = player.max_health
-	player.current_mana = player.max_mana
-	player.emit_signal("health_changed", player.current_health, player.max_health)
-	player.emit_signal("mana_changed", player.current_mana, player.max_mana)
+
+
+func _process(delta):
+	if player.is_dead: return
+	player.survival_time += delta
+	var sm_lvl = Global.unlocked_skills.get("spell_mastery", 0) if get_node_or_null("/root/Global") else 0
+	if sm_lvl > 0 and player.current_mana < player.max_mana:
+		player.mana_regen_accumulator += float(sm_lvl) * delta
+		if player.mana_regen_accumulator >= 1.0:
+			var heal_mp = int(player.mana_regen_accumulator)
+			player.mana_regen_accumulator -= float(heal_mp)
+			player.current_mana += heal_mp
+			if player.current_mana > player.max_mana: player.current_mana = player.max_mana
+			player.emit_signal("mana_changed", player.current_mana, player.max_mana)

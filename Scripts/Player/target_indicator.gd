@@ -40,7 +40,7 @@ func _process(_delta):
 		var enemies = get_tree().get_nodes_in_group("Enemy")
 		for e in enemies:
 			if not e.get("is_dead"):
-				# check if within max_range of player
+				# check if within max_range of self
 				var p_pos = player_node.global_position if is_instance_valid(player_node) else global_position
 				var dist = e.global_position.distance_to(p_pos)
 				if dist <= max_range and dist < closest_dist:
@@ -68,7 +68,7 @@ func _update_mesh():
 	immediate_mesh.clear_surfaces()
 	
 	var center = Vector3.ZERO
-	# 1. Menggambar batas maksimal cast (Lingkaran besar berpusat di player)
+	# 1. Menggambar batas maksimal cast (Lingkaran besar berpusat di self)
 	_draw_arc(center, max_range, 64, Color(0.2, 0.8, 1.0, 0.6 * modulate.a))
 	_draw_circle_filled(center, max_range, 32, Color(0.2, 0.8, 1.0, 0.15 * modulate.a))
 	
