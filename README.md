@@ -21,6 +21,11 @@ Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** 
 3. Jika node tersebut tidak ditemukan di *AnimationTree*, sistem akan melakukan *fallback* dengan selamat ke state `Attack` biasa.
 4. **Skill Animasi**: Durasi skill didapatkan dengan membaca durasi state animasi yang namanya persis seperti nama skill (contoh: skill `seismic_fissure` akan mencari state bernama `SeismicFissure`).
 
+### Workflow Aset 3D & Animasi
+1. Model karakter dan model senjata **harus diekspor secara terpisah** dari Blender menggunakan format **`.fbx`** (bukan `.glb`). Pedang/senjata diletakkan di Blender hanya sebagai referensi animasi.
+2. Di Godot, file animasi `.fbx` diekstrak menjadi file mandiri (`.res` atau `.tres`). Masalah terkait path tulang bawaan saat ini ditangani via teks editor atau UI secara manual, lalu didaftarkan ke `AnimationPlayer`.
+3. Gunakan node `BoneAttachment3D` pada `Skeleton3D` untuk menempelkan model 3D senjata (misal: ke tulang tangan karakter) agar senjatanya bisa diganti secara dinamis saat permainan berjalan.
+
 ## Change Log
 
 ### 20 Juni 2026

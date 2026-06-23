@@ -326,7 +326,6 @@ func attack(is_charge: bool):
 	if is_charge:
 		player.current_attack_damage = player.physical_attack * 2
 		if w_type == "long_sword":
-			player._perform_spin_attack(player.current_attack_damage)
 			player.current_attack_speed *= 1.5
 			should_lunge = false
 		elif w_type == "dagger":
@@ -781,6 +780,16 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_e
 		player.knockback_velocity = knockback_direction * knockback_strength
 		
 	player.modulate = Color(1, 0, 0)
+	
+	if player.state_machine and not player.is_dead and not player.is_dashing:
+		var target_state = player.get_anim_state("Damaged")
+		if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
+			if player.animation_tree.tree_root.has_node(target_state):
+				player.state_machine.travel(target_state)
+				player.is_damaged = true
+				var dmg_len = player._get_state_length(target_state, 0.5)
+				get_tree().create_timer(dmg_len).timeout.connect(func(): player.is_damaged = false)
+				
 	await get_tree().create_timer(0.1).timeout
 	player.modulate = Color(1, 1, 1)
 	

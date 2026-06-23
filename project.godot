@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="topdownaction_base"
+config/name="topdownaction_3D"
 run/main_scene="uid://cxxcwf77ptnv6"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://Assets/icon.svg"

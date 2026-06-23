@@ -277,14 +277,14 @@ func _physics_process(delta):
 			if is_instance_valid(player.sword_hitbox_area):
 				player.sword_hitbox_area.rotation.y = player.sprite.rotation.y
 		
-		if player.state_machine and not player.is_attacking:
+		if player.state_machine and not player.is_attacking and not player.is_damaged:
 			if player.is_running_from_double_tap and player.current_energy > 0:
 				player.state_machine.travel(player.get_anim_state("Run"))
 			else:
 				player.state_machine.travel(player.get_anim_state("Walk"))
 	else:
 		player.velocity = Vector3.ZERO
-		if player.state_machine and not player.is_attacking:
+		if player.state_machine and not player.is_attacking and not player.is_damaged:
 			player.state_machine.travel(player.get_anim_state("Idle"))
 		
 	player.move_and_slide()

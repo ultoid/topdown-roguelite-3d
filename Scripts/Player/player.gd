@@ -47,6 +47,8 @@ var stat_agi: int = 1
 var stat_dex: int = 1
 var stat_points: int = 0
 
+var is_damaged: bool = false
+
 # Derived stats
 var physical_attack: int = 10
 var magic_attack: int = 10
