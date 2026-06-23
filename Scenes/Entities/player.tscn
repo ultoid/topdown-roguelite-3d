@@ -5,9 +5,9 @@
 [ext_resource type="Script" uid="uid://bvxjtj076yea7" path="res://Scripts/Player/sword_hitbox.gd" id="3_sweqy"]
 [ext_resource type="Animation" uid="uid://ri4v2u30b11l" path="res://Assets/Models/attack.res" id="3_yqx0t"]
 [ext_resource type="Animation" uid="uid://bu4qxiky8mjss" path="res://Assets/Models/dash.res" id="4_ofjh0"]
-[ext_resource type="Texture2D" uid="uid://co88ja2kcj0rp" path="res://Assets/3DS - Pokemon Omega Ruby _ Alpha Sapphire - Trainer Classes - Bird Keeper/boy_0.png" id="4_y18yp"]
+[ext_resource type="Texture2D" uid="uid://co88ja2kcj0rp" path="res://Assets/BaseModelPlayer/boy_0.png" id="4_y18yp"]
 [ext_resource type="Animation" uid="uid://cq1kab7j5lfgf" path="res://Assets/Models/run.res" id="5_2hnfo"]
-[ext_resource type="Texture2D" uid="uid://dogptjo6tymc1" path="res://Assets/3DS - Pokemon Omega Ruby _ Alpha Sapphire - Trainer Classes - Bird Keeper/boy_1.png" id="5_85s6f"]
+[ext_resource type="Texture2D" uid="uid://dogptjo6tymc1" path="res://Assets/BaseModelPlayer/boy_1.png" id="5_85s6f"]
 [ext_resource type="Animation" uid="uid://d30l5mroyacm4" path="res://Assets/Models/walk.res" id="6_y18yp"]
 [ext_resource type="Script" uid="uid://crmwbx85pg1ck" path="res://Scripts/Player/player_movement.gd" id="14_pm2yg"]
 [ext_resource type="Script" uid="uid://bqtdf5yupcnkn" path="res://Scripts/Player/player_input.gd" id="15_43gew"]
@@ -24,6 +24,9 @@ animation = &"custom/attack"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_85s6f"]
 animation = &"custom/dash"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_heavy"]
+animation = &"custom/attack"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_a1rq5"]
 animation = &"mixamo_com"
@@ -87,9 +90,6 @@ advance_mode = 0
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_abjg5"]
 advance_mode = 0
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_heavy"]
-animation = &"custom/attack"
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_heavy1"]
 advance_mode = 0
 
@@ -102,6 +102,8 @@ states/Attack/position = Vector2(509, 100)
 states/Dash/node = SubResource("AnimationNodeAnimation_85s6f")
 states/Dash/position = Vector2(496, 16)
 states/End/position = Vector2(821, 100)
+states/HeavyAttack/node = SubResource("AnimationNodeAnimation_heavy")
+states/HeavyAttack/position = Vector2(509, 200)
 states/Idle/node = SubResource("AnimationNodeAnimation_a1rq5")
 states/Idle/position = Vector2(321, 100)
 states/Run/node = SubResource("AnimationNodeAnimation_yqx0t")
@@ -109,8 +111,6 @@ states/Run/position = Vector2(706, 161)
 states/Start/position = Vector2(172, 100)
 states/Walk/node = SubResource("AnimationNodeAnimation_svftf")
 states/Walk/position = Vector2(547, 201)
-states/HeavyAttack/node = SubResource("AnimationNodeAnimation_heavy")
-states/HeavyAttack/position = Vector2(509, 200)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_yqx0t"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_ofjh0"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_2hnfo"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_y18yp"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_85s6f"), "Idle", "Run", SubResource("AnimationNodeStateMachineTransition_14y0q"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_f5ba2"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_kvkok"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_at1v1"), "Idle", "Dash", SubResource("AnimationNodeStateMachineTransition_pm2yg"), "Dash", "Idle", SubResource("AnimationNodeStateMachineTransition_43gew"), "Walk", "Dash", SubResource("AnimationNodeStateMachineTransition_udx2w"), "Dash", "Walk", SubResource("AnimationNodeStateMachineTransition_aqs8i"), "Run", "Dash", SubResource("AnimationNodeStateMachineTransition_vbauc"), "Dash", "Run", SubResource("AnimationNodeStateMachineTransition_p6fni"), "Attack", "Dash", SubResource("AnimationNodeStateMachineTransition_w4uu0"), "Dash", "Attack", SubResource("AnimationNodeStateMachineTransition_abjg5"), "Idle", "HeavyAttack", SubResource("AnimationNodeStateMachineTransition_heavy1"), "HeavyAttack", "Idle", SubResource("AnimationNodeStateMachineTransition_heavy2")]
 graph_offset = Vector2(-182, 47)
 

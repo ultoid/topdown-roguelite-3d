@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://iqimxcu1hwiy"
+path="res://.godot/imported/sk_senua_sword.obj-51635155cb9a39129224a7afae14448c.mesh"
+
+[deps]
+
+files=["res://.godot/imported/sk_senua_sword.obj-51635155cb9a39129224a7afae14448c.mesh"]
+
+source_file="res://Assets/Models/LongSword/sample long sword/sk_senua_sword.obj"
+dest_files=["res://.godot/imported/sk_senua_sword.obj-51635155cb9a39129224a7afae14448c.mesh", "res://.godot/imported/sk_senua_sword.obj-51635155cb9a39129224a7afae14448c.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false
