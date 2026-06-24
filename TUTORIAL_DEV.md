@@ -202,3 +202,30 @@ Game Nusvanir kini menggunakan sistem animasi 3D mutakhir yang tidak membutuhkan
 1. Jika Anda mendesain *skill* bernama "Meteoric Smash" (ID: `meteoric_smash`).
 2. Masukkan durasi animasinya dengan membuat state di *AnimationTree* bernama sama, tapi tanpa spasi dan kapital di tiap awal kata (`MeteoricSmash`).
 3. Sistem akan membaca berapa panjang (*length*) animasi tersebut dalam detik, lalu secara dinamis menjeda interaksi karakter (*is_animating_skill*) hingga animasinya selesai 100%. Anda tidak perlu mengira-ngira durasinya di dalam kodingan.
+
+---
+
+## 7. Panduan Menambah Senjata Baru (Modular Scene)
+
+Mulai pembaruan terbaru, senjata dibuat menggunakan pendekatan *Modular Scene*. Artinya, setiap senjata adalah satu *scene* Godot mandiri yang menyimpan wujud fisik 3D dan area serangannya (*hitbox*).
+
+### Langkah-langkah Menambah Senjata (Contoh: Kapak):
+1. **Buat Scene Senjata**:
+   - Di Godot, klik menu **Scene -> New Scene**, lalu pilih **3D Scene** (Node3D). Beri nama induknya, misalnya `AxeWeapon`.
+   - Simpan *scene* ini (Ctrl+S) di folder `Scenes/Weapons/` (buat foldernya jika belum ada), misalnya dengan nama `axe.tscn`.
+2. **Tambahkan Model 3D**:
+   - Tarik model 3D kapak Anda (`.glb` atau `.obj`) ke dalam *scene* tersebut dari panel FileSystem. Sesuaikan posisinya agar gagang kapaknya pas berada di titik tengah (titik origin / 0,0,0).
+3. **Tambahkan Hitbox (Area Serangan)**:
+   - Klik kanan pada induk `AxeWeapon` -> **Add Child Node** -> `Area3D`. Beri nama `RightHandHitBox` (huruf kapital harus pas).
+   - Tarik script `Scripts/Player/sword_hitbox.gd` ke dalam kotak *Script* di Inspector milik node `RightHandHitBox`.
+   - Klik kanan pada `RightHandHitBox` -> **Add Child Node** -> `CollisionShape3D`.
+   - Di panel Inspector, berikan bentuk *BoxShape3D* atau *CylinderShape3D*.
+   - Atur posisi dan ukuran area transparannya agar menyelimuti mata kapak. (Area inilah yang akan mencederai musuh).
+4. **Daftarkan Senjata di Database Item (`item_db.tscn` / Excel)**:
+   - Buat item baru di database (baik via `item_db.tscn` langsung atau lewat file Excel).
+   - Pastikan variabel/kolom `weapon_type` diisi dengan jenisnya (misal: `"axe"`, `"spear"`, dll).
+   - Tambahkan variabel/kolom **`weapon_scene_path`**, lalu isi dengan path ke *scene* yang tadi dibuat (contoh: `"res://Scenes/Weapons/axe.tscn"`).
+5. **(Opsional) Atur Animasi Senjata**:
+   - Daftarkan animasi pukulan spesifik tipe kapak di *AnimationTree* `player.tscn` (sesuai petunjuk pada Bab 6), contoh penamaan state: `axe_Attack1`, `axe_Idle`.
+
+Kini, setiap kali pemain memakai kapak tersebut (Equip) dari *Inventory*, karakter akan secara otomatis menggenggam *scene* kapak itu di tangannya, dan efek *damage* dari kapak akan langsung berfungsi tanpa perlu koding sama sekali!

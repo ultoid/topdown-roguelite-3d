@@ -21,6 +21,7 @@ func _traverse_children(parent_node: Node):
 				"rarity": child.rarity,
 				"price": child.price,
 				"weapon_type": child.weapon_type,
+				"weapon_scene_path": child.weapon_scene_path,
 				"icon_frame": child.frame,
 				"texture": child.texture.resource_path if child.texture else "",
 				"hframes": child.hframes,

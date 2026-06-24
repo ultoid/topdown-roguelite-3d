@@ -398,6 +398,10 @@ func attack(is_charge: bool):
 
 	# Hitbox pedang sekarang dikendalikan oleh AnimationPlayer melalui metode
 	# activate_weapon_hitbox() dan deactivate_weapon_hitbox() yang ada di player.gd
+	if w_type == "None" or w_type == "gloves":
+		# Animasi tangan kosong tidak punya method track, jadi dipanggil manual
+		get_tree().create_timer(current_attack_duration * 0.2).timeout.connect(func(): if is_instance_valid(player): player.activate_weapon_hitbox())
+		get_tree().create_timer(current_attack_duration * 0.5).timeout.connect(func(): if is_instance_valid(player): player.deactivate_weapon_hitbox())
 
 	if is_charge and should_lunge:
 		player.charge_lunge_timer = current_attack_duration * 0.2

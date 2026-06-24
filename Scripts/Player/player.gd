@@ -22,6 +22,8 @@ var sword_hitbox_area: Area3D:
 			return rh
 			
 		# Fallback: pakai hitbox standar (misal untuk tangan kosong atau magic)
+		var hb = find_child("HitBox", true, false)
+		if is_instance_valid(hb): return hb
 		return find_child("SwordHitBox", true, false)
 
 var sword_hitbox: CollisionShape3D:
@@ -198,12 +200,31 @@ func recalculate_stats():
 	player_stats.recalculate_stats()
 func _recalculate_elemental_stats():
 	player_stats._recalculate_elemental_stats()
+func update_equipped_weapon():
+	var attachment = find_child("BoneAttachment3D", true, false)
+	if not attachment: return
+	
+	# Bersihkan senjata lama yang di-instantiate (selain SkSenuaSword dummy kalau ada)
+	for child in attachment.get_children():
+		if child.name != "SkSenuaSword":
+			child.queue_free()
+			
+	var item_db = get_node_or_null("/root/ItemDB")
+	if item_db and get_node_or_null("/root/Global") and Global.equipment.get("main_weapon", "") != "":
+		var w_data = item_db.get_item(Global.equipment["main_weapon"])
+		if w_data and w_data.get("weapon_scene_path", "") != "":
+			var weapon_scene = load(w_data["weapon_scene_path"])
+			if weapon_scene:
+				var weapon_instance = weapon_scene.instantiate()
+				attachment.add_child(weapon_instance)
+
 func _ready():
 	add_to_group("Player")
 	status_manager = StatusEffectManager.new()
 	add_child(status_manager)
 	status_manager.setup(self)
 	
+	update_equipped_weapon()
 
 
 	# Strip X/Z translation from the dash animation to prevent the visual mesh from moving away from the root collision shape

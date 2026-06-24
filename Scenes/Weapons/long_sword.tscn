@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bci567xsvevb0"]
+
+[ext_resource type="Script" uid="uid://bvxjtj076yea7" path="res://Scripts/Player/sword_hitbox.gd" id="1_sweqy"]
+[ext_resource type="ArrayMesh" uid="uid://iqimxcu1hwiy" path="res://Assets/Models/LongSword/sample long sword/sk_senua_sword.obj" id="2_43gew"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_abjg5"]
+size = Vector3(0.14868164, 0.8613281, 2.3547363)
+
+[node name="LongSword" type="Node3D" unique_id=1566427701]
+
+[node name="SkSenuaSword" type="MeshInstance3D" parent="." unique_id=407176852]
+transform = Transform3D(0.002393558, 0.0022010761, 0.0023293947, 0.0017178238, -0.0033355814, 0.0013866919, 0.0027055282, 0.00017059, -0.0029412503, 0.0055515617, 0.022199038, 0.007697277)
+mesh = ExtResource("2_43gew")
+
+[node name="RightHandHitBox" type="Area3D" parent="." unique_id=1696242118]
+transform = Transform3D(-0.06472814, 0.16309169, -0.018697111, -0.06788221, -0.044890985, -0.15657279, -0.14946738, -0.050240546, 0.07920612, -0.14985694, -0.031821635, 0.117867716)
+script = ExtResource("1_sweqy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightHandHitBox" unique_id=1024490009]
+transform = Transform3D(-0.9556892, 0.08851018, 0.28075677, 0.25571087, 0.7221066, 0.642789, -0.1458424, 0.6860988, -0.7127428, 0.43335173, 1.75538, -1.5744703)
+shape = SubResource("BoxShape3D_abjg5")

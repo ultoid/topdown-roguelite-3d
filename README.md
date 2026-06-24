@@ -25,6 +25,7 @@ Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** 
 1. Model karakter dan model senjata **harus diekspor secara terpisah** dari Blender menggunakan format **`.fbx`** (bukan `.glb`). Pedang/senjata diletakkan di Blender hanya sebagai referensi animasi.
 2. Di Godot, file animasi `.fbx` diekstrak menjadi file mandiri (`.res` atau `.tres`). Masalah terkait path tulang bawaan saat ini ditangani via teks editor atau UI secara manual, lalu didaftarkan ke `AnimationPlayer`.
 3. Gunakan node `BoneAttachment3D` pada `Skeleton3D` untuk menempelkan model 3D senjata (misal: ke tulang tangan karakter) agar senjatanya bisa diganti secara dinamis saat permainan berjalan.
+4. **Modular Weapon Scenes**: Senjata kini diimplementasikan menggunakan pendekatan *Modular Scene*. Fisik 3D senjata beserta *hitbox* area serangannya disimpan di dalam file `.tscn` terpisah dan di-*load* berdasarkan `weapon_scene_path` dari *Item Database*.
 
 ## Change Log
 

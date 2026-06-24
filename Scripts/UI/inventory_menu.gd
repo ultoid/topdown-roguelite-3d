@@ -372,6 +372,8 @@ func _on_popup_pressed(id: int):
 			
 			if player_ref and player_ref.has_method("recalculate_stats"):
 				player_ref.recalculate_stats()
+				if player_ref.has_method("update_equipped_weapon"):
+					player_ref.update_equipped_weapon()
 				var hud = get_node_or_null("/root/PlayerHUD")
 				if hud:
 					hud._update_hp_mp_ep()
@@ -397,6 +399,8 @@ func _on_popup_pressed(id: int):
 				
 				if player_ref and player_ref.has_method("recalculate_stats"):
 					player_ref.recalculate_stats()
+					if player_ref.has_method("update_equipped_weapon"):
+						player_ref.update_equipped_weapon()
 					var hud = get_node_or_null("/root/PlayerHUD")
 					if hud:
 						hud._update_hp_mp_ep()

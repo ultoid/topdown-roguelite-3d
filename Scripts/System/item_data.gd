@@ -15,6 +15,7 @@ class_name ItemData
 @export_group("Equipment Stats")
 @export_enum("None", "main_weapon", "secondary_weapon", "helm", "armor", "boots", "accessory", "artifact") var equipment_slot: String = "None"
 @export_enum("None", "long_sword", "sword", "gloves", "lance", "staff", "rod", "long_bow", "crossbow", "dagger") var weapon_type: String = "None"
+@export_file("*.tscn") var weapon_scene_path: String = ""
 @export var bonus_p_atk: int = 0
 @export var bonus_p_def: int = 0
 @export var bonus_str: int = 0

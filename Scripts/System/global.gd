@@ -384,8 +384,8 @@ func spawn_hit_spark(global_pos: Vector3, parent_scene: Node):
 	process_mat.gravity = Vector3(0, -8, 0)
 	p.process_material = process_mat
 	
-	p.global_position = global_pos
 	parent_scene.add_child(p)
+	p.global_position = global_pos
 	p.emitting = true
 	
 	parent_scene.get_tree().create_timer(1.0).timeout.connect(func(): if is_instance_valid(p): p.queue_free())

@@ -84,6 +84,7 @@ type = "equipment"
 price = 50
 equipment_slot = "main_weapon"
 weapon_type = "long_sword"
+weapon_scene_path = "res://Scenes/Weapons/long_sword.tscn"
 bonus_p_atk = 10
 
 [node name="practice_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000001]
