@@ -108,8 +108,8 @@ func _physics_process(delta):
 					# Cancel animasi player.attack jika sedang player.attack saat dash
 					if player.is_attacking:
 						player.is_attacking = false
-						if player.sword_hitbox:
-							player.sword_hitbox.set_deferred("disabled", true)
+						# if player.sword_hitbox:
+						# 	player.sword_hitbox.set_deferred("disabled", true)
 					# Cancel aim/charge jika sedang aim saat dash
 					if player.magic_charge_timer > 0.0:
 						player.magic_charge_timer = 0.0
@@ -151,7 +151,9 @@ func _physics_process(delta):
 		player.modulate.a = 0.5
 		if player.animation_tree:
 			# Sesuaikan animasi pas dengan durasi dash
-			var req_speed = (player.dash_anim_length / player.dash_duration) * player.global_movement_scale
+			var current_dash_state = player.get_anim_state("Dash")
+			var actual_dash_length = player._get_state_length(current_dash_state, player.dash_anim_length)
+			var req_speed = (actual_dash_length / player.dash_duration) * player.global_movement_scale
 			var extra_advance = delta * (req_speed - 1.0)
 			if extra_advance != 0.0:
 				player.animation_tree.advance(extra_advance)
@@ -234,6 +236,9 @@ func _physics_process(delta):
 		if player.is_charge_attacking and player.charge_lunge_timer > 0:
 			player.charge_lunge_timer -= delta
 			player.velocity = player.last_direction * player.dash_speed
+		elif not player.is_charge_attacking and player.attack_lunge_timer > 0:
+			player.attack_lunge_timer -= delta
+			player.velocity = player.last_direction * player.attack_lunge_speed
 		else:
 			# Saat menyerang, karakter tidak bisa berlari/berjalan (diam di tempat)
 			player.velocity.x = 0

@@ -51,31 +51,31 @@ transform = Transform3D(17.195, 0, 0, 0, 17.195, 0, 0, 0, 17.195, 0, 0, 0)
 [node name="RedPlayerEnemy" parent="." unique_id=733080257 instance=ExtResource("red_enemy_res")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.44, 0, 12.5)
 speed = 3.0
-max_health = 9999999
+max_health = 500
 damage = 1
 
 [node name="RedPlayerEnemy4" parent="." unique_id=612183066 instance=ExtResource("red_enemy_res")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4640777, 0, 12.5)
 speed = 2.0
-max_health = 9999999
+max_health = 500
 damage = 1
 
 [node name="RedPlayerEnemy5" parent="." unique_id=1464891217 instance=ExtResource("red_enemy_res")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5323544, 0, 12.5)
 speed = 3.0
-max_health = 9999999
+max_health = 500
 damage = 1
 
 [node name="RedPlayerEnemy3" parent="." unique_id=1721909877 instance=ExtResource("red_enemy_res")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.710031, 0, 12.5)
 speed = 3.0
-max_health = 9999999
+max_health = 500
 damage = 1
 
 [node name="RedPlayerEnemy6" parent="." unique_id=10039343 instance=ExtResource("red_enemy_res")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.0956283, 0, 12.5)
 speed = 3.0
-max_health = 9999999
+max_health = 500
 damage = 1
 
 [node name="RedPlayerEnemy2" parent="." unique_id=1191913724 instance=ExtResource("red_enemy_res")]

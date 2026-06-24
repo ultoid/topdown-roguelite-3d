@@ -334,3 +334,58 @@ func get_element_multiplier(atk_elements: Array, def_element: String) -> float:
 		return 1.0
 		
 	return best_multiplier
+
+func flash_red_3d(node: Node3D):
+	if not is_instance_valid(node): return
+	var meshes = node.find_children("*", "MeshInstance3D", true, false)
+	var red_mat = StandardMaterial3D.new()
+	red_mat.albedo_color = Color(1, 0, 0)
+	red_mat.shading_mode = StandardMaterial3D.SHADING_MODE_UNSHADED
+	red_mat.blend_mode = StandardMaterial3D.BLEND_MODE_ADD
+	for m in meshes:
+		if is_instance_valid(m) and m.material_overlay == null:
+			m.material_overlay = red_mat
+	
+	await node.get_tree().create_timer(0.15).timeout
+	
+	if is_instance_valid(node):
+		for m in meshes:
+			if is_instance_valid(m) and m.material_overlay == red_mat:
+				m.material_overlay = null
+
+func spawn_hit_spark(global_pos: Vector3, parent_scene: Node):
+	if not is_instance_valid(parent_scene): return
+	var p = GPUParticles3D.new()
+	p.emitting = false
+	p.one_shot = true
+	p.explosiveness = 1.0
+	p.amount = 15
+	p.lifetime = 0.25
+	
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = Color(1.0, 0.8, 0.2)
+	mat.emission_enabled = true
+	mat.emission = Color(1.0, 0.5, 0.0)
+	mat.emission_energy_multiplier = 3.0
+	mat.shading_mode = StandardMaterial3D.SHADING_MODE_UNSHADED
+	
+	var mesh = BoxMesh.new()
+	mesh.size = Vector3(0.08, 0.08, 0.08)
+	mesh.material = mat
+	p.draw_pass_1 = mesh
+	
+	var process_mat = ParticleProcessMaterial.new()
+	process_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	process_mat.emission_sphere_radius = 0.2
+	process_mat.direction = Vector3(0, 1, 0)
+	process_mat.spread = 180.0
+	process_mat.initial_velocity_min = 4.0
+	process_mat.initial_velocity_max = 8.0
+	process_mat.gravity = Vector3(0, -8, 0)
+	p.process_material = process_mat
+	
+	p.global_position = global_pos
+	parent_scene.add_child(p)
+	p.emitting = true
+	
+	parent_scene.get_tree().create_timer(1.0).timeout.connect(func(): if is_instance_valid(p): p.queue_free())

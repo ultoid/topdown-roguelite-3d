@@ -8,8 +8,26 @@ extends CharacterBody3D
 
 @onready var animation_tree = get_node_or_null("AnimationTree")
 @onready var state_machine = animation_tree.get("parameters/playback") if animation_tree else null
-@onready var sword_hitbox = get_node_or_null("SwordHitBox/CollisionShape3D")
-@onready var sword_hitbox_area = get_node_or_null("SwordHitBox")
+var sword_hitbox_area: Area3D:
+	get:
+		var item_db = get_node_or_null("/root/ItemDB")
+		var w_type = "None"
+		if item_db and Global.equipment.get("main_weapon", "") != "":
+			var w_data = item_db.get_item(Global.equipment["main_weapon"])
+			w_type = w_data.get("weapon_type", "None")
+			
+		var rh = find_child("RightHandHitBox", true, false)
+		# Jika sedang pegang senjata jarak dekat dan ada hitbox di tangan, pakai yang di tangan
+		if w_type in ["long_sword", "dagger", "lance", "axe", "mace"] and is_instance_valid(rh):
+			return rh
+			
+		# Fallback: pakai hitbox standar (misal untuk tangan kosong atau magic)
+		return find_child("SwordHitBox", true, false)
+
+var sword_hitbox: CollisionShape3D:
+	get:
+		var area = sword_hitbox_area
+		return area.get_node_or_null("CollisionShape3D") if area else null
 @onready var nav_agent = get_node_or_null("NavigationAgent3D")
 @onready var animation_player = get_node_or_null("AnimationPlayer")
 @onready var sprite = get_node_or_null("Visuals")
@@ -79,6 +97,9 @@ var current_attack_speed: float = 1.0
 var current_anim_speed_ratio: float = 1.0
 var is_charge_attacking: bool = false
 var last_direction: Vector3 = Vector3(0, 0, 1)
+
+var combo_step: int = 1
+var last_attack_time: float = 0.0
 
 var is_dead: bool = false
 var is_invincible: bool = false
@@ -160,6 +181,8 @@ var cast_bar: ProgressBar = null
 var active_skill_cooldowns: Dictionary = {}
 var charge_attack_cooldown: float = 0.0
 var charge_lunge_timer: float = 0.0
+var attack_lunge_timer: float = 0.0
+var attack_lunge_speed: float = 0.0
 
 var is_auto_walking: bool = false
 var auto_walk_target: Vector3 = Vector3.ZERO
@@ -186,20 +209,18 @@ func _ready():
 	# Strip X/Z translation from the dash animation to prevent the visual mesh from moving away from the root collision shape
 	var ap = get_node_or_null("Visuals/HeroModel/AnimationPlayer")
 	if ap:
-		var dash_anim_name = ""
 		for anim_name in ap.get_animation_list():
-			if "dash" in anim_name.to_lower():
-				dash_anim_name = anim_name
-				break
-				
-		if dash_anim_name != "":
-			var anim = ap.get_animation(dash_anim_name)
-			dash_anim_length = anim.length
-			var track_idx = anim.find_track("Skeleton3D:mixamorig_Hips", Animation.TYPE_POSITION_3D)
-			if track_idx != -1:
-				for i in range(anim.track_get_key_count(track_idx)):
-					var val = anim.track_get_key_value(track_idx, i)
-					anim.track_set_key_value(track_idx, i, Vector3(0, val.y, 0))
+			var lower_name = anim_name.to_lower()
+			if "dash" in lower_name or "attack" in lower_name:
+				var anim = ap.get_animation(anim_name)
+				if "dash" in lower_name:
+					dash_anim_length = anim.length # Fallback
+					
+				var track_idx = anim.find_track("Skeleton3D:mixamorig_Hips", Animation.TYPE_POSITION_3D)
+				if track_idx != -1:
+					for i in range(anim.track_get_key_count(track_idx)):
+						var val = anim.track_get_key_value(track_idx, i)
+						anim.track_set_key_value(track_idx, i, Vector3(0, val.y, 0))
 	
 	if get_node_or_null("/root/Global"):
 		coins = Global.coins
@@ -225,8 +246,8 @@ func _ready():
 	if sprite:
 		base_y_offset = sprite.position.y
 		
-	if sword_hitbox:
-		sword_hitbox.set_deferred("disabled", true)
+	if sword_hitbox_area and sword_hitbox_area.has_method("deactivate"):
+		sword_hitbox_area.deactivate()
 	if animation_tree:
 		animation_tree.active = true
 		
@@ -296,7 +317,7 @@ func get_anim_state(base_state: String) -> String:
 	if w_type == "None" or w_type == "":
 		return base_state
 		
-	var specific_state = w_type + "_" + base_state
+	var specific_state = w_type.replace("_", "") + "_" + base_state
 	
 	if animation_tree and animation_tree.tree_root is AnimationNodeStateMachine:
 		if animation_tree.tree_root.has_node(specific_state):
@@ -420,4 +441,37 @@ func _update_aim_to_mouse(instant: bool = false):
 			else:
 				sprite.rotation.y = lerp_angle(sprite.rotation.y, target_angle - PI/2.0, 15.0 * get_physics_process_delta_time())
 			if is_instance_valid(sword_hitbox_area):
-				sword_hitbox_area.rotation.y = sprite.rotation.y
+				if not sword_hitbox_area.get_parent() is BoneAttachment3D:
+					sword_hitbox_area.rotation.y = sprite.rotation.y
+
+func activate_weapon_hitbox():
+	if is_charge_attacking:
+		var item_db = get_node_or_null("/root/ItemDB")
+		if item_db and Global.equipment.get("main_weapon", "") != "":
+			var w_data = item_db.get_item(Global.equipment["main_weapon"])
+			if w_data and w_data.get("weapon_type", "") == "long_sword":
+				_perform_spin_attack_aoe()
+				return
+				
+	if sword_hitbox_area and sword_hitbox_area.has_method("clear_hit_list"):
+		sword_hitbox_area.clear_hit_list()
+
+func _perform_spin_attack_aoe():
+	var kb_force = 6.0 # 3 meter knockback
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	for e in enemies:
+		if is_instance_valid(e) and global_position.distance_to(e.global_position) <= 3.5:
+			if e.has_method("take_damage"):
+				var final_atk_elements = atk_elements.duplicate()
+				if status_manager:
+					var override = status_manager.get_override_element()
+					if override != "":
+						final_atk_elements = [override]
+				e.take_damage(current_attack_damage, global_position, final_atk_elements, kb_force)
+				
+	if has_method("apply_camera_shake"):
+		apply_camera_shake(8.0, 0.2)
+
+func deactivate_weapon_hitbox():
+	if sword_hitbox_area and sword_hitbox_area.has_method("deactivate"):
+		sword_hitbox_area.deactivate()

@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dl7elyrdr63bs"
+uid="uid://v5us3yquqph0"
 path="res://.godot/imported/longsword_idle.fbx-880973d38a74a5421197cc6026e4a596.scn"
 
 [deps]
@@ -39,11 +39,11 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "animations": {
-"Armature|mixamo_com": {
+"mixamo_com": {
 "save_to_file/enabled": true,
 "save_to_file/fallback_path": "res://Assets/Models/LongSword/longsword_idle.res",
 "save_to_file/keep_custom_tracks": true,
-"save_to_file/path": "uid://cgqji5c77xcn2",
+"save_to_file/path": "uid://rnccasxgejy6",
 "settings/loop_mode": 0,
 "slice_1/end_frame": 0,
 "slice_1/loop_mode": 0,

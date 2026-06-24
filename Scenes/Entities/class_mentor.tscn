@@ -4,7 +4,8 @@
 [ext_resource type="PackedScene" path="res://Scenes/Entities/HeroModel.tscn" id="2_hm"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cm1"]
-radius = 0.07861328
+radius = 0.38
+height = 2.3
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cm2"]
 height = 3.959961

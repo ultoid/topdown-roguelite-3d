@@ -103,8 +103,8 @@ func _use_skill(slot_index: int):
 	# Skill valid, cancel attack jika sedang player.attack(agar skill memprioritaskan attack)
 	if player.is_attacking:
 		player.is_attacking = false
-		if player.sword_hitbox:
-			player.sword_hitbox.set_deferred("disabled", true)
+	if player.sword_hitbox_area and player.sword_hitbox_area.has_method("deactivate"):
+		player.sword_hitbox_area.deactivate()
 		
 	var cost = mp_cost # Passed down just in case
 	var type = data.get("type", "instant")
@@ -347,22 +347,46 @@ func attack(is_charge: bool):
 		player.current_attack_damage = int(player.current_attack_damage * 2.0)
 		print("CRITICAL HIT!")
 		
-	# Bersihkan hit list SEKARANG agar siap, tapi hitbox baru aktif setelah delay
-	if player.sword_hitbox:
-		player.sword_hitbox.set_deferred("disabled", true) # Pastikan mati dulu
-		var area = player.sword_hitbox.get_parent()
-		if area and area.has_method("clear_hit_list"):
-			area.clear_hit_list()
-			
+	# Hitbox pedang tidak lagi diaktifkan secara instan di sini.
+	# Semua bergantung pada activate_weapon_hitbox() di AnimationPlayer.
 	if player.status_manager: player.current_attack_speed *= player.status_manager.get_attack_speed_multiplier()
 	
-	var target_state = player.get_anim_state("HeavyAttack" if is_charge else "Attack")
+	var target_state = ""
+	if is_charge:
+		target_state = player.get_anim_state("HeavyAttack")
+	else:
+		var current_time = Time.get_ticks_msec() / 1000.0
+		if current_time - player.last_attack_time > 1.0:
+			player.combo_step = 1
+			
+		var combo_state = "Attack" + str(player.combo_step)
+		target_state = player.get_anim_state(combo_state)
+		
+		# Fallback to normal "Attack" if the combo state doesn't exist (e.g. for bare hands)
+		if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
+			if not player.animation_tree.tree_root.has_node(target_state):
+				target_state = player.get_anim_state("Attack")
+		
+		player.combo_step += 1
+		if player.combo_step > 3:
+			player.combo_step = 1
+			
 	if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
 		if not player.animation_tree.tree_root.has_node(target_state):
 			target_state = player.get_anim_state("Attack")
+	var base_dur = player.base_attack_duration
+	if is_charge and w_type == "long_sword":
+		base_dur = 1.2
+	elif not is_charge:
+		if "Attack1" in target_state:
+			base_dur = 0.5
+		elif "Attack2" in target_state:
+			base_dur = 0.3
+		elif "Attack3" in target_state:
+			base_dur = 0.7
 			
-	var actual_len = player._get_state_length(target_state, player.base_attack_duration)
-	player.current_anim_speed_ratio = actual_len / player.base_attack_duration
+	var actual_len = player._get_state_length(target_state, base_dur)
+	player.current_anim_speed_ratio = actual_len / base_dur
 	
 	if player.animation_tree:
 		player.animation_tree.set("parameters/AttackTimeScale/scale", player.current_attack_speed * player.current_anim_speed_ratio)
@@ -370,27 +394,20 @@ func attack(is_charge: bool):
 	if player.state_machine:
 		player.state_machine.travel(target_state)
 		
-	var current_attack_duration = player.base_attack_duration / player.current_attack_speed
+	var current_attack_duration = base_dur / player.current_attack_speed
 
-	# Bersihkan hit list agar musuh bisa kena hit lagi di serangan berikutnya
-	if player.sword_hitbox:
-		var area = player.sword_hitbox.get_parent()
-		if area and area.has_method("clear_hit_list"):
-			area.clear_hit_list()
-	# Timing aktif/nonaktif hitbox diatur lewat keyframe animasi (property: disabled)
-	# Tambahkan track "CollisionShape3D > disabled" di custom/attack AnimationPlayer
+	# Hitbox pedang sekarang dikendalikan oleh AnimationPlayer melalui metode
+	# activate_weapon_hitbox() dan deactivate_weapon_hitbox() yang ada di player.gd
 
 	if is_charge and should_lunge:
 		player.charge_lunge_timer = current_attack_duration * 0.2
+	elif not is_charge and w_type == "long_sword":
+		player.attack_lunge_timer = current_attack_duration * 0.15 # Slide smoothly for a fraction of the attack duration
+		player.attack_lunge_speed = player.dash_speed * 0.4 # A subtle, realistic lunge (40% of dash speed)
 
 	if is_dual_wield:
-		# Double hit: bersihkan hit list di tengah animasi agar hit kedua bisa detect
-		await get_tree().create_timer(current_attack_duration / 2.0).timeout
-		if player.sword_hitbox:
-			var area = player.sword_hitbox.get_parent()
-			if area and area.has_method("clear_hit_list"):
-				area.clear_hit_list()
-		await get_tree().create_timer(current_attack_duration / 2.0).timeout
+		# (AnimationPlayer di dual wield harus memanggil activate_weapon_hitbox() 2x di tengah animasi)
+		await get_tree().create_timer(current_attack_duration).timeout
 	else:
 		await get_tree().create_timer(current_attack_duration).timeout
 
@@ -401,7 +418,9 @@ func attack(is_charge: bool):
 func attack_finished():
 	player.is_attacking = false
 	player.current_attack_speed = 1.0
-	if player.sword_hitbox: player.sword_hitbox.set_deferred("disabled", true)
+	player.last_attack_time = Time.get_ticks_msec() / 1000.0
+	# Deactivate di-handle oleh AnimationPlayer (atau reset state)
+	pass
 	if player.state_machine: player.state_machine.travel(player.get_anim_state("Idle"))
 
 
@@ -779,8 +798,11 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_e
 		var knockback_strength = 40.0 # 40^2 / (2 * 800) = 1 meter
 		player.knockback_velocity = knockback_direction * knockback_strength
 		
-	player.modulate = Color(1, 0, 0)
-	
+	if get_node_or_null("/root/Global"):
+		Global.flash_red_3d(player)
+		var current_scene = get_tree().current_scene
+		if current_scene:
+			Global.spawn_hit_spark(player.global_position + Vector3(0, 1.0, 0), current_scene)
 	if player.state_machine and not player.is_dead and not player.is_dashing:
 		var target_state = player.get_anim_state("Damaged")
 		if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
@@ -837,7 +859,8 @@ func spawn_floating_text(msg: String, color: Color):
 func die():
 	if player.is_dead: return
 	player.is_dead = true
-	if player.sword_hitbox: player.sword_hitbox.set_deferred("disabled", true)
+	if player.sword_hitbox_area and player.sword_hitbox_area.has_method("deactivate"):
+		player.sword_hitbox_area.deactivate()
 	if player.animation_tree: player.animation_tree.active = false
 	if player.animation_player:
 		player.animation_player.play("Death")

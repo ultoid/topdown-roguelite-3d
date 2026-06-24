@@ -16,6 +16,9 @@ var player: Node3D = null
 var knockback_velocity: Vector3 = Vector3.ZERO
 var attack_cooldown: float = 1.5
 var spawn_position: Vector3 = Vector3.ZERO
+var attack_state: String = "idle"
+var lunge_timer: float = 0.0
+var lunge_direction: Vector3 = Vector3.ZERO
 var status_manager: StatusEffectManager = null
 var hp_bar: ProgressBar = null
 
@@ -93,49 +96,93 @@ func _physics_process(delta):
 				elif is_chasing and distance >= lose_interest_radius:
 					is_chasing = false
 					
-				var direction = Vector3.ZERO
-				var is_moving = false
-				
-				if is_chasing:
-					if distance > 0.5:
-						direction = (player.global_position - global_position).normalized()
-						is_moving = true
-				else:
-					var dist_to_spawn = global_position.distance_to(spawn_position)
-					if dist_to_spawn > 5.0:
-						direction = (spawn_position - global_position).normalized()
-						is_moving = true
-				
-				if is_moving:
-					if status_manager: direction = status_manager.get_override_movement(direction)
-					var move_speed = speed
+				if attack_state == "idle":
+					var direction = Vector3.ZERO
+					var is_moving = false
+					
+					if is_chasing:
+						if distance > 2.0:
+							direction = (player.global_position - global_position).normalized()
+							is_moving = true
+						elif distance <= 2.0:
+							is_moving = false
+							# In range to attack!
+							if attack_cooldown <= 0.0 and (not status_manager or status_manager.can_attack()):
+								attack_state = "lunging"
+								lunge_timer = 0.25
+								# Arah lunge persis menuju player (abaikan Y)
+								lunge_direction = (player.global_position - global_position)
+								lunge_direction.y = 0
+								lunge_direction = lunge_direction.normalized()
+					else:
+						var dist_to_spawn = global_position.distance_to(spawn_position)
+						if dist_to_spawn > 5.0:
+							direction = (spawn_position - global_position).normalized()
+							is_moving = true
+					
+					if is_moving:
+						if status_manager: direction = status_manager.get_override_movement(direction)
+						var move_speed = speed
+						if status_manager: move_speed *= status_manager.get_speed_multiplier()
+						if not is_chasing: move_speed *= 0.8
+						velocity = direction * move_speed
+						# Hadapkan musuh ke arah gerakan
+						var look_target = global_position + Vector3(direction.x, 0, direction.z)
+						if look_target.distance_to(global_position) > 0.01:
+							var visuals = get_node_or_null("Visuals")
+							if visuals:
+								visuals.look_at(look_target, Vector3.UP)
+								visuals.rotation.x = 0
+								visuals.rotation.z = 0
+					else:
+						velocity = Vector3.ZERO
+						# Tetap menatap player jika diam dan mengejar
+						if is_chasing:
+							var look_target = global_position + Vector3(player.global_position.x - global_position.x, 0, player.global_position.z - global_position.z)
+							if look_target.distance_to(global_position) > 0.01:
+								var visuals = get_node_or_null("Visuals")
+								if visuals:
+									visuals.look_at(look_target, Vector3.UP)
+									visuals.rotation.x = 0
+									visuals.rotation.z = 0
+									
+				elif attack_state == "lunging":
+					var move_speed = speed * 5.0
 					if status_manager: move_speed *= status_manager.get_speed_multiplier()
-					if not is_chasing: move_speed *= 0.8
-					velocity = direction * move_speed
-					# Hadapkan musuh ke arah gerakan (sumbu Y saja agar tidak miring)
-					var look_target = global_position + Vector3(direction.x, 0, direction.z)
-					if look_target.distance_to(global_position) > 0.01:
-						var visuals = get_node_or_null("Visuals")
-						if visuals:
-							visuals.look_at(look_target, Vector3.UP)
-							visuals.rotation.x = 0
-							visuals.rotation.z = 0
-				else:
-					velocity = Vector3.ZERO
+					velocity = lunge_direction * move_speed
+					
+					lunge_timer -= delta
+					
+					var current_dist = global_position.distance_to(player.global_position)
+					if current_dist <= 1.2 and not player.is_dead:
+						player.take_damage(damage, global_position, element)
+						attack_state = "returning"
+						lunge_timer = 1.0
+						velocity = Vector3.ZERO
+					elif lunge_timer <= 0:
+						attack_state = "returning"
+						lunge_timer = 1.0 # Timeout saat kembali mundur
 				
+				elif attack_state == "returning":
+					var dir_away = (global_position - player.global_position)
+					dir_away.y = 0
+					dir_away = dir_away.normalized()
+					
+					var move_speed = speed * 2.5
+					if status_manager: move_speed *= status_manager.get_speed_multiplier()
+					velocity = dir_away * move_speed
+					
+					lunge_timer -= delta
+					if distance >= 2.0 or lunge_timer <= 0:
+						attack_state = "idle"
+						var atk_speed_mult = 1.0
+						if status_manager: atk_speed_mult = status_manager.get_attack_speed_multiplier()
+						attack_cooldown = 1.0 / atk_speed_mult
+						velocity = Vector3.ZERO
+						
 	move_and_slide()
-	
-	# HP bar Sprite3D otomatis mengikuti posisi parent (musuh)
-	# Logika Serangan Berkelanjutan
-	if attack_cooldown <= 0.0:
-		if not status_manager or status_manager.can_attack():
-			if player and not player.is_dead and global_position.distance_to(player.global_position) <= 0.8:
-				player.take_damage(damage, global_position, element)
-				var atk_speed_mult = 1.0
-				if status_manager: atk_speed_mult = status_manager.get_attack_speed_multiplier()
-				attack_cooldown = 1.0 / atk_speed_mult # Jeda antar gigitan
 
-func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elements: Array = ["netral"]):
+func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elements: Array = ["netral"], kb_force: float = 3.464):
 	var multiplier = 1.0
 	if get_node_or_null("/root/Global"):
 		multiplier = Global.get_element_multiplier(atk_elements, element)
@@ -164,19 +211,27 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elem
 	
 	spawn_damage_text(final_damage, dmg_color)
 	
+	# Hambat musuh menyerang (Interrupt / Stun ringan)
+	attack_cooldown = 5.0
+	if attack_state == "lunging":
+		attack_state = "returning"
+		lunge_timer = 1.0
+		velocity = Vector3.ZERO
+	
 	# Kalkulasi efek pantulan (Knockback)
 	if knockback_source != Vector3.ZERO:
 		# Cari arah menjauh dari sumber serangan
 		var knockback_direction = (global_position - knockback_source)
 		knockback_direction.y = 0 # Jangan pantulkan ke atas/bawah
 		knockback_direction = knockback_direction.normalized()
-		# Terapkan daya pantul (3.464 m/s dengan friksi 6.0 menghasilkan tepat 1 meter)
-		knockback_velocity = knockback_direction * 3.464
+		# Terapkan daya pantul
+		knockback_velocity = knockback_direction * kb_force
 	
-	# Efek visual sederhana (berkedip)
-	modulate = Color(1, 0, 0) # Warna merah
-	await get_tree().create_timer(0.1).timeout
-	modulate = Color(1, 1, 1) # Normal kembali
+	if get_node_or_null("/root/Global"):
+		Global.flash_red_3d(self)
+		var current_scene = get_tree().current_scene
+		if current_scene:
+			Global.spawn_hit_spark(global_position + Vector3(0, 1.0, 0), current_scene)
 	
 	if current_health <= 0:
 		if player and not player.is_dead:
