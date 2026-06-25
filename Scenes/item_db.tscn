@@ -58,17 +58,7 @@ effect_amount = 100
 
 [node name="Equipment" type="Node" parent="." unique_id=1587395078]
 
-[node name="MainWeapon" type="Node" parent="Equipment" unique_id="910641728"]
-
-[node name="SecondaryWeapon" type="Node" parent="Equipment" unique_id="834625428"]
-
-[node name="Helm" type="Node" parent="Equipment" unique_id="276705036"]
-
-[node name="Armor" type="Node" parent="Equipment" unique_id="807257619"]
-
-[node name="Boots" type="Node" parent="Equipment" unique_id="439823996"]
-
-[node name="Accessory" type="Node" parent="Equipment" unique_id="435938960"]
+[node name="MainWeapon" type="Node" parent="Equipment" unique_id=910641728]
 
 [node name="practice_long_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000000]
 visible = false
@@ -259,82 +249,6 @@ bonus_str = 2
 weapon_element = "api"
 bonus_dmg_api = 10.0
 
-[node name="leather_armor" type="Sprite2D" parent="Equipment/Armor" unique_id=1010220573]
-visible = false
-position = Vector2(-372, -280)
-texture = ExtResource("2_icon")
-hframes = 16
-vframes = 137
-frame = 1817
-script = ExtResource("3_itemdata")
-item_name = "Leather Armor"
-description = "Baju zirah ringan dari kulit.
-
-Physical Defense +5
-Max HP +30"
-type = "equipment"
-price = 120
-equipment_slot = "armor"
-bonus_p_def = 5
-bonus_max_hp = 30
-
-[node name="leather_helmet" type="Sprite2D" parent="Equipment/Helm" unique_id=1340063860]
-visible = false
-position = Vector2(-445, -281)
-texture = ExtResource("2_icon")
-hframes = 16
-vframes = 137
-frame = 1831
-script = ExtResource("3_itemdata")
-item_name = "Leather Helmet"
-description = "Helm ringan dari kulit.
-
-Physical Defense +5
-Max HP +30"
-type = "equipment"
-price = 120
-equipment_slot = "helm"
-bonus_p_def = 5
-bonus_max_hp = 30
-
-[node name="leather_boots" type="Sprite2D" parent="Equipment/Boots" unique_id=2068952468]
-visible = false
-position = Vector2(-307, -280)
-texture = ExtResource("2_icon")
-hframes = 16
-vframes = 137
-frame = 1853
-script = ExtResource("3_itemdata")
-item_name = "Leather Boots"
-description = "Sepatu ringan dari kulit.
-
-Physical Defense +5
-Max HP +30"
-type = "equipment"
-price = 120
-equipment_slot = "boots"
-bonus_p_def = 5
-bonus_max_hp = 30
-
-[node name="ruby_ring" type="Sprite2D" parent="Equipment/Accessory" unique_id=1728266518]
-visible = false
-position = Vector2(-229, -196)
-texture = ExtResource("2_icon")
-hframes = 16
-vframes = 137
-frame = 1844
-script = ExtResource("3_itemdata")
-item_name = "Ruby Ring"
-description = "Cincin yang memancarkan energi magis.
-
-INT +4
-Max MP +10"
-type = "equipment"
-price = 200
-equipment_slot = "accessory"
-bonus_int = 4
-bonus_max_mp = 10
-
 [node name="holy_sword" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=1637996804]
 visible = false
 position = Vector2(-377, -102)
@@ -355,6 +269,92 @@ equipment_slot = "main_weapon"
 weapon_type = "long_sword"
 bonus_p_atk = 1000
 bonus_str = 99
+
+[node name="SecondaryWeapon" type="Node" parent="Equipment" unique_id=834625428]
+
+[node name="Helm" type="Node" parent="Equipment" unique_id=276705036]
+
+[node name="leather_helmet" type="Sprite2D" parent="Equipment/Helm" unique_id=1340063860]
+visible = false
+position = Vector2(-445, -281)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1831
+script = ExtResource("3_itemdata")
+item_name = "Leather Helmet"
+description = "Helm ringan dari kulit.
+
+Physical Defense +5
+Max HP +30"
+type = "equipment"
+price = 120
+equipment_slot = "helm"
+bonus_p_def = 5
+bonus_max_hp = 30
+
+[node name="Armor" type="Node" parent="Equipment" unique_id=807257619]
+
+[node name="leather_armor" type="Sprite2D" parent="Equipment/Armor" unique_id=1010220573]
+visible = false
+position = Vector2(-372, -280)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1817
+script = ExtResource("3_itemdata")
+item_name = "Leather Armor"
+description = "Baju zirah ringan dari kulit.
+
+Physical Defense +5
+Max HP +30"
+type = "equipment"
+price = 120
+equipment_slot = "armor"
+bonus_p_def = 5
+bonus_max_hp = 30
+
+[node name="Boots" type="Node" parent="Equipment" unique_id=439823996]
+
+[node name="leather_boots" type="Sprite2D" parent="Equipment/Boots" unique_id=2068952468]
+visible = false
+position = Vector2(-307, -280)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1853
+script = ExtResource("3_itemdata")
+item_name = "Leather Boots"
+description = "Sepatu ringan dari kulit.
+
+Physical Defense +5
+Max HP +30"
+type = "equipment"
+price = 120
+equipment_slot = "boots"
+bonus_p_def = 5
+bonus_max_hp = 30
+
+[node name="Accessory" type="Node" parent="Equipment" unique_id=435938960]
+
+[node name="ruby_ring" type="Sprite2D" parent="Equipment/Accessory" unique_id=1728266518]
+visible = false
+position = Vector2(-229, -196)
+texture = ExtResource("2_icon")
+hframes = 16
+vframes = 137
+frame = 1844
+script = ExtResource("3_itemdata")
+item_name = "Ruby Ring"
+description = "Cincin yang memancarkan energi magis.
+
+INT +4
+Max MP +10"
+type = "equipment"
+price = 200
+equipment_slot = "accessory"
+bonus_int = 4
+bonus_max_mp = 10
 
 [node name="Material" type="Node" parent="." unique_id=1375806897]
 

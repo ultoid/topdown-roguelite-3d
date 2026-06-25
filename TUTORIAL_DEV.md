@@ -190,12 +190,13 @@ Kini Anda dapat membuat resep rakitan langsung dari Inspector tanpa mengedit glo
 Game Nusvanir kini menggunakan sistem animasi 3D mutakhir yang tidak membutuhkan *hardcoding*. Skrip karakter akan secara otomatis melacak senjata apa yang sedang dipakai dan menyesuaikannya dengan *AnimationTree*.
 
 ### Langkah-langkah Menambah Animasi Senjata Baru:
-1. Anda membuat tipe senjata baru di `item_db.tscn` bernama `battle_axe`.
-2. Buka file *scene* karakter utama (`Scenes/Entities/player.tscn`).
-3. Buka tab **AnimationTree**. 
-4. Buat *state* baru di dalamnya, dan beri nama persis dengan format **`[Tipe_Senjata]_[Aksi]`**.
-   - Contoh untuk kapak perang: `battle_axe_Idle`, `battle_axe_Walk`, `battle_axe_Run`, `battle_axe_Dash`, `battle_axe_Attack`, `battle_axe_HeavyAttack`.
-5. Hubungkan wujud animasi 3D `.glb` Anda ke masing-masing *state* tersebut.
+1. Tentukan `weapon_type` pada senjata di `item_db.tscn` atau Excel (misalnya `battle_axe` atau `sword`).
+2. Buka file *scene* karakter utama (`Scenes/Entities/player.tscn`) dan buka tab **AnimationTree**. 
+3. Buat *state* baru di dalam State Machine, dan beri nama persis dengan format **`[weapon_type tanpa garis bawah]_[BaseState]`**.
+   - **PENTING**: Sistem otomatis menghapus karakter garis bawah (`_`). Jika `weapon_type` adalah `battle_axe`, nama statenya menjadi `battleaxe`.
+   - Contoh untuk kapak perang (`battle_axe`): `battleaxe_Idle`, `battleaxe_Run`, `battleaxe_Attack`.
+   - Contoh untuk pedang (`sword`): `sword_Idle`, `sword_Run`, `sword_Attack`.
+4. Hubungkan wujud animasi 3D `.glb` Anda ke masing-masing *state* tersebut.
 6. Selesai! Jika pemain memakai `battle_axe`, maka *script* akan otomatis memainkan animasi kapak tersebut. Jika belum ada, karakter akan *fallback* menggunakan *state* `Idle` atau `Attack` biasa agar tidak *crash*.
 
 ### Langkah-langkah Mengatur Durasi Animasi Skill:
@@ -229,3 +230,46 @@ Mulai pembaruan terbaru, senjata dibuat menggunakan pendekatan *Modular Scene*. 
    - Daftarkan animasi pukulan spesifik tipe kapak di *AnimationTree* `player.tscn` (sesuai petunjuk pada Bab 6), contoh penamaan state: `axe_Attack1`, `axe_Idle`.
 
 Kini, setiap kali pemain memakai kapak tersebut (Equip) dari *Inventory*, karakter akan secara otomatis menggenggam *scene* kapak itu di tangannya, dan efek *damage* dari kapak akan langsung berfungsi tanpa perlu koding sama sekali!
+
+---
+
+## 8. Panduan Mengepaskan Posisi Model Senjata di Tangan Karakter
+
+Saat Anda membuat *scene* senjata baru (Modular Scene), Anda perlu memastikan letak gagang senjatanya pas saat digenggam karakter. Cara terbaik dan paling rapi di Godot adalah dengan menyesuaikan **Transform (posisi dan rotasi)** di dalam *scene* senjata itu sendiri, bukan di dalam skrip.
+
+### Alur Kerja (Workflow) Pengepasan Visual:
+1. **Lakukan "Live Preview" Sementara di Scene Player**:
+   - Buka *scene* Player (`player.tscn`).
+   - Cari node `BoneAttachment3D` di kerangka tangan karakter (tempat senjata biasa dipasang).
+   - *Drag and drop* (tarik) *scene* pedang/senjata Anda (contoh: `sword.tscn`) ke dalam node `BoneAttachment3D` tersebut sebagai anak (*child*). Ini hanya untuk tes visual, jangan disimpan.
+   - Pastikan karakter sedang berada di pose diam (*Idle*) di `AnimationPlayer`.
+2. **Geser dan Sesuaikan**:
+   - Pilih node pedang yang baru saja Anda masukkan di *scene* Player.
+   - Gunakan *Move Tool* (W) dan *Rotate Tool* (E) di editor untuk menggeser dan memutar senjatanya sampai benar-benar pas digenggam oleh tangan karakter.
+   - Setelah pas, buka panel **Inspector -> Transform**.
+   - Klik kanan pada **Position** lalu pilih **Copy** (Salin). Catat juga nilai **Rotation**-nya.
+3. **Terapkan Secara Permanen di Scene Senjata**:
+   - **Hapus** node pedang sementara tadi dari *scene* Player.
+   - Buka kembali *scene* senjata Anda (misal `sword.tscn`).
+   - Jangan ubah Root Node (`Node3D`). Pilih node anak yang berupa model visual, yaitu **`MeshInstance3D`** atau node visual utamanya.
+   - *Paste* (Tempel) nilai **Position** dan **Rotation** yang sudah Anda dapatkan dari tes tadi ke properti *Transform* milik `MeshInstance3D` tersebut.
+   - Simpan *scene*. 
+
+Kini, kapan pun game berjalan dan senjata ini dipanggil (*spawn*) ke tangan karakter, posisinya akan selalu sejajar dan sempurna!
+
+---
+
+## 9. Panduan Mengganti Tampilan Visual Senjata (Efek & Partikel)
+
+Karena menggunakan sistem **Modular Scene**, setiap jenis senjata memiliki *scene*-nya masing-masing. Artinya, membuat tampilan senjata yang berbeda-beda sangatlah mudah.
+
+1. **Buat Scene Khusus Tiap Senjata**:
+   - Jika Anda memiliki pedang biasa dan pedang api, buat dua *scene* terpisah: `iron_sword.tscn` dan `fire_sword.tscn`.
+2. **Kustomisasi Visual**:
+   - Buka `iron_sword.tscn` dan masukkan model 3D pedang besi biasa.
+   - Buka `fire_sword.tscn` dan masukkan model 3D pedang keren. Di sini, Anda bebas menambahkan elemen Godot lainnya seperti partikel api (`GPUParticles3D`), cahaya bersinar (`OmniLight3D`), atau suara sabetan khusus (`AudioStreamPlayer3D`) yang menempel di senjata.
+3. **Sambungkan ke ItemDB**:
+   - Di `item_db.tscn` (atau file Excel database item), atur properti **`weapon_scene_path`** milik pedang besi ke `"res://Scenes/Weapons/iron_sword.tscn"`.
+   - Atur **`weapon_scene_path`** milik pedang api ke `"res://Scenes/Weapons/fire_sword.tscn"`.
+
+Dengan cara ini, saat pemain mengganti senjatanya di *Inventory*, sistem secara otomatis memuat *scene* utuh beserta seluruh efek visual, partikel, hingga bentuk *hitbox* unik yang ada di dalamnya!
