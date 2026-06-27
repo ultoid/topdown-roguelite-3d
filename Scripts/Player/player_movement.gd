@@ -3,7 +3,26 @@ class_name PlayerMovement
 
 @onready var player: CharacterBody3D = get_parent()
 
+var fall_start_y: float = 0.0
+var was_on_floor: bool = true
+
 func _physics_process(delta):
+	var current_y_velocity = player.velocity.y
+	if not player.is_on_floor():
+		var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+		current_y_velocity -= gravity * delta
+		if was_on_floor:
+			fall_start_y = player.global_position.y
+		was_on_floor = false
+	else:
+		if not was_on_floor:
+			var fall_distance = fall_start_y - player.global_position.y
+			if fall_distance >= 5.0:
+				player.take_damage(1, Vector3.ZERO, "netral", 0.0) # 1 damage for debugging fall
+		was_on_floor = true
+		if current_y_velocity < 0:
+			current_y_velocity = 0.0
+
 	player._update_interaction_prompt()
 	
 	if not Input.is_action_pressed("charge_attack"):
@@ -19,7 +38,10 @@ func _physics_process(delta):
 
 	if player.is_dead: return
 	if player.is_doing_life_skill:
-		player.velocity = Vector3.ZERO
+		player.velocity.x = 0
+		player.velocity.z = 0
+		player.velocity.y = current_y_velocity
+		player.move_and_slide()
 		return
 	
 	if player.animation_tree:
@@ -104,7 +126,7 @@ func _physics_process(delta):
 				if player.status_manager and not player.status_manager.can_move():
 					var effect_name = player.status_manager.get_movement_restriction_name()
 					player.spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
-				elif player.current_energy >= 20.0:
+				elif player.current_energy >= 10.0:
 					# Cancel animasi player.attack jika sedang player.attack saat dash
 					if player.is_attacking:
 						player.is_attacking = false
@@ -116,7 +138,7 @@ func _physics_process(delta):
 						player.is_casting = false
 						if is_instance_valid(player.magic_charge_bar):
 							player.magic_charge_bar.queue_free()
-					player.current_energy -= 20.0
+					player.current_energy -= 10.0
 					player.emit_signal("energy_changed", player.current_energy, player.max_energy)
 					player.is_dashing = true
 					if player.state_machine: player.state_machine.travel(player.get_anim_state("Dash"))
@@ -146,6 +168,7 @@ func _physics_process(delta):
 	if player.is_dashing:
 		var speed_multiplier = (player.dash_timer / player.dash_duration) * 2.0
 		player.velocity = player.last_direction * (player.dash_speed * speed_multiplier * player.global_movement_scale)
+		player.velocity.y = current_y_velocity
 		player.dash_timer -= delta
 		player.move_and_slide()
 		player.modulate.a = 0.5
@@ -194,6 +217,7 @@ func _physics_process(delta):
 
 	if player.knockback_velocity != Vector3.ZERO:
 		player.velocity = player.knockback_velocity
+		player.velocity.y = current_y_velocity
 		player.knockback_velocity = player.knockback_velocity.move_toward(Vector3.ZERO, 800 * delta)
 		player.move_and_slide()
 		return
@@ -236,9 +260,11 @@ func _physics_process(delta):
 		if player.is_charge_attacking and player.charge_lunge_timer > 0:
 			player.charge_lunge_timer -= delta
 			player.velocity = player.last_direction * player.dash_speed
+			player.velocity.y = current_y_velocity
 		elif not player.is_charge_attacking and player.attack_lunge_timer > 0:
 			player.attack_lunge_timer -= delta
 			player.velocity = player.last_direction * player.attack_lunge_speed
+			player.velocity.y = current_y_velocity
 		else:
 			# Saat menyerang, karakter tidak bisa berlari/berjalan (diam di tempat)
 			player.velocity.x = 0
@@ -272,6 +298,7 @@ func _physics_process(delta):
 	if input_direction != Vector3.ZERO:
 		var physical_speed = current_speed
 		player.velocity = input_direction * physical_speed
+		player.velocity.y = current_y_velocity
 		
 		# Selalu simpan arah terakhir agar dash/player.attack yang dilakukan saat diam mengarah ke arah yang benar
 		player.last_direction = input_direction
@@ -288,7 +315,9 @@ func _physics_process(delta):
 			else:
 				player.state_machine.travel(player.get_anim_state("Walk"))
 	else:
-		player.velocity = Vector3.ZERO
+		player.velocity.x = 0
+		player.velocity.z = 0
+		player.velocity.y = current_y_velocity
 		if player.state_machine and not player.is_attacking and not player.is_damaged:
 			player.state_machine.travel(player.get_anim_state("Idle"))
 		
@@ -349,7 +378,7 @@ func _process(delta):
 			is_running_now = true
 			
 	if is_running_now and player.current_energy > 0:
-		player.current_energy -= 10.0 * delta # Mengurangi 10 EP per detik
+		player.current_energy -= 1.0 * delta # Mengurangi 1 EP per detik
 		if player.current_energy < 0: player.current_energy = 0
 		player.emit_signal("energy_changed", player.current_energy, player.max_energy)
 	elif not player.is_running_from_double_tap and player.current_energy < player.max_energy:

@@ -50,3 +50,9 @@ Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** 
 
 ### 24 Juni 2026
 [Lihat detail perubahan](Change%20Log/2026-06-24.md)
+
+### 25 Juni 2026
+[Lihat detail perubahan](Change%20Log/2026-06-25.md)
+
+### 27 Juni 2026
+[Lihat detail perubahan](Change%20Log/2026-06-27.md)
