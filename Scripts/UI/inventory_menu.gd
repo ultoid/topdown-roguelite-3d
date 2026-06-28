@@ -172,13 +172,13 @@ func _refresh_inventory():
 							var allowed_weapons = []
 							match cls:
 								"fighter": allowed_weapons = ["long_sword", "sword", "gloves", "lance"]
-								"apprentice": allowed_weapons = ["staff", "rod"]
+								"apprentice": allowed_weapons = ["staff", "rune"]
 								"scout": allowed_weapons = ["long_bow", "crossbow", "dagger"]
 							
 							if not w_type in allowed_weapons:
 								is_wrong_class = true
 								var req_cls = "Fighter"
-								if w_type in ["staff", "rod"]: req_cls = "Apprentice"
+								if w_type in ["staff", "rune"]: req_cls = "Apprentice"
 								if w_type in ["long_bow", "crossbow", "dagger"]: req_cls = "Scout"
 								item_desc += "\n\n(Senjata khusus " + req_cls + ")"
 					
@@ -321,7 +321,7 @@ func _on_popup_pressed(id: int):
 				var allowed_weapons = []
 				match cls:
 					"fighter": allowed_weapons = ["long_sword", "sword", "gloves", "lance"]
-					"apprentice": allowed_weapons = ["staff", "rod"]
+					"apprentice": allowed_weapons = ["staff", "rune"]
 					"scout": allowed_weapons = ["long_bow", "crossbow", "dagger"]
 					
 				if not wp_type in allowed_weapons:
@@ -397,13 +397,13 @@ func _on_popup_pressed(id: int):
 					Global.inventory[current_selected_item] += 1
 					break
 				
-				if player_ref and player_ref.has_method("recalculate_stats"):
-					player_ref.recalculate_stats()
-					if player_ref.has_method("update_equipped_weapon"):
-						player_ref.update_equipped_weapon()
-					var hud = get_node_or_null("/root/PlayerHUD")
-					if hud:
-						hud._update_hp_mp_ep()
+			if player_ref and player_ref.has_method("recalculate_stats"):
+				player_ref.recalculate_stats()
+				if player_ref.has_method("update_equipped_weapon"):
+					player_ref.update_equipped_weapon()
+				var hud = get_node_or_null("/root/PlayerHUD")
+				if hud:
+					hud._update_hp_mp_ep()
 
 		
 	_refresh_inventory()

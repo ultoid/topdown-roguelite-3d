@@ -142,19 +142,18 @@ weapon_type = "staff"
 bonus_p_atk = 10
 
 [node name="practice_rod" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000005]
-visible = false
 position = Vector2(-455, 139)
 texture = ExtResource("2_icon")
 hframes = 16
 vframes = 137
-frame = 1488
+frame = 316
 script = ExtResource("3_itemdata")
-item_name = "Practice Rod"
+item_name = "Practice Rune"
 description = "Tongkat sihir pendek (1-Handed)"
 type = "equipment"
 price = 50
 equipment_slot = "main_weapon"
-weapon_type = "rod"
+weapon_type = "rune"
 bonus_p_atk = 10
 
 [node name="practice_long_bow" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000006]

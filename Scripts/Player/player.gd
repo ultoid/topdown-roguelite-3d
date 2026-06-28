@@ -208,6 +208,8 @@ func update_equipped_weapon():
 	for child in attachment.get_children():
 		if child.name != "SkSenuaSword":
 			child.queue_free()
+		else:
+			child.visible = false
 			
 	var item_db = get_node_or_null("/root/ItemDB")
 	if item_db and get_node_or_null("/root/Global") and Global.equipment.get("main_weapon", "") != "":

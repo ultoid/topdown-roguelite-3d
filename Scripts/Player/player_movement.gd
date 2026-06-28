@@ -329,12 +329,12 @@ func _physics_process(delta):
 			var effect_name = player.status_manager.get_movement_restriction_name()
 			player.spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
 		elif player.charge_attack_cooldown <= 0:
-			var is_tap_weapon = w_type in ["long_sword", "sword", "gloves", "lance", "rod", "crossbow", "dagger"]
+			var is_tap_weapon = w_type in ["long_sword", "sword", "gloves", "lance", "rune", "crossbow", "dagger"]
 			if is_tap_weapon or w_type == "None":
 				var cost = 30
 				var can_cast = false
 				
-				if w_type == "rod":
+				if w_type == "rune":
 					if player.current_mana >= cost:
 						player.current_mana -= cost
 						player.emit_signal("mana_changed", player.current_mana, player.max_mana)
@@ -351,11 +351,11 @@ func _physics_process(delta):
 						
 				if can_cast:
 					player.charge_attack_cooldown = 2.0
-					if w_type == "crossbow" or w_type == "rod":
+					if w_type == "crossbow" or w_type == "rune":
 						player.charge_attack_cooldown = 1.0
 					
 					match w_type:
-						"rod":
+						"rune":
 							player._fire_projectile("mana_burst", true)
 						"crossbow":
 							player._fire_projectile("bolt", true)

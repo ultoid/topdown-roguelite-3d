@@ -635,7 +635,7 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 			w_type = w_data.get("weapon_type", "None")
 			
 		var max_range = 15.0 # Default for staff
-		if w_type == "rod": max_range = 10.0
+		if w_type == "rune": max_range = 10.0
 		var speed_m_s = 60.0 * (1000.0 / 3600.0)
 		var custom_lifetime = max_range / speed_m_s
 

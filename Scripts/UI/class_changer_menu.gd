@@ -23,7 +23,7 @@ func _on_class_selected(cls: String):
 		var allowed_weapons = []
 		match cls:
 			"fighter": allowed_weapons = ["long_sword", "sword", "gloves", "lance"]
-			"apprentice": allowed_weapons = ["staff", "rod"]
+			"apprentice": allowed_weapons = ["staff", "rune"]
 			"scout": allowed_weapons = ["long_bow", "crossbow", "dagger"]
 
 		for slot in ["main_weapon", "secondary_weapon"]:

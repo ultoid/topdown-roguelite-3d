@@ -214,7 +214,7 @@ func _populate_equip_inventory(slot: String):
 			var allowed_weapons = []
 			match cls:
 				"fighter": allowed_weapons = ["long_sword", "sword", "gloves", "lance"]
-				"apprentice": allowed_weapons = ["staff", "rod"]
+				"apprentice": allowed_weapons = ["staff", "rune"]
 				"scout": allowed_weapons = ["long_bow", "crossbow", "dagger"]
 				
 			if w_type != "None" and not w_type in allowed_weapons:
@@ -300,6 +300,8 @@ func _equip_item(slot: String, item_id: String):
 		var hud = get_node_or_null("/root/PlayerHUD")
 		if hud:
 			hud._update_hp_mp_ep()
+	if player.has_method("update_equipped_weapon"):
+		player.update_equipped_weapon()
 			
 	_update_equipment_ui()
 	_update_ui()
@@ -329,6 +331,8 @@ func _unequip_item(slot: String):
 		var hud = get_node_or_null("/root/PlayerHUD")
 		if hud:
 			hud._update_hp_mp_ep()
+	if player.has_method("update_equipped_weapon"):
+		player.update_equipped_weapon()
 			
 	_update_equipment_ui()
 	_update_ui()
