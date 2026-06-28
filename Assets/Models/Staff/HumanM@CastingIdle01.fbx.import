@@ -41,8 +41,8 @@ _subresources={
 "animations": {
 "HumanM_CastingIdle01": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Staff/HumanM_CastingIdle01.res",
-"save_to_file/keep_custom_tracks": "",
+"save_to_file/fallback_path": "res://Assets/Models/Staff/rune_idle.res",
+"save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://mc2xkr1q7g78",
 "settings/loop_mode": 0,
 "slice_1/end_frame": 0,

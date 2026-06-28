@@ -352,6 +352,10 @@ func get_anim_state(base_state: String) -> String:
 	if animation_tree and animation_tree.tree_root is AnimationNodeStateMachine:
 		if animation_tree.tree_root.has_node(specific_state):
 			return specific_state
+			
+		var lower_state = specific_state.to_lower()
+		if animation_tree.tree_root.has_node(lower_state):
+			return lower_state
 	
 	return base_state
 func _perform_spin_attack(dmg: int, is_mana_burst: bool = false):
