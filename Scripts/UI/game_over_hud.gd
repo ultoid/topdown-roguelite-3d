@@ -37,8 +37,8 @@ func show_game_over(survival_time: float, enemies_killed: int, level: int, coins
 func _on_town_pressed():
 	get_tree().paused = false
 	var town_scene = "res://Scenes/Items/grinding_camp.tscn" # Default town/maincity
-	if ResourceLoader.exists("res://Scenes/Maps/maincity.tscn"):
-		town_scene = "res://Scenes/Maps/maincity.tscn"
+	if ResourceLoader.exists("res://Scenes/Maps/forest.tscn"):
+		town_scene = "res://Scenes/Maps/forest.tscn"
 	get_tree().change_scene_to_file(town_scene)
 
 func _on_resurrect_pressed():

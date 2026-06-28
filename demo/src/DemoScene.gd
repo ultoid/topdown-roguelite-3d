@@ -12,7 +12,8 @@ func _ready():
 	if Engine.is_editor_hint() and has_node("Environment") and \
 		Engine.get_singleton(&"EditorInterface").is_plugin_enabled("sky_3d"):
 			$Environment.queue_free()
-			var sky3d = load("res://addons/sky_3d/src/Sky3D.gd").new()
+			var plugin_path = "res://addons/sky_3d/src/Sky3D.gd"
+			var sky3d = load(plugin_path).new()
 			sky3d.name = "Sky3D"
 			add_child(sky3d, true)
 			move_child(sky3d, 1)

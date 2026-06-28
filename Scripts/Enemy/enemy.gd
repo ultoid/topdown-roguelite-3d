@@ -22,6 +22,8 @@ var lunge_direction: Vector3 = Vector3.ZERO
 var status_manager: StatusEffectManager = null
 var hp_bar: ProgressBar = null
 
+const GRAVITY: float = 20.0
+
 @onready var hurtbox = get_node_or_null("Hurtbox")
 
 func _ready():
@@ -180,6 +182,12 @@ func _physics_process(delta):
 						attack_cooldown = 1.0 / atk_speed_mult
 						velocity = Vector3.ZERO
 						
+	# Terapkan gravitasi agar musuh tetap di atas lantai/terrain
+	if not is_on_floor():
+		velocity.y -= GRAVITY * delta
+	else:
+		velocity.y = 0.0
+		
 	move_and_slide()
 
 func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elements: Array = ["netral"], kb_force: float = 3.464):

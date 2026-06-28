@@ -89,4 +89,4 @@ func _close_menu():
 	get_tree().paused = false
 	queue_free()
 	# Karena ini adalah hadiah boss, setelah selesai pemain pulang ke kota!
-	get_tree().change_scene_to_file("res://Scenes/Maps/maincity.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Maps/forest.tscn")

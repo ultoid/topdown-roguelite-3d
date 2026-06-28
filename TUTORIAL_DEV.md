@@ -273,3 +273,44 @@ Karena menggunakan sistem **Modular Scene**, setiap jenis senjata memiliki *scen
    - Atur **`weapon_scene_path`** milik pedang api ke `"res://Scenes/Weapons/fire_sword.tscn"`.
 
 Dengan cara ini, saat pemain mengganti senjatanya di *Inventory*, sistem secara otomatis memuat *scene* utuh beserta seluruh efek visual, partikel, hingga bentuk *hitbox* unik yang ada di dalamnya!
+
+---
+
+## 10. Panduan Menambah Animasi Baru (dari Unity Asset Store / Mixamo)
+
+Jika Anda membeli atau mengunduh paket animasi (misalnya untuk panah, tombak, atau pedang ganda) dari **Unity Asset Store** atau **Mixamo**, Anda tidak bisa langsung memasukkannya begitu saja ke Godot karena ada perbedaan format kerangka tulang (*Rigging/Skeleton*). Ikuti panduan ini agar animasinya bekerja sempurna di karakter Anda:
+
+### Tahap 1: Ekspor dan Impor ke Godot
+1. **Dapatkan File FBX**: Pastikan Anda memiliki file animasi dengan format `.fbx`.
+2. **Masukkan ke Folder Proyek**: *Drag and drop* file `.fbx` tersebut ke folder `Assets/Animations/` di Godot. Godot akan secara otomatis melakukan proses *impor*.
+3. **Ekstrak Animasi**:
+   - Jangan langsung menggunakan file `.fbx` di *scene*!
+   - Klik ganda (atau klik tab **Import**) pada file `.fbx` tersebut.
+   - Di jendela *Advanced Import Settings*, pilih tab **Animation**.
+   - Di sebelah kanan, cari ikon *Save* (Simpan) dan simpan animasinya sebagai file mandiri dengan format `.res` (misalnya `bow_attack.res`). File inilah yang akan kita gunakan.
+
+### Tahap 2: Memasukkan Animasi ke Karakter Utama
+1. Buka *scene* `Scenes/Entities/player.tscn`.
+2. Pilih node **`AnimationPlayer`** (biasanya berada di dalam `Visuals/HeroModel`).
+3. Di panel bawah (jendela Animation), klik tombol **Animation -> Manage Animations**.
+4. Klik ikon folder (Load) atau **Add Library** untuk memasukkan file `.res` yang sudah diekstrak tadi ke dalam daftar animasi milik Player.
+5. Beri nama yang sesuai di dalam `AnimationPlayer` (contoh: `bow/bow_attack`).
+
+### Tahap 3: Memperbaiki Tulang (Retargeting) & Hitbox
+Jika saat dijalankan karakter terlihat cacat/tulangnya patah, itu karena nama tulang dari Unity berbeda dengan struktur tulang karakter utama kita (`GeneralSkeleton`).
+1. Buka file `.res` animasi tersebut, lalu di panel *Inspector* Anda akan melihat daftar **Track**.
+2. Anda harus mengubah jalurnya. Jika dari Unity tertulis `Armature/Skeleton:RightArm`, ubah menjadi `GeneralSkeleton:RightArm`.
+3. **Mengaktifkan Hitbox Senjata**:
+   - Agar senjata Anda memiliki *damage* saat animasi menyerang berjalan, tambahkan **Call Method Track** di dalam animasi tersebut (di editor animasi panel bawah).
+   - Arahkan *track* tersebut ke node `Player` utama.
+   - Tambahkan *keyframe* di titik awal ayunan senjata (misal detik ke-0.2) dan panggil fungsi **`activate_weapon_hitbox()`**.
+   - Tambahkan *keyframe* kedua di titik akhir ayunan (misal detik ke-0.6) dan panggil **`deactivate_weapon_hitbox()`**.
+
+### Tahap 4: Menghubungkan ke Sistem Dinamis (AnimationTree)
+1. Buka tab **AnimationTree** di *scene* `player.tscn`.
+2. Klik kanan di dalam *State Machine* -> **Add Animation**. Pilih animasi yang tadi sudah Anda daftarkan di `AnimationPlayer` (misal `bow_attack`).
+3. Ubah nama *node* (kotak animasinya) menjadi format sistem dinamis: **`[tipe_senjata]_[Aksi]`**.
+   - Contoh: Jika di database `item_db` senjatanya ber-tipe `bow`, maka ubah nama kotaknya menjadi **`bow_Attack1`** atau **`bow_Idle`**.
+4. Hubungkan panah transisinya sesuai dengan alur state machine (dari Any State, kembali ke Idle, dst).
+
+Selesai! Sekarang ketika pemain memakai `bow`, sistem akan mencari *state* bernama `bow_Attack1` di AnimationTree dan memainkan animasi Unity Anda secara sempurna!

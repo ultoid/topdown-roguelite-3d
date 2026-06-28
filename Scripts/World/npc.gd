@@ -75,7 +75,7 @@ func open_shop():
 func warp_to_dungeon():
 	if get_node_or_null("/root/Global"):
 		Global.reset_dungeon_run()
-	get_tree().change_scene_to_file("res://Scenes/Maps/dungeon_2.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Maps/forest.tscn")
 
 func open_debug_status():
 	var debug_menu_scene = load("res://Scenes/UI/debug_status_menu.tscn")

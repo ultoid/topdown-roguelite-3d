@@ -17,11 +17,11 @@ var sword_hitbox_area: Area3D:
 			w_type = w_data.get("weapon_type", "None")
 			
 		var rh = find_child("RightHandHitBox", true, false)
-		# Jika sedang pegang senjata jarak dekat dan ada hitbox di tangan, pakai yang di tangan
-		if w_type in ["long_sword", "dagger", "lance", "axe", "mace"] and is_instance_valid(rh):
+		# Gunakan hitbox di tangan kanan untuk senjata jarak dekat DAN pukulan tangan kosong (base)
+		if w_type in ["long_sword", "dagger", "lance", "axe", "mace", "None", ""] and is_instance_valid(rh):
 			return rh
 			
-		# Fallback: pakai hitbox standar (misal untuk tangan kosong atau magic)
+		# Fallback ke hitbox kuno jika belum punya RightHandHitBox
 		var hb = find_child("HitBox", true, false)
 		if is_instance_valid(hb): return hb
 		return find_child("SwordHitBox", true, false)
@@ -239,7 +239,14 @@ func _ready():
 				if "dash" in lower_name:
 					dash_anim_length = anim.length # Fallback
 					
-				var track_idx = anim.find_track("Skeleton3D:mixamorig_Hips", Animation.TYPE_POSITION_3D)
+				var track_idx = -1
+				for j in range(anim.get_track_count()):
+					if anim.track_get_type(j) == Animation.TYPE_POSITION_3D:
+						var path_str = str(anim.track_get_path(j))
+						if path_str.ends_with(":Hips") or path_str.ends_with(":mixamorig_Hips"):
+							track_idx = j
+							break
+				
 				if track_idx != -1:
 					for i in range(anim.track_get_key_count(track_idx)):
 						var val = anim.track_get_key_value(track_idx, i)
@@ -464,7 +471,15 @@ func _update_aim_to_mouse(instant: bool = false):
 			else:
 				sprite.rotation.y = lerp_angle(sprite.rotation.y, target_angle - PI/2.0, 15.0 * get_physics_process_delta_time())
 			if is_instance_valid(sword_hitbox_area):
-				if not sword_hitbox_area.get_parent() is BoneAttachment3D:
+				var is_bone_attached = false
+				var curr_parent = sword_hitbox_area.get_parent()
+				while curr_parent:
+					if curr_parent is BoneAttachment3D:
+						is_bone_attached = true
+						break
+					curr_parent = curr_parent.get_parent()
+				
+				if not is_bone_attached:
 					sword_hitbox_area.rotation.y = sprite.rotation.y
 
 func activate_weapon_hitbox():
@@ -478,6 +493,30 @@ func activate_weapon_hitbox():
 				
 	if sword_hitbox_area and sword_hitbox_area.has_method("clear_hit_list"):
 		sword_hitbox_area.clear_hit_list()
+	
+	# --- DIRECT DAMAGE FALLBACK untuk long_sword ---
+	# Karena sistem hitbox melalui BoneAttachment tidak reliable,
+	# kita langsung hitung jarak musuh dari posisi player.
+	var _item_db = get_node_or_null("/root/ItemDB")
+	var _w_type = "None"
+	if _item_db and Global.equipment.get("main_weapon", "") != "":
+		var _w_data = _item_db.get_item(Global.equipment["main_weapon"])
+		if _w_data: _w_type = _w_data.get("weapon_type", "None")
+	
+	if _w_type == "long_sword":
+		var _hit_radius = 3.5
+		var _enemies = get_tree().get_nodes_in_group("Enemy")
+		for _e in _enemies:
+			if is_instance_valid(_e) and _e.has_method("take_damage"):
+				var _d = Vector2(global_position.x, global_position.z).distance_to(
+					Vector2(_e.global_position.x, _e.global_position.z))
+				if _d <= _hit_radius:
+					var _el = atk_elements.duplicate()
+					if status_manager:
+						var _ov = status_manager.get_override_element()
+						if _ov != "": _el = [_ov]
+					_e.take_damage(current_attack_damage, global_position, _el, 6.0)
+					apply_camera_shake(3.0, 0.1)
 
 func _perform_spin_attack_aoe():
 	var kb_force = 6.0 # 3 meter knockback

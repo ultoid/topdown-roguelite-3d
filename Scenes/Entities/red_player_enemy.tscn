@@ -26,7 +26,6 @@ transform = Transform3D(1.8422446, 0, 0, 0, 1.8422446, 0, 0, 0, 1.8422446, 0.001
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=667609792]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.74630123, 0)
 shape = SubResource("CapsuleShape3D_enemy")
-disabled = true
 
 [node name="Hurtbox" type="Area3D" parent="." unique_id=2026798835]
 

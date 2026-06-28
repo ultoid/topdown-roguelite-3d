@@ -355,9 +355,8 @@ func attack(is_charge: bool):
 	if is_charge:
 		target_state = player.get_anim_state("HeavyAttack")
 	else:
-		var current_time = Time.get_ticks_msec() / 1000.0
-		if current_time - player.last_attack_time > 1.0:
-			player.combo_step = 1
+		# Combo dilanjutkan selama player terus menyerang.
+		# Combo reset hanya terjadi saat player terkena serangan musuh.
 			
 		var combo_state = "Attack" + str(player.combo_step)
 		target_state = player.get_anim_state(combo_state)
@@ -396,12 +395,8 @@ func attack(is_charge: bool):
 		
 	var current_attack_duration = base_dur / player.current_attack_speed
 
-	# Hitbox pedang sekarang dikendalikan oleh AnimationPlayer melalui metode
-	# activate_weapon_hitbox() dan deactivate_weapon_hitbox() yang ada di player.gd
-	if w_type == "None" or w_type == "gloves":
-		# Animasi tangan kosong tidak punya method track, jadi dipanggil manual
-		get_tree().create_timer(current_attack_duration * 0.2).timeout.connect(func(): if is_instance_valid(player): player.activate_weapon_hitbox())
-		get_tree().create_timer(current_attack_duration * 0.5).timeout.connect(func(): if is_instance_valid(player): player.deactivate_weapon_hitbox())
+	# Hitbox dikendalikan sepenuhnya oleh Method Track di AnimationPlayer.
+	# Tambahkan activate_weapon_hitbox() dan deactivate_weapon_hitbox() di tiap animasi attack.
 
 	if is_charge and should_lunge:
 		player.charge_lunge_timer = current_attack_duration * 0.2
@@ -744,6 +739,9 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 
 func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_element: String = "netral", kb_force: float = 200.0):
 	if player.is_dead or player.is_dashing or player.is_invincible: return
+	
+	# Reset combo saat terkena hit
+	player.combo_step = 1
 	
 	player.apply_camera_shake(5.0, 0.15)
 	

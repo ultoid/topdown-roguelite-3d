@@ -14,7 +14,7 @@ var is_active = true
 func _ready():
 	add_to_group("Interactable")
 	# 3D Note: For MeshInstance3D, instead of changing frame, you would load different meshes/materials here.
-	# e.g., if yield_item == "stone": sprite.mesh = load("res://models/stone.obj")
+	# e.g., if yield_item == "stone": sprite.mesh = load("res://models/stone_mesh.obj")
 	pass
 
 func on_interact(player):

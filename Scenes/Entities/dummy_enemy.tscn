@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://bg0lw768wkxcv"]
 
 [ext_resource type="Script" path="res://Scripts/Enemy/dummy_enemy.gd" id="1_de"]
-[ext_resource type="PackedScene" uid="uid://cc0q8yq84g11g" path="res://Scenes/UI/enemy_hp_bar.tscn" id="2_ehp"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_de1"]
 radius = 0.5
@@ -31,6 +30,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 pixel_size = 0.02
 billboard = 1
 text = "Dummy"
-
-[node name="EnemyHPBar" parent="." instance=ExtResource("2_ehp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)

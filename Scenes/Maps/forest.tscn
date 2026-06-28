@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://dkpmja6n7mwh6"]
 
 [ext_resource type="Terrain3DAssets" uid="uid://coeu0r2ybgfe5" path="res://Scenes/map/terrain_3d_assets.tres" id="1_5vlww"]
-[ext_resource type="PackedScene" uid="uid://bcvt2bjn0ien8" path="res://Scenes/Entities/player.tscn" id="2_7op6k"]
 [ext_resource type="PackedScene" uid="uid://bcfftict737wv" path="res://Scenes/Maps/tree.tscn" id="3_7op6k"]
 [ext_resource type="PackedScene" uid="uid://lh68hosx5n0p" path="res://Scenes/Maps/house_type_1.scn" id="4_8o1af"]
+[ext_resource type="PackedScene" uid="uid://buas62kbw0urp" path="res://Scenes/Entities/player.scn" id="5_3cnuo"]
 [ext_resource type="PackedScene" uid="uid://d0jwui04ttby4" path="res://Scenes/Entities/class_mentor.tscn" id="5_qdt7u"]
+[ext_resource type="PackedScene" uid="uid://d1pc87wkevgk" path="res://Scenes/Entities/red_player_enemy.tscn" id="6_3cnuo"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_8o1af"]
 
@@ -81,15 +82,6 @@ assets = ExtResource("1_5vlww")
 top_level = true
 metadata/_edit_lock_ = true
 
-[node name="Player" parent="." unique_id=241310391 instance=ExtResource("2_7op6k")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.170124, 0, -89.82264)
-
-[node name="Camera3D" type="Camera3D" parent="Player" unique_id=771684518]
-transform = Transform3D(1, 0, 0, 0, 0.5575568, 0.8301388, 0, -0.8301388, 0.5575568, 0, 14.614978, 9.2903595)
-current = true
-fov = 55.0
-size = 20.0
-
 [node name="tree" parent="." unique_id=1533323764 instance=ExtResource("3_7op6k")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.598362, 0, -98.78988)
 
@@ -140,3 +132,29 @@ transform = Transform3D(0.022752076, 0, -0.8747041, 0, 0.875, 0, 0.8747041, 0, 0
 
 [node name="ClassMentor" parent="." unique_id=578777692 instance=ExtResource("5_qdt7u")]
 transform = Transform3D(0.30355087, 0, 0.95281523, 0, 1, 0, -0.95281523, 0, 0.30355087, -43.339333, 0, -92.594315)
+
+[node name="Player" parent="." unique_id=241310391 instance=ExtResource("5_3cnuo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.737106, 0, -89.502525)
+
+[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1771738060]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 8.025179, 3.7030487)
+
+[node name="red_player_enemy" parent="." unique_id=612183066 instance=ExtResource("6_3cnuo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.575397, 0, -94.86172)
+speed = 1.0
+max_health = 10000
+
+[node name="red_player_enemy2" parent="." unique_id=560630291 instance=ExtResource("6_3cnuo")]
+transform = Transform3D(0.88709944, 0, -0.4615783, 0, 1, 0, 0.4615783, 0, 0.88709944, -35.166534, 0, -94.86172)
+speed = 1.0
+max_health = 10000
+
+[node name="red_player_enemy3" parent="." unique_id=12231354 instance=ExtResource("6_3cnuo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.12422, 0, -94.86172)
+speed = 1.0
+max_health = 10000
+
+[node name="red_player_enemy4" parent="." unique_id=195722749 instance=ExtResource("6_3cnuo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.515717, 0, -94.86172)
+speed = 1.0
+max_health = 10000
