@@ -314,3 +314,41 @@ Jika saat dijalankan karakter terlihat cacat/tulangnya patah, itu karena nama tu
 4. Hubungkan panah transisinya sesuai dengan alur state machine (dari Any State, kembali ke Idle, dst).
 
 Selesai! Sekarang ketika pemain memakai `bow`, sistem akan mencari *state* bernama `bow_Attack1` di AnimationTree dan memainkan animasi Unity Anda secara sempurna!
+
+---
+
+## 7. Panduan Sistem Status Karakter (Stats)
+
+Status (Stats) pada karakter utama Anda terbagi menjadi tiga kelompok utama: **Stat Dasar (Core Base Stats)**, **Stat Turunan (Derived Combat Stats)**, dan **Stat Pasif/Tersembunyi (Hidden Stats)**. Sistem ini bekerja secara otomatis menghubungkan stat dasar dan bonus dari peralatan (Equipment).
+
+### 7.1 Stat Dasar (Core Base Stats)
+Ini adalah poin-poin utama yang bisa dinaikkan setiap kali karakter naik level (saat mengalokasikan stat point):
+- **STR (Strength)**: Penentu utama besarnya Physical Attack (Atk) dan poin Energi (MaxEP).
+- **AGI (Agility)**: Penentu kecepatan gerak (*Walk/Run Speed*), kecepatan pemulihan energi (*EP Regen*), dan rasio penghindaran (*Flee*).
+- **VIT (Vitality)**: Penentu utama besarnya Max HP, Physical Defense (Def), dan sedikit menyumbang pada Magic Defense (Mdef).
+- **INT (Intelligence)**: Penentu utama besarnya Magic Attack (Matk), Max MP, dan menyumbang pada Magic Defense (Mdef).
+- **DEX (Dexterity)**: Penentu kecepatan serangan (*Attack Speed*), ketepatan serangan (*Hit/Accuracy*), dan kecepatan merapal sihir (*Casting Speed*).
+- **LUK (Luck)**: Penentu utama besaran rasio serangan kritikal (*Critical Chance*).
+
+### 7.2 Stat Turunan (Derived Combat Stats)
+Ini adalah status hasil kalkulasi dari Stat Dasar dan bonus perlengkapan (Equipment) yang aktif digunakan. Stat ini bisa dilihat di menu layar UI karakter:
+- **MaxHP**: Darah maksimal. (Formula: Base HP + (VIT x 10) + Bonus Equipment)
+- **MaxMP**: Mana maksimal. (Formula: Base MP + (INT x 5) + Bonus Equipment)
+- **Atk (Physical Attack)**: Kerusakan serangan senjata fisik. (Formula: Base Atk + (STR x 2) + Bonus Equipment)
+- **Matk (Magic Attack)**: Kerusakan serangan sihir. (Formula: Base Matk + (INT x 2) + Bonus Equipment)
+- **Def (Physical Defense)**: Daya tahan mengurangi damage fisik. (Formula: VIT + Bonus Equipment)
+- **Mdef (Magic Defense)**: Daya tahan mengurangi damage sihir. (Formula: (VIT/2) + (INT/2) + Bonus Equipment)
+- **Hit (Accuracy)**: Seberapa akurat serangan mengenai musuh. (Formula: (DEX x 2) + Bonus Equipment)
+- **Flee (Evasion)**: Peluang untuk menghindar dari serangan. (Formula: (AGI x 2) + Bonus Equipment)
+- **Critical (Critical Chance %)**: Persentase peluang serangan kritikal ganda (Damage x2). (Formula: (LUK x 1.0) + Bonus Equipment)
+- **Aspd (Attack Speed)**: Kecepatan ayunan/tembakan senjata. (Formula: (AGI x 4.0) + Bonus Equipment)
+
+### 7.3 Stat Pergerakan & Sistem (Hidden / System Stats)
+Ini adalah status pendukung yang berjalan di latar belakang:
+- **MaxEP (Energy Point)**: Kapasitas energi untuk melakukan *Roll/Dash* dan *Charge Attack*.
+- **Energy Regen**: Seberapa cepat energi kembali penuh saat diam/berjalan.
+- **Walk Speed & Run Speed**: Angka patokan kecepatan pergerakan karakter di ruang 3D.
+- **Casting Speed**: Kecepatan menyelesaikan animasi merapal sebelum meluncurkan peluru sihir.
+
+### 7.4 Cara Menambahkan Bonus Stat pada Item
+Untuk menambahkan bonus stat pada sebuah senjata atau zirah, cukup atur nilai variabel di bagian `Equipment Stats` pada *Inspector* Godot (file `.tscn` dari item tersebut). Misalnya, mengisi `bonus_critical` = 5 pada sebuah pedang otomatis akan menaikkan *Critical Chance* karakter sebesar 5% ketika pedang tersebut dipakai, dan serangan karakter tersebut akan menghasilkan teks *damage* berwarna merah menyala dan kerusakannya dikali 2 saat kritikal!

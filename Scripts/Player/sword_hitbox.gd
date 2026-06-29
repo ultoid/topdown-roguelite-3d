@@ -109,7 +109,10 @@ func _deal_damage(enemy_node):
 					kb_force = 6.0
 					
 		print("[DEBUG] SUCCESS: Calling take_damage(", current_damage, ") on ", enemy_node.name)
-		enemy_node.take_damage(current_damage, global_position, atk_elements, kb_force)
+		var passed_elements = atk_elements.duplicate()
+		if player and player.get("is_current_attack_critical"):
+			passed_elements.append("CRITICAL")
+		enemy_node.take_damage(current_damage, global_position, passed_elements, kb_force)
 		
 		if player and player.has_method("apply_camera_shake"):
 			if player.get("is_charge_attacking"):

@@ -34,9 +34,19 @@ func _traverse_children(parent_node: Node):
 				if child.get("recipe_id") != null:
 					data["recipe_id"] = child.recipe_id
 			if child.bonus_p_atk > 0: data["bonus_p_atk"] = child.bonus_p_atk
+			if child.get("bonus_m_atk") and child.bonus_m_atk > 0: data["bonus_m_atk"] = child.bonus_m_atk
 			if child.bonus_p_def > 0: data["bonus_p_def"] = child.bonus_p_def
+			if child.get("bonus_m_def") and child.bonus_m_def > 0: data["bonus_m_def"] = child.bonus_m_def
 			if child.bonus_str > 0: data["bonus_str"] = child.bonus_str
+			if child.get("bonus_agi") and child.bonus_agi > 0: data["bonus_agi"] = child.bonus_agi
+			if child.get("bonus_vit") and child.bonus_vit > 0: data["bonus_vit"] = child.bonus_vit
 			if child.bonus_int > 0: data["bonus_int"] = child.bonus_int
+			if child.get("bonus_dex") and child.bonus_dex > 0: data["bonus_dex"] = child.bonus_dex
+			if child.get("bonus_luk") and child.bonus_luk > 0: data["bonus_luk"] = child.bonus_luk
+			if child.get("bonus_hit") and child.bonus_hit > 0: data["bonus_hit"] = child.bonus_hit
+			if child.get("bonus_flee") and child.bonus_flee > 0: data["bonus_flee"] = child.bonus_flee
+			if child.get("bonus_critical") and child.bonus_critical > 0: data["bonus_critical"] = child.bonus_critical
+			if child.get("bonus_aspd") and child.bonus_aspd > 0: data["bonus_aspd"] = child.bonus_aspd
 			if child.bonus_max_hp > 0: data["bonus_max_hp"] = child.bonus_max_hp
 			if child.bonus_max_mp > 0: data["bonus_max_mp"] = child.bonus_max_mp
 			

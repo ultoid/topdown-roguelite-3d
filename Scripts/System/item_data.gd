@@ -17,9 +17,19 @@ class_name ItemData
 @export_enum("None", "long_sword", "sword", "gloves", "lance", "staff", "rune", "long_bow", "crossbow", "dagger") var weapon_type: String = "None"
 @export_file("*.tscn") var weapon_scene_path: String = ""
 @export var bonus_p_atk: int = 0
+@export var bonus_m_atk: int = 0
 @export var bonus_p_def: int = 0
+@export var bonus_m_def: int = 0
 @export var bonus_str: int = 0
+@export var bonus_agi: int = 0
+@export var bonus_vit: int = 0
 @export var bonus_int: int = 0
+@export var bonus_dex: int = 0
+@export var bonus_luk: int = 0
+@export var bonus_hit: int = 0
+@export var bonus_flee: int = 0
+@export var bonus_critical: int = 0
+@export var bonus_aspd: int = 0
 @export var bonus_max_hp: int = 0
 @export var bonus_max_mp: int = 0
 

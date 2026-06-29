@@ -349,6 +349,7 @@ func attack(is_charge: bool):
 			"gloves": player.current_attack_speed *= 2.0 
 			"dagger": player.current_attack_speed *= 1.5 
 			
+	player.is_current_attack_critical = is_crit
 	if is_crit:
 		player.current_attack_damage = int(player.current_attack_damage * 2.0)
 		print("CRITICAL HIT!")

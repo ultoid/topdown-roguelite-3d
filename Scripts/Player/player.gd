@@ -121,10 +121,12 @@ var is_dashing: bool = false
 var is_casting: bool = false
 var is_animating_skill: bool = false
 
+var is_charging_magic: bool = false
 var magic_charge_timer: float = 0.0
 var magic_charge_bar: ProgressBar = null
 
-
+var is_current_attack_critical: bool = false
+var stats_manager = null
 var is_farming_targeting: bool = false
 var farming_indicator: MeshInstance3D = null
 var farming_zone_ref: Node = null
@@ -523,6 +525,8 @@ func activate_weapon_hitbox():
 					if status_manager:
 						var _ov = status_manager.get_override_element()
 						if _ov != "": _el = [_ov]
+					if is_current_attack_critical:
+						_el.append("CRITICAL")
 					_e.take_damage(current_attack_damage, global_position, _el, 6.0)
 					apply_camera_shake(3.0, 0.1)
 	elif _w_type == "rune":
@@ -542,6 +546,9 @@ func activate_weapon_hitbox():
 			if status_manager:
 				var _ov = status_manager.get_override_element()
 				if _ov != "": _el = [_ov]
+			if is_current_attack_critical:
+				_el.append("CRITICAL")
+				
 			proj.atk_elements = _el
 			
 			var fire_dir = last_direction

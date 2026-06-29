@@ -142,6 +142,7 @@ weapon_type = "staff"
 bonus_p_atk = 10
 
 [node name="practice_rune" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000005]
+visible = false
 position = Vector2(-455, 139)
 texture = ExtResource("2_icon")
 hframes = 16

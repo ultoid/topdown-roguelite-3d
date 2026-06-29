@@ -376,8 +376,10 @@ func _update_ui():
 	var sim_m_atk = 10 + (t_int * 2) + bonuses.get("m_atk", 0)
 	var sim_p_def = t_vit + bonuses.get("p_def", 0)
 	var sim_m_def = int(t_vit / 2.0 + t_int / 2.0) + bonuses.get("m_def", 0)
-	var sim_spd = 80.0 + (t_agi * 4.0)
-	var sim_crit = t_luk * 1.0
+	var sim_spd = 80.0 + (t_agi * 4.0) + bonuses.get("aspd", 0)
+	var sim_crit = (t_luk * 1.0) + bonuses.get("critical", 0)
+	var sim_hit = (t_dex * 2) + bonuses.get("hit", 0)
+	var sim_flee = (t_agi * 2) + bonuses.get("flee", 0)
 	
 	if ui_details.has("MaxHP"): ui_details["MaxHP"].text = str(sim_hp)
 	if ui_details.has("MaxMP"): ui_details["MaxMP"].text = str(sim_mp)
@@ -385,8 +387,8 @@ func _update_ui():
 	if ui_details.has("Matk"): ui_details["Matk"].text = str(sim_m_atk)
 	if ui_details.has("Def"): ui_details["Def"].text = str(sim_p_def)
 	if ui_details.has("Mdef"): ui_details["Mdef"].text = str(sim_m_def)
-	if ui_details.has("Hit"): ui_details["Hit"].text = str(t_dex * 2)
-	if ui_details.has("Flee"): ui_details["Flee"].text = str(t_agi * 2)
+	if ui_details.has("Hit"): ui_details["Hit"].text = str(sim_hit)
+	if ui_details.has("Flee"): ui_details["Flee"].text = str(sim_flee)
 	if ui_details.has("Critical"): ui_details["Critical"].text = "%.1f%%" % sim_crit
 	if ui_details.has("Aspd"): ui_details["Aspd"].text = str(sim_spd)
 	

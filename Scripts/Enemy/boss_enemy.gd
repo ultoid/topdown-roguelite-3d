@@ -178,8 +178,11 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, atk_elem
 	_update_hud()
 	
 	var dmg_color = Color(1, 0.84, 0) # Emas untuk boss default
-	if multiplier > 1.0: dmg_color = Color(1, 0.2, 0.2) # Merah (Super Effective)
+	if multiplier > 1.0: dmg_color = Color(1, 0.5, 0.2) # Orange (Super Effective)
 	elif multiplier < 1.0: dmg_color = Color(0.6, 0.6, 0.6) # Abu-abu (Resisted)
+	
+	if atk_elements.has("CRITICAL"):
+		dmg_color = Color(1, 0.1, 0.1) # Merah terang untuk kritikal
 	
 	spawn_damage_text(final_damage, dmg_color)
 	

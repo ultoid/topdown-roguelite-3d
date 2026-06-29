@@ -7,6 +7,7 @@ func get_equipment_bonuses() -> Dictionary:
 	var bonuses = {
 		"str": 0, "vit": 0, "int": 0, "luk": 0, "agi": 0, "dex": 0,
 		"p_atk": 0, "m_atk": 0, "p_def": 0, "m_def": 0,
+		"hit": 0, "flee": 0, "critical": 0, "aspd": 0,
 		"max_hp": 0, "max_mp": 0
 	}
 	
@@ -28,6 +29,10 @@ func get_equipment_bonuses() -> Dictionary:
 			bonuses["m_atk"] += data.get("bonus_m_atk", 0)
 			bonuses["p_def"] += data.get("bonus_p_def", 0)
 			bonuses["m_def"] += data.get("bonus_m_def", 0)
+			bonuses["hit"] += data.get("bonus_hit", 0)
+			bonuses["flee"] += data.get("bonus_flee", 0)
+			bonuses["critical"] += data.get("bonus_critical", 0)
+			bonuses["aspd"] += data.get("bonus_aspd", 0)
 			bonuses["max_hp"] += data.get("bonus_max_hp", 0)
 			bonuses["max_mp"] += data.get("bonus_max_mp", 0)
 			
@@ -72,16 +77,16 @@ func recalculate_stats():
 	if player.max_mana > old_max_mp:
 		player.current_mana += (player.max_mana - old_max_mp)
 		
-	player.walk_speed = (10.0 * 1000.0 / 3600.0) + (t_agi * 0.04)
+	player.walk_speed = (10.0 * 1000.0 / 3600.0) + (t_agi * 0.04) + (bonuses.get("aspd", 0) * 0.02)
 	player.run_speed = player.walk_speed * 2.0
-	player.attack_speed_multiplier = 1.0 + (t_dex * 0.05)
+	player.attack_speed_multiplier = 1.0 + (t_dex * 0.05) + (bonuses.get("aspd", 0) * 0.01)
 	player.energy_regen = 5.0 + (t_agi * 0.5)
 	
 	player.physical_attack = 10 + (t_str * 2) + bonuses["p_atk"] + wp_bonus
 	player.magic_attack = 10 + (t_int * 2) + bonuses["m_atk"]
 	player.casting_speed = 1.0 + (t_dex * 0.05)
-	player.critical_chance = t_luk * 1.0
-	player.accuracy = 1.0 + (t_dex * 0.05)
+	player.critical_chance = t_luk * 1.0 + bonuses.get("critical", 0)
+	player.accuracy = 1.0 + (t_dex * 0.05) + (bonuses.get("hit", 0) * 0.01)
 	
 	if get_node_or_null("/root/Global"):
 		Global.perm_stat_str = player.stat_str
