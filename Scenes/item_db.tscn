@@ -155,7 +155,8 @@ type = "equipment"
 price = 50
 equipment_slot = "main_weapon"
 weapon_type = "rune"
-bonus_p_atk = 10
+weapon_scene_path = "res://Scenes/Weapons/practice_rune.tscn"
+bonus_m_atk = 15
 
 [node name="practice_long_bow" type="Sprite2D" parent="Equipment/MainWeapon" unique_id=500000006]
 visible = false

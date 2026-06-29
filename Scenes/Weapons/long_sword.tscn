@@ -17,7 +17,6 @@ transform = Transform3D(0.002393558, 0.0022010761, 0.0023293947, 0.0017178238, -
 mesh = ExtResource("2_43gew")
 
 [node name="RightHandHitBox" type="Area3D" parent="." unique_id=1696242118]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 script = ExtResource("1_sweqy")
 manual_hit_radius = 5.6
 
