@@ -317,15 +317,21 @@ func attack(is_charge: bool):
 				is_dual_wield = true
 	
 	var is_crit = randf() * 100.0 < player.critical_chance
-	player.current_attack_damage = player.physical_attack
+	if w_type == "rune":
+		player.current_attack_damage = player.magic_attack
+	else:
+		player.current_attack_damage = player.physical_attack
 	
 	player.current_attack_speed = player.attack_speed_multiplier
 	
 	var should_lunge = true
 	
 	if is_charge:
-		player.current_attack_damage = player.physical_attack * 2
-		if w_type == "long_sword":
+		if w_type == "rune":
+			player.current_attack_damage = player.magic_attack * 2
+		else:
+			player.current_attack_damage = player.physical_attack * 2
+		if w_type == "long_sword" or w_type == "rune":
 			player.current_attack_speed *= 1.5
 			should_lunge = false
 		elif w_type == "dagger":
@@ -339,7 +345,7 @@ func attack(is_charge: bool):
 		player.current_attack_speed *= 1.5
 	else:
 		match w_type:
-			"long_sword": player.current_attack_speed *= 0.7 
+			"long_sword", "rune": player.current_attack_speed *= 0.7 
 			"gloves": player.current_attack_speed *= 2.0 
 			"dagger": player.current_attack_speed *= 1.5 
 			
@@ -373,16 +379,20 @@ func attack(is_charge: bool):
 	if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
 		if not player.animation_tree.tree_root.has_node(target_state):
 			target_state = player.get_anim_state("Attack")
+			if not player.animation_tree.tree_root.has_node(target_state):
+				target_state = "Attack"
 	var base_dur = player.base_attack_duration
-	if is_charge and w_type == "long_sword":
+	if is_charge and (w_type == "long_sword" or w_type == "rune"):
 		base_dur = 1.2
 	elif not is_charge:
 		if "Attack1" in target_state:
 			base_dur = 0.5
 		elif "Attack2" in target_state:
-			base_dur = 0.3
+			if w_type == "rune": base_dur = 0.5
+			else: base_dur = 0.3
 		elif "Attack3" in target_state:
-			base_dur = 0.7
+			if w_type == "rune": base_dur = 0.75
+			else: base_dur = 0.7
 			
 	var actual_len = player._get_state_length(target_state, base_dur)
 	player.current_anim_speed_ratio = actual_len / base_dur
@@ -408,7 +418,8 @@ func attack(is_charge: bool):
 		# (AnimationPlayer di dual wield harus memanggil activate_weapon_hitbox() 2x di tengah animasi)
 		await get_tree().create_timer(current_attack_duration).timeout
 	else:
-		await get_tree().create_timer(current_attack_duration).timeout
+		# Tambahkan buffer 0.05s agar animasi tidak terpotong sebelum Call Method Track dieksekusi saat klik di-spam
+		await get_tree().create_timer(current_attack_duration + 0.05).timeout
 
 	if player.is_attacking:
 		player.attack_finished()
@@ -440,7 +451,7 @@ func _get_state_length(state_name: String, fallback: float) -> float:
 
 func _perform_spin_attack(dmg: int, is_mana_burst: bool = false):
 	if is_mana_burst:
-		var max_radius = 2.0
+		var max_radius = 3.0
 		var duration = 0.2
 		
 		var burst_vis = CSGCylinder3D.new()
@@ -477,13 +488,13 @@ func _perform_spin_attack(dmg: int, is_mana_burst: bool = false):
 						if body.has_method("take_damage"):
 							# Call take_damage but pass Vector3.ZERO so it doesn't apply its own 1-meter knockback
 							body.take_damage(dmg, Vector3.ZERO)
-						if "player.knockback_velocity" in body:
+						if "knockback_velocity" in body:
 							var push_dir = (body.global_position - player.global_position)
 							push_dir.y = 0
 							if push_dir == Vector3.ZERO: push_dir = Vector3(0, 0, 1)
-							# 7.746 player.velocity with 6.0 friction = ~5 meters distance
-							body.knockback_velocity = push_dir.normalized() * 7.746
-						elif body.get("player.velocity") != null:
+							# 10.954 velocity with 6.0 friction = exactly 10 meters distance
+							body.knockback_velocity = push_dir.normalized() * 10.954
+						elif body.get("velocity") != null:
 							var push_dir = (body.global_position - player.global_position).normalized()
 							body.velocity = push_dir * 1100
 		)

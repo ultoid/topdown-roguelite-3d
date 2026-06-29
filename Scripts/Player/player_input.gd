@@ -26,7 +26,7 @@ func _unhandled_input(event):
 					w_type = w_data.get("weapon_type", "None")
 				
 				match w_type:
-					"staff", "rune":
+					"staff":
 						player._fire_projectile("magic", false)
 					"long_bow", "crossbow":
 						player._fire_projectile("arrow", false)

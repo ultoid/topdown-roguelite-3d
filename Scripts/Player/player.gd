@@ -491,8 +491,12 @@ func activate_weapon_hitbox():
 		var item_db = get_node_or_null("/root/ItemDB")
 		if item_db and Global.equipment.get("main_weapon", "") != "":
 			var w_data = item_db.get_item(Global.equipment["main_weapon"])
-			if w_data and w_data.get("weapon_type", "") == "long_sword":
+			var w_type = w_data.get("weapon_type", "") if w_data else ""
+			if w_type == "long_sword":
 				_perform_spin_attack_aoe()
+				return
+			elif w_type == "rune":
+				_perform_spin_attack(current_attack_damage * 2, true)
 				return
 				
 	if sword_hitbox_area and sword_hitbox_area.has_method("clear_hit_list"):
@@ -521,6 +525,35 @@ func activate_weapon_hitbox():
 						if _ov != "": _el = [_ov]
 					_e.take_damage(current_attack_damage, global_position, _el, 6.0)
 					apply_camera_shake(3.0, 0.1)
+	elif _w_type == "rune":
+		var is_third_attack = (combo_step == 1)
+		var proj_scene = load("res://Scenes/Skills/player_projectile.tscn")
+		if proj_scene:
+			var proj = proj_scene.instantiate()
+			proj.damage = current_attack_damage
+			if is_third_attack:
+				proj.damage *= 2
+				proj.scale = Vector3(2.5, 2.5, 2.5)
+				apply_camera_shake(5.0, 0.15)
+			else:
+				apply_camera_shake(2.0, 0.1)
+				
+			var _el = atk_elements.duplicate()
+			if status_manager:
+				var _ov = status_manager.get_override_element()
+				if _ov != "": _el = [_ov]
+			proj.atk_elements = _el
+			
+			var fire_dir = last_direction
+			if fire_dir.length_squared() < 0.1:
+				fire_dir = -global_transform.basis.z
+			proj.direction = fire_dir.normalized()
+			proj.speed = 20.0
+			proj.lifetime = 0.75
+			
+			get_parent().add_child(proj)
+			proj.global_position = global_position + Vector3(0, 1.0, 0) + fire_dir.normalized() * 1.0
+
 
 func _perform_spin_attack_aoe():
 	var kb_force = 6.0 # 3 meter knockback

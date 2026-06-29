@@ -74,7 +74,7 @@ func recalculate_stats():
 		
 	player.walk_speed = (10.0 * 1000.0 / 3600.0) + (t_agi * 0.04)
 	player.run_speed = player.walk_speed * 2.0
-	player.attack_speed_multiplier = 1.0 + (t_agi * 0.05)
+	player.attack_speed_multiplier = 1.0 + (t_dex * 0.05)
 	player.energy_regen = 5.0 + (t_agi * 0.5)
 	
 	player.physical_attack = 10 + (t_str * 2) + bonuses["p_atk"] + wp_bonus

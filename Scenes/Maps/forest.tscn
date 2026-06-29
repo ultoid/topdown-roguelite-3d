@@ -60,6 +60,12 @@ auto_shader = true
 
 [node name="Hutan" type="Node3D" unique_id=110844797]
 
+[node name="Player" parent="." unique_id=241310391 instance=ExtResource("5_3cnuo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.737106, 0, -89.502525)
+
+[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1771738060]
+transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 8.025179, 3.7030487)
+
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=175033460]
 visible = false
 
@@ -68,7 +74,6 @@ transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0)
 mesh = SubResource("BoxMesh_8o1af")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=282129483]
-transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0)
 shape = SubResource("BoxShape3D_qdt7u")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=674555059]
@@ -150,12 +155,6 @@ max_health = 10000
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.515717, 0, -94.86172)
 speed = 1.0
 max_health = 10000
-
-[node name="Player" parent="." unique_id=241310391 instance=ExtResource("5_3cnuo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.737106, 0, -89.502525)
-
-[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1771738060]
-transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 8.025179, 3.7030487)
 
 [node name="house_type1" parent="." unique_id=527082617 instance=ExtResource("6_en07k")]
 transform = Transform3D(1, 0, 0, 0, 0.99946, 0.032858633, 0, -0.032858633, 0.99946, -49.400463, 0.19706106, -91.93016)

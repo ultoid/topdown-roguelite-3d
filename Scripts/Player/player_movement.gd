@@ -331,10 +331,10 @@ func _physics_process(delta):
 		elif player.charge_attack_cooldown <= 0:
 			var is_tap_weapon = w_type in ["long_sword", "sword", "gloves", "lance", "rune", "crossbow", "dagger"]
 			if is_tap_weapon or w_type == "None":
-				var cost = 30
 				var can_cast = false
 				
 				if w_type == "rune":
+					var cost = 20
 					if player.current_mana >= cost:
 						player.current_mana -= cost
 						player.emit_signal("mana_changed", player.current_mana, player.max_mana)
@@ -342,6 +342,7 @@ func _physics_process(delta):
 					else:
 						player.spawn_floating_text("MP Tidak Cukup!", Color(0.2, 0.5, 1))
 				else:
+					var cost = 30
 					if player.current_energy >= cost:
 						player.current_energy -= cost
 						player.emit_signal("energy_changed", player.current_energy, player.max_energy)
@@ -351,12 +352,10 @@ func _physics_process(delta):
 						
 				if can_cast:
 					player.charge_attack_cooldown = 2.0
-					if w_type == "crossbow" or w_type == "rune":
+					if w_type == "crossbow":
 						player.charge_attack_cooldown = 1.0
 					
 					match w_type:
-						"rune":
-							player._fire_projectile("mana_burst", true)
 						"crossbow":
 							player._fire_projectile("bolt", true)
 						"dagger":

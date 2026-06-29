@@ -43,7 +43,7 @@ var inventory: Dictionary = {
 	"practice_gloves": 1,
 	"practice_lance": 1,
 	"practice_staff": 1,
-	"practice_rod": 1,
+	"practice_rune": 1,
 	"practice_long_bow": 1,
 	"practice_crossbow": 1,
 	"practice_dagger": 2
