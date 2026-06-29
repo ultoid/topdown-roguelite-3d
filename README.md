@@ -15,7 +15,7 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [ ] Crossbow Animation
   - [ ] Dagger Animation
   - [ ] Staff Animation
-  - [ ] Rune Animation
+  - [x] Rune Animation
   - [ ] Lance Animation
 - [ ] Implementasi animasi ke game
 
