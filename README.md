@@ -5,7 +5,7 @@ Proyek ini adalah evolusi dari *Top Down Action Game* 2D menjadi petualangan 3D 
 Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterBody2D` menjadi `CharacterBody3D`, `CollisionShape` ke dimensi volumetrik (`BoxShape3D`, `CapsuleShape3D`, `CylinderShape3D`), serta penggunaan Node spasial untuk interaksi dunia, proyektil, dan musuh.
 
 ## To Do List
-- [] Menyelesaikan Migrasi 2D ke 3D all component and system
+- [ ] Menyelesaikan Migrasi 2D ke 3D all component and system
   - [x] Fix Skill Apprentice
   - [x] Fix Skill Scout
 - [ ] Melengkapi animasi model 3d
