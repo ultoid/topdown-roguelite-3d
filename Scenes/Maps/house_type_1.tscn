@@ -22,27 +22,27 @@ data = PackedVector3Array(-351.5398, 454.1338, -44.346, -350.2837, 383.02878, 42
 [node name="model_housetype1" parent="." unique_id=827663980 instance=ExtResource("1_uhndy")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/frontwall2/defaultMaterial" parent_id_path=PackedInt32Array(827663980, 953538929) index="0" unique_id=907973631]
+[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/frontwall2/defaultMaterial" parent_id_path=PackedInt32Array(827663980, 1037555353) index="0" unique_id=907973631]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/frontwall2/defaultMaterial/StaticBody3D" unique_id=1784590578]
 shape = SubResource("ConcavePolygonShape3D_75l0k")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/lowarc1/defaultMaterial2" parent_id_path=PackedInt32Array(827663980, 1270966687) index="0" unique_id=846743216]
+[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/lowarc1/defaultMaterial2" parent_id_path=PackedInt32Array(827663980, 333380878) index="0" unique_id=846743216]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/lowarc1/defaultMaterial2/StaticBody3D" unique_id=811574774]
 shape = SubResource("ConcavePolygonShape3D_0705x")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube326/defaultMaterial3" parent_id_path=PackedInt32Array(827663980, 937025722) index="0" unique_id=835887021]
+[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube326/defaultMaterial3" parent_id_path=PackedInt32Array(827663980, 1496011174) index="0" unique_id=835887021]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube326/defaultMaterial3/StaticBody3D" unique_id=2466295]
 shape = SubResource("ConcavePolygonShape3D_40aut")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube327/defaultMaterial4" parent_id_path=PackedInt32Array(827663980, 1281628411) index="0" unique_id=1955082280]
+[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube327/defaultMaterial4" parent_id_path=PackedInt32Array(827663980, 1302617765) index="0" unique_id=1955082280]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube327/defaultMaterial4/StaticBody3D" unique_id=1875926990]
 shape = SubResource("ConcavePolygonShape3D_1b733")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube333/defaultMaterial5" parent_id_path=PackedInt32Array(827663980, 1985494496) index="0" unique_id=243615803]
+[node name="StaticBody3D" type="StaticBody3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube333/defaultMaterial5" parent_id_path=PackedInt32Array(827663980, 32929984) index="0" unique_id=243615803]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="model_housetype1/Sketchfab_model/Collada visual scene group/group21/pCube333/defaultMaterial5/StaticBody3D" unique_id=908858969]
 shape = SubResource("ConcavePolygonShape3D_nfn14")
