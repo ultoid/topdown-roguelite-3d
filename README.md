@@ -27,6 +27,7 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [x] Base system dengan `Global.gd` customization state
   - [x] Dynamic bone merging untuk tulang hair_dyn & fchr_dyn
   - [x] UI Kustomisasi dengan Realtime 3D Preview (SubViewport)
+  - [x] Offset system & PartAlignmentTool (DevTool)
   - [ ] Tambahkan variasi Wajah & Warna Kulit
 
 ## Architecture & Dev Notes

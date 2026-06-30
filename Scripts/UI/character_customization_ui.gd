@@ -4,12 +4,16 @@ extends Control
 @onready var beard_label = $Panel/HBoxContainer/VBoxContainer/BeardRow/LabelValue
 @onready var sub_viewport = $Panel/HBoxContainer/SubViewportContainer/SubViewport
 
-var max_hair_id = 11
-var max_beard_id = 10
+var max_hair_id = 1
+var max_beard_id = 1
 
 var _preview_camera: Camera3D
 
 func _ready():
+	if get_node_or_null("/root/CustomizationDB"):
+		max_hair_id = CustomizationDB.get_hair_list().size()
+		max_beard_id = CustomizationDB.get_beard_list().size()
+	
 	_setup_preview()
 	_update_labels()
 

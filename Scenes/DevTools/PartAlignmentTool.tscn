@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://jdl5sp2cswea"]
+
+[ext_resource type="PackedScene" uid="uid://c6teg26na3vpc" path="res://Scenes/PlayerVisual.tscn" id="1_visual"]
+[ext_resource type="Animation" uid="uid://d2e7fx3rt4dse" path="res://Assets/Models/idle.res" id="2_idle"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dev"]
+_data = {
+&"idle": ExtResource("2_idle")
+}
+
+[node name="PartAlignmentTool" type="Node3D" unique_id=1983940305]
+
+[node name="PlayerVisual" parent="." unique_id=1847464265 instance=ExtResource("1_visual")]
+
+[node name="GeneralSkeleton" parent="PlayerVisual/SK_BaseModel" parent_id_path=PackedInt32Array(1847464265, 236854328) index="0" unique_id=1144432028]
+bones/1/position = Vector3(0.009039173, 0.9002644, -0.00311316)
+bones/1/rotation = Quaternion(-0.03144667, -0.04655607, -0.026158776, 0.9980779)
+bones/6/rotation = Quaternion(0.13303457, 0.09748263, 0.9831595, -0.078717604)
+bones/8/rotation = Quaternion(-0.039254617, 0.98652554, -0.15833433, 0.012517934)
+bones/10/rotation = Quaternion(-0.044866186, 0.68798447, -0.7224015, 0.052920688)
+bones/13/rotation = Quaternion(-0.089318685, -0.03344214, 0.9951337, -0.024757268)
+bones/15/rotation = Quaternion(0.030767705, 0.99558544, -0.029417098, -0.08365272)
+bones/17/rotation = Quaternion(0.011397964, 0.6882488, -0.7247208, -0.03104281)
+bones/20/rotation = Quaternion(0.029148415, 0.012788088, 0.019108396, 0.9993106)
+bones/21/rotation = Quaternion(0.010091136, 0.0028256709, 0.013579338, 0.9998529)
+bones/23/rotation = Quaternion(0.009868051, 0.0030211776, 0.0136075355, 0.99985427)
+bones/24/rotation = Quaternion(-0.06595835, 0.011932633, -0.0014932686, 0.9977499)
+bones/32/rotation = Quaternion(0.45309496, 0.5070909, 0.6266813, -0.38057113)
+bones/33/rotation = Quaternion(0.1311065, 0.83068645, -0.52803135, -0.118127614)
+bones/35/rotation = Quaternion(0.00810408, -0.70805633, 0.0019763077, 0.70610666)
+bones/37/rotation = Quaternion(0.027612481, 0.4772263, -0.092852905, 0.8734249)
+bones/57/rotation = Quaternion(0.47183317, -0.48636466, -0.6290894, -0.38087994)
+bones/58/rotation = Quaternion(-0.16180095, 0.8512396, -0.45553112, 0.20421304)
+bones/60/rotation = Quaternion(0.044747192, 0.7106011, -0.038559105, 0.7011113)
+bones/62/rotation = Quaternion(0.013338279, -0.5743313, 0.06358378, 0.81604093)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1063198648]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
+light_energy = 2.0
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=146842762]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 2.5)
+
+[node name="Label3D" type="Label3D" parent="." unique_id=159669922]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+text = "CARA PENGGUNAAN:
+1. Klik Kanan 'PlayerVisual' di panel Scene -> Centang 'Editable Children'
+2. Drag & Drop file FBX Rambut/Jenggot Anda ke bawah 'GeneralSkeleton'
+3. Geser dan sesuaikan posisi part tersebut agar pas di kepala.
+4. Copy nilai Position, Rotation, dan Scale dari part tersebut.
+5. Buka customization_db.tscn dan Paste ke kotak Offset."
+font_size = 64
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=579317864]
+root_node = NodePath("../PlayerVisual/SK_BaseModel/GeneralSkeleton")
+libraries/ = SubResource("AnimationLibrary_dev")
+autoplay = &"idle"
+
+[editable path="PlayerVisual"]

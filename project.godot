@@ -20,6 +20,7 @@ config/icon="res://Assets/icon.svg"
 Global="*res://Scripts/System/global.gd"
 ItemDB="*res://Scenes/item_db.tscn"
 SkillDB="*res://Scenes/skill_db.tscn"
+CustomizationDB="*res://Scenes/customization_db.tscn"
 PlayerHUD="*res://Scenes/UI/player_hud.tscn"
 
 [display]

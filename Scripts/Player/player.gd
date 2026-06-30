@@ -317,11 +317,28 @@ func update_character_customization():
 	var hair_id = cust.get("hair", 0)
 	var beard_id = cust.get("facialhair", 0)
 	
-	var _load_direct = func(part_id: int, prefix: String, file_format: String):
+	var _load_async = func(part_type: String, part_id: int, prefix: String):
 		if part_id <= 0: return
-		var path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/" + (file_format % part_id)
+		var db = get_node_or_null("/root/CustomizationDB")
+		if not db: return
+		
+		var data = db.get_part_data(part_type, str(part_id))
+		if data.is_empty(): return
+		
+		var path = data.get("mesh_path", "")
+		if path == "": return
+		
 		if not ResourceLoader.exists(path): return
-		var res = load(path)
+		
+		ResourceLoader.load_threaded_request(path)
+		
+		while ResourceLoader.load_threaded_get_status(path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			await get_tree().process_frame
+			
+		if ResourceLoader.load_threaded_get_status(path) != ResourceLoader.THREAD_LOAD_LOADED:
+			return
+			
+		var res = ResourceLoader.load_threaded_get(path)
 		if not (res is PackedScene): return
 		var instance = res.instantiate()
 		skeleton.add_child(instance)
@@ -351,6 +368,9 @@ func update_character_customization():
 				var mesh_inst = meshes_to_move[i]
 				mesh_inst.reparent(skeleton, false) # keep_global_transform = false
 				mesh_inst.transform = Transform3D.IDENTITY # Pastikan transform bersih (tidak ada offset/rotasi ganda)
+				if data.has("position_offset"): mesh_inst.position = data["position_offset"]
+				if data.has("rotation_offset"): mesh_inst.rotation_degrees = data["rotation_offset"]
+				if data.has("scale_offset"): mesh_inst.scale = data["scale_offset"]
 				mesh_inst.name = prefix + str(i)
 				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
 		else:
@@ -358,20 +378,32 @@ func update_character_customization():
 			for mesh_inst in instance.find_children("*", "MeshInstance3D", true, false):
 				mesh_inst.reparent(skeleton, false)
 				mesh_inst.transform = Transform3D.IDENTITY
+				if data.has("position_offset"): mesh_inst.position = data["position_offset"]
+				if data.has("rotation_offset"): mesh_inst.rotation_degrees = data["rotation_offset"]
+				if data.has("scale_offset"): mesh_inst.scale = data["scale_offset"]
 				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
+				
+		# Update visibility of base parts
+		if part_type == "Hair":
+			var base = skeleton.get_node_or_null("Cust_Hair")
+			if base: base.visible = false
+		elif part_type == "Beard":
+			var base = skeleton.get_node_or_null("Cust_Beard")
+			if base: base.visible = false
 	
-	_load_direct.call(hair_id, "_hair_", "SK_HUMN_BASE_%02d_02HAIR_HU01.fbx")
-	_load_direct.call(beard_id, "_beard_", "SK_HUMN_BASE_%02d_09FCHR_HU01.fbx")
+	# Panggil dengan await karena sekarang asinkronus
+	var has_custom_hair = cust.get("hair", 0) > 0
+	var has_custom_beard = cust.get("facialhair", 0) > 0
 	
-	# Sembunyikan Cust_Hair/Cust_Beard default jika custom hair/beard berhasil diload
-	var cust_hair_default = skeleton.get_node_or_null("Cust_Hair")
-	var cust_beard_default = skeleton.get_node_or_null("Cust_Beard")
-	var has_custom_hair = skeleton.find_children("_hair_*", "MeshInstance3D", true, false).size() > 0
-	var has_custom_beard = skeleton.find_children("_beard_*", "MeshInstance3D", true, false).size() > 0
-	if is_instance_valid(cust_hair_default):
-		cust_hair_default.visible = not has_custom_hair
-	if is_instance_valid(cust_beard_default):
-		cust_beard_default.visible = not has_custom_beard
+	if has_custom_hair: await _load_async.call("Hair", hair_id, "_hair_")
+	else:
+		var base = skeleton.get_node_or_null("Cust_Hair")
+		if base: base.visible = true
+		
+	if has_custom_beard: await _load_async.call("Beard", beard_id, "_beard_")
+	else:
+		var base = skeleton.get_node_or_null("Cust_Beard")
+		if base: base.visible = true
 
 
 func _ready():

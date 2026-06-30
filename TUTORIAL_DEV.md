@@ -352,3 +352,27 @@ Ini adalah status pendukung yang berjalan di latar belakang:
 
 ### 7.4 Cara Menambahkan Bonus Stat pada Item
 Untuk menambahkan bonus stat pada sebuah senjata atau zirah, cukup atur nilai variabel di bagian `Equipment Stats` pada *Inspector* Godot (file `.tscn` dari item tersebut). Misalnya, mengisi `bonus_critical` = 5 pada sebuah pedang otomatis akan menaikkan *Critical Chance* karakter sebesar 5% ketika pedang tersebut dipakai, dan serangan karakter tersebut akan menghasilkan teks *damage* berwarna merah menyala dan kerusakannya dikali 2 saat kritikal!
+
+---
+
+## 11. Panduan Menyelaraskan Posisi Part Rambut/Jenggot (Part Alignment Tool)
+
+Jika Anda mengimpor aset 3D Rambut atau Jenggot (format `.fbx`) dari luar dan mendapati posisinya melenceng/terbalik saat dipakai oleh karakter, Anda bisa mengoreksinya tanpa harus menggunakan *software* 3D seperti Blender.
+
+Sistem telah menyediakan alat khusus dan sistem offset di database.
+
+### Langkah-langkah Penggunaan:
+1. **Buka Tool**: Di Editor Godot, buka *scene* `Scenes/DevTools/PartAlignmentTool.tscn`.
+2. **Siapkan Karakter**:
+   - Di panel *Scene* (kiri), klik kanan pada node `PlayerVisual` dan pilih **Editable Children**.
+   - Buka struktur node-nya hingga Anda menemukan `GeneralSkeleton`.
+3. **Penyelarasan Visual**:
+   - Tarik (*drag and drop*) file `.fbx` rambut atau jenggot Anda dari *FileSystem* ke dalam node `GeneralSkeleton`.
+   - Gunakan fitur *Move* (W), *Rotate* (E), dan *Scale* (R) di layar 3D untuk menyesuaikan letak rambut tersebut hingga benar-benar pas di kepala karakter.
+4. **Simpan Offset**:
+   - Setelah posisinya pas, klik node FBX tersebut, lalu lihat panel *Inspector* (kanan) bagian **Transform**.
+   - Salin (*copy*) angka-angka **Position**, **Rotation**, dan **Scale**.
+   - Buka file database kustomisasi (`Scenes/customization_db.tscn`).
+   - Temukan node yang mewakili rambut tersebut, lalu ketik/tempel nilainya ke kolom grup **Transform Offsets** (`position_offset`, `rotation_offset`, `scale_offset`).
+
+Saat dimainkan di dalam game, sistem akan secara otomatis memposisikan ulang rambut/jenggot tersebut menggunakan angka *offset* yang sudah Anda tentukan, sehingga ia akan selalu menempel sempurna di kepala karakter di berbagai animasi!
