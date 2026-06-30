@@ -23,11 +23,12 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [x] Fungsi `update_visual_equipment()` di player.gd
   - [ ] Membuat scene armor/helm/boots pertama
   - [ ] Integrasi dengan ItemDB
-- [x] Sistem Character Customization
+- [ ] Sistem Character Customization
   - [x] Base system dengan `Global.gd` customization state
   - [x] Dynamic bone merging untuk tulang hair_dyn & fchr_dyn
   - [x] UI Kustomisasi dengan Realtime 3D Preview (SubViewport)
   - [x] Offset system & PartAlignmentTool (DevTool)
+  - [x] Perbaikan orientasi & skala offset part kustomisasi
   - [ ] Tambahkan variasi Wajah & Warna Kulit
 
 ## Architecture & Dev Notes

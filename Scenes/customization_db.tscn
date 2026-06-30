@@ -1,158 +1,128 @@
-[gd_scene format=3 uid="uid://cb3customdb001"]
+[gd_scene format=3 uid="uid://iy66s426oaea"]
 
-[ext_resource type="Script" uid="uid://d3customdb001" path="res://Scripts/System/customization_db.gd" id="1_db"]
-[ext_resource type="Script" uid="uid://d3customdata01" path="res://Scripts/System/customization_data.gd" id="2_data"]
+[ext_resource type="Script" uid="uid://clp6nwqjp7sid" path="res://Scripts/System/customization_db.gd" id="1_db"]
+[ext_resource type="Script" uid="uid://bq1fp8cn45j0b" path="res://Scripts/System/customization_data.gd" id="2_data"]
 
-[node name="CustomizationDB" type="Node"]
+[node name="CustomizationDB" type="Node" unique_id=992742085]
 script = ExtResource("1_db")
 
-[node name="Hairs" type="Node" parent="."]
+[node name="Hairs" type="Node" parent="." unique_id=375139332]
 
-[node name="1" type="Node" parent="Hairs"]
+[node name="1" type="Node" parent="Hairs" unique_id=513488315]
 script = ExtResource("2_data")
 part_name = "Hair 1"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_01_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="2" type="Node" parent="Hairs"]
+[node name="2" type="Node" parent="Hairs" unique_id=620252624]
 script = ExtResource("2_data")
 part_name = "Hair 2"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_02_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="3" type="Node" parent="Hairs"]
+[node name="3" type="Node" parent="Hairs" unique_id=1963730844]
 script = ExtResource("2_data")
 part_name = "Hair 3"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_03_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="4" type="Node" parent="Hairs"]
+[node name="4" type="Node" parent="Hairs" unique_id=1507175712]
 script = ExtResource("2_data")
 part_name = "Hair 4"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_04_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="5" type="Node" parent="Hairs"]
+[node name="5" type="Node" parent="Hairs" unique_id=1969731782]
 script = ExtResource("2_data")
 part_name = "Hair 5"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_05_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="6" type="Node" parent="Hairs"]
+[node name="6" type="Node" parent="Hairs" unique_id=531323696]
 script = ExtResource("2_data")
 part_name = "Hair 6"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_06_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="7" type="Node" parent="Hairs"]
+[node name="7" type="Node" parent="Hairs" unique_id=1231778910]
 script = ExtResource("2_data")
 part_name = "Hair 7"
-part_type = "Hair"
-mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_07_02HAIR_HU01.fbx"
-species = "Humans"
+mesh_path = "uid://csc6orpef7yak"
+position_offset = Vector3(0, 0.011, 0.018)
+rotation_offset = Vector3(-90, 0, 0)
 
-[node name="8" type="Node" parent="Hairs"]
+[node name="8" type="Node" parent="Hairs" unique_id=492545830]
 script = ExtResource("2_data")
 part_name = "Hair 8"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_08_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="9" type="Node" parent="Hairs"]
+[node name="9" type="Node" parent="Hairs" unique_id=1088087497]
 script = ExtResource("2_data")
 part_name = "Hair 9"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_09_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="10" type="Node" parent="Hairs"]
+[node name="10" type="Node" parent="Hairs" unique_id=1451446394]
 script = ExtResource("2_data")
 part_name = "Hair 10"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_10_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="11" type="Node" parent="Hairs"]
+[node name="11" type="Node" parent="Hairs" unique_id=816690124]
 script = ExtResource("2_data")
 part_name = "Hair 11"
-part_type = "Hair"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_11_02HAIR_HU01.fbx"
-species = "Humans"
 
-[node name="Beards" type="Node" parent="."]
+[node name="Beards" type="Node" parent="." unique_id=554610687]
 
-[node name="1" type="Node" parent="Beards"]
+[node name="1" type="Node" parent="Beards" unique_id=24912976]
 script = ExtResource("2_data")
 part_name = "Beard 1"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_01_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="2" type="Node" parent="Beards"]
+[node name="2" type="Node" parent="Beards" unique_id=568561034]
 script = ExtResource("2_data")
 part_name = "Beard 2"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_02_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="3" type="Node" parent="Beards"]
+[node name="3" type="Node" parent="Beards" unique_id=522705550]
 script = ExtResource("2_data")
 part_name = "Beard 3"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_03_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="4" type="Node" parent="Beards"]
+[node name="4" type="Node" parent="Beards" unique_id=365451266]
 script = ExtResource("2_data")
 part_name = "Beard 4"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_04_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="5" type="Node" parent="Beards"]
+[node name="5" type="Node" parent="Beards" unique_id=2111347990]
 script = ExtResource("2_data")
 part_name = "Beard 5"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_05_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="6" type="Node" parent="Beards"]
+[node name="6" type="Node" parent="Beards" unique_id=510884547]
 script = ExtResource("2_data")
 part_name = "Beard 6"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_06_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="7" type="Node" parent="Beards"]
+[node name="7" type="Node" parent="Beards" unique_id=1789092069]
 script = ExtResource("2_data")
 part_name = "Beard 7"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_07_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="8" type="Node" parent="Beards"]
+[node name="8" type="Node" parent="Beards" unique_id=534235419]
 script = ExtResource("2_data")
 part_name = "Beard 8"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_08_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="9" type="Node" parent="Beards"]
+[node name="9" type="Node" parent="Beards" unique_id=1869033767]
 script = ExtResource("2_data")
 part_name = "Beard 9"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_09_09FCHR_HU01.fbx"
-species = "Humans"
 
-[node name="10" type="Node" parent="Beards"]
+[node name="10" type="Node" parent="Beards" unique_id=122157798]
 script = ExtResource("2_data")
 part_name = "Beard 10"
 part_type = "Beard"
 mesh_path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_10_09FCHR_HU01.fbx"
-species = "Humans"

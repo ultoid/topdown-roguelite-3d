@@ -306,13 +306,13 @@ func update_character_customization():
 	var skeleton = find_child("GeneralSkeleton", true, false)
 	if not skeleton: return
 
-
-	# Hair (02HAIR) dan Beard (09FCHR)
-	# Bersihkan mesh custom lama dari GeneralSkeleton sebelum load yang baru
-	for old_mesh in skeleton.find_children("_hair_*", "MeshInstance3D", true, false):
-		old_mesh.queue_free()
-	for old_mesh in skeleton.find_children("_beard_*", "MeshInstance3D", true, false):
-		old_mesh.queue_free()
+	# Bersihkan instance rambut/jenggot lama - cari node langsung di bawah skeleton
+	# yang punya nama dimulai dengan prefix kita
+	for child in skeleton.get_children():
+		if child.name.begins_with("_cust_hair_") or child.name.begins_with("_cust_beard_"):
+			child.queue_free()
+	# Tunggu satu frame agar queue_free selesai sebelum menambah yang baru
+	await get_tree().process_frame
 	
 	var hair_id = cust.get("hair", 0)
 	var beard_id = cust.get("facialhair", 0)
@@ -341,6 +341,8 @@ func update_character_customization():
 		var res = ResourceLoader.load_threaded_get(path)
 		if not (res is PackedScene): return
 		var instance = res.instantiate()
+		# Beri nama unik agar bisa dibersihkan saat ganti rambut
+		instance.name = prefix + str(part_id)
 		skeleton.add_child(instance)
 		
 		# Cari Skeleton3D dari dalam instance
@@ -348,7 +350,23 @@ func update_character_customization():
 		var source_skeleton: Skeleton3D = all_skeletons[0] if all_skeletons.size() > 0 else null
 		
 		if source_skeleton:
-			# Merge tulang dinamis ke GeneralSkeleton
+			# === Cara yang benar untuk skinned mesh ===
+			# Jangan pindahkan MeshInstance3D satu per satu!
+			# Biarkan seluruh sub-tree FBX tetap utuh sebagai anak dari GeneralSkeleton.
+			# Biarkan instance tetap memiliki transform bawaannya (termasuk scale 0.01 dll dari FBX)
+			
+			# Terapkan offset dari DB ke ROOT node instance (bukan ke mesh individual)
+			if data.get("apply_offset", false):
+				if data.has("position_offset"): instance.position = data["position_offset"]
+				if data.has("rotation_offset"): instance.rotation_degrees = data["rotation_offset"]
+				if data.has("scale_offset") and data["scale_offset"] != Vector3.ONE: instance.scale = data["scale_offset"]
+			
+			# Pastikan semua MeshInstance3D di dalamnya tahu di mana skeleton-nya
+			# (agar skinning berjalan ke GeneralSkeleton, bukan ke source_skeleton)
+			for mesh_inst in instance.find_children("*", "MeshInstance3D", true, false):
+				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
+			
+			# Perbaiki tulang dinamis (physics bones) ke GeneralSkeleton jika belum ada
 			for i in range(source_skeleton.get_bone_count()):
 				var b_name = source_skeleton.get_bone_name(i)
 				if skeleton.find_bone(b_name) == -1:
@@ -361,26 +379,13 @@ func update_character_customization():
 						var target_p_idx = skeleton.find_bone(p_name)
 						if target_p_idx != -1:
 							skeleton.set_bone_parent(new_idx, target_p_idx)
-			
-			# Pindahkan semua mesh ke GeneralSkeleton & beri nama dengan prefix
-			var meshes_to_move = source_skeleton.find_children("*", "MeshInstance3D", true, false)
-			for i in range(meshes_to_move.size()):
-				var mesh_inst = meshes_to_move[i]
-				mesh_inst.reparent(skeleton, false) # keep_global_transform = false
-				mesh_inst.transform = Transform3D.IDENTITY # Pastikan transform bersih (tidak ada offset/rotasi ganda)
-				if data.has("position_offset"): mesh_inst.position = data["position_offset"]
-				if data.has("rotation_offset"): mesh_inst.rotation_degrees = data["rotation_offset"]
-				if data.has("scale_offset"): mesh_inst.scale = data["scale_offset"]
-				mesh_inst.name = prefix + str(i)
-				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
 		else:
-			# Tanpa skeleton, tautkan langsung
+			# Tanpa skeleton internal, biarkan transform bawaan FBX
+			if data.get("apply_offset", false):
+				if data.has("position_offset"): instance.position = data["position_offset"]
+				if data.has("rotation_offset"): instance.rotation_degrees = data["rotation_offset"]
+				if data.has("scale_offset") and data["scale_offset"] != Vector3.ONE: instance.scale = data["scale_offset"]
 			for mesh_inst in instance.find_children("*", "MeshInstance3D", true, false):
-				mesh_inst.reparent(skeleton, false)
-				mesh_inst.transform = Transform3D.IDENTITY
-				if data.has("position_offset"): mesh_inst.position = data["position_offset"]
-				if data.has("rotation_offset"): mesh_inst.rotation_degrees = data["rotation_offset"]
-				if data.has("scale_offset"): mesh_inst.scale = data["scale_offset"]
 				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
 				
 		# Update visibility of base parts
@@ -395,12 +400,12 @@ func update_character_customization():
 	var has_custom_hair = cust.get("hair", 0) > 0
 	var has_custom_beard = cust.get("facialhair", 0) > 0
 	
-	if has_custom_hair: await _load_async.call("Hair", hair_id, "_hair_")
+	if has_custom_hair: await _load_async.call("Hair", hair_id, "_cust_hair_")
 	else:
 		var base = skeleton.get_node_or_null("Cust_Hair")
 		if base: base.visible = true
 		
-	if has_custom_beard: await _load_async.call("Beard", beard_id, "_beard_")
+	if has_custom_beard: await _load_async.call("Beard", beard_id, "_cust_beard_")
 	else:
 		var base = skeleton.get_node_or_null("Cust_Beard")
 		if base: base.visible = true

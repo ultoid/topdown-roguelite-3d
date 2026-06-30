@@ -7,6 +7,7 @@ class_name CustomizationData
 @export var species: String = "Humans"
 
 @export_group("Transform Offsets")
+@export var apply_offset: bool = false
 @export var position_offset: Vector3 = Vector3.ZERO
 @export var rotation_offset: Vector3 = Vector3.ZERO
 @export var scale_offset: Vector3 = Vector3.ONE

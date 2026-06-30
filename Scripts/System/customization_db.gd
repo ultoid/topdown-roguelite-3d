@@ -21,6 +21,7 @@ func _traverse_children(parent_node: Node):
 				"type": child.part_type,
 				"mesh_path": child.mesh_path,
 				"species": child.species,
+				"apply_offset": child.apply_offset,
 				"position_offset": child.position_offset,
 				"rotation_offset": child.rotation_offset,
 				"scale_offset": child.scale_offset

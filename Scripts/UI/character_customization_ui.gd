@@ -47,10 +47,9 @@ func _position_preview_camera():
 	# Model dirotasi 180° sehingga basis.z adalah arah "depan visual"
 	var visual_front = player.global_transform.basis.z.normalized()
 	
-	# Posisikan kamera di depan wajah player, setinggi kepala
-	var cam_pos = player_pos + Vector3(0, 2.5, 0) + visual_front * 1.5
+	var cam_pos = player_pos + Vector3(0, 1.5, 0) + visual_front * 2.5
 	_preview_camera.global_position = cam_pos
-	_preview_camera.look_at(player_pos + Vector3(0, 1.6, 0), Vector3.UP)
+	_preview_camera.look_at(player_pos + Vector3(0, 1.5, 0), Vector3.UP)
 
 func _process(_delta):
 	# Update posisi kamera setiap frame mengikuti player
