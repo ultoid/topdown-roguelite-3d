@@ -38,6 +38,17 @@ materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
 _subresources={
+"meshes": {
+"SK_HUMN_BASE_02_02HAIR_HU01": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://Assets/Models/CharacterCustomization/Hair/hair2.res",
+"save_to_file/path": "uid://dkat6ikqopuwt"
+}
+},
 "nodes": {
 "PATH:Skeleton3D": {
 "retarget/bone_map": Object(BoneMap,"resource_local_to_scene":false,"resource_name":"","profile":Object(SkeletonProfileHumanoid,"resource_local_to_scene":false,"resource_name":"","root_bone":&"Root","scale_base_bone":&"Hips","group_size":4,"bone_size":56,"script":null)

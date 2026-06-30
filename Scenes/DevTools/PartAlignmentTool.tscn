@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://c6teg26na3vpc" path="res://Scenes/PlayerVisual.tscn" id="1_visual"]
 [ext_resource type="Animation" uid="uid://d2e7fx3rt4dse" path="res://Assets/Models/idle.res" id="2_idle"]
-[ext_resource type="PackedScene" uid="uid://csc6orpef7yak" path="res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/SK_HUMN_BASE_07_02HAIR_HU01.fbx" id="2_rldqm"]
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dev"]
 _data = {
@@ -34,12 +33,6 @@ bones/57/rotation = Quaternion(0.47183317, -0.48636466, -0.6290894, -0.38087994)
 bones/58/rotation = Quaternion(-0.16180095, 0.8512396, -0.45553112, 0.20421304)
 bones/60/rotation = Quaternion(0.044747192, 0.7106011, -0.038559105, 0.7011113)
 bones/62/rotation = Quaternion(0.013338279, -0.5743313, 0.06358378, 0.81604093)
-
-[node name="SK_HUMN_BASE_07_02HAIR_HU01" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton" index="3" unique_id=319712935 instance=ExtResource("2_rldqm")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.010872483, 0.01775229)
-
-[node name="Cust_Hair" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton" index="4" unique_id=859463904]
-visible = false
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1063198648]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
