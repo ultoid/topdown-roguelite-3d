@@ -299,6 +299,81 @@ func update_visual_equipment():
 	if is_instance_valid(base_feet):
 		base_feet.visible = not has_boots
 
+func update_character_customization():
+	if not get_node_or_null("/root/Global"): return
+	
+	var cust = Global.customization
+	var skeleton = find_child("GeneralSkeleton", true, false)
+	if not skeleton: return
+
+
+	# Hair (02HAIR) dan Beard (09FCHR)
+	# Bersihkan mesh custom lama dari GeneralSkeleton sebelum load yang baru
+	for old_mesh in skeleton.find_children("_hair_*", "MeshInstance3D", true, false):
+		old_mesh.queue_free()
+	for old_mesh in skeleton.find_children("_beard_*", "MeshInstance3D", true, false):
+		old_mesh.queue_free()
+	
+	var hair_id = cust.get("hair", 0)
+	var beard_id = cust.get("facialhair", 0)
+	
+	var _load_direct = func(part_id: int, prefix: String, file_format: String):
+		if part_id <= 0: return
+		var path = "res://Assets/Models/CharacterCustomization/Meshes/Species/Humans/" + (file_format % part_id)
+		if not ResourceLoader.exists(path): return
+		var res = load(path)
+		if not (res is PackedScene): return
+		var instance = res.instantiate()
+		skeleton.add_child(instance)
+		
+		# Cari Skeleton3D dari dalam instance
+		var all_skeletons = instance.find_children("*", "Skeleton3D", true, false)
+		var source_skeleton: Skeleton3D = all_skeletons[0] if all_skeletons.size() > 0 else null
+		
+		if source_skeleton:
+			# Merge tulang dinamis ke GeneralSkeleton
+			for i in range(source_skeleton.get_bone_count()):
+				var b_name = source_skeleton.get_bone_name(i)
+				if skeleton.find_bone(b_name) == -1:
+					skeleton.add_bone(b_name)
+					var new_idx = skeleton.find_bone(b_name)
+					skeleton.set_bone_rest(new_idx, source_skeleton.get_bone_rest(i))
+					var p_idx = source_skeleton.get_bone_parent(i)
+					if p_idx != -1:
+						var p_name = source_skeleton.get_bone_name(p_idx)
+						var target_p_idx = skeleton.find_bone(p_name)
+						if target_p_idx != -1:
+							skeleton.set_bone_parent(new_idx, target_p_idx)
+			
+			# Pindahkan semua mesh ke GeneralSkeleton & beri nama dengan prefix
+			var meshes_to_move = source_skeleton.find_children("*", "MeshInstance3D", true, false)
+			for i in range(meshes_to_move.size()):
+				var mesh_inst = meshes_to_move[i]
+				mesh_inst.reparent(skeleton, false) # keep_global_transform = false
+				mesh_inst.transform = Transform3D.IDENTITY # Pastikan transform bersih (tidak ada offset/rotasi ganda)
+				mesh_inst.name = prefix + str(i)
+				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
+		else:
+			# Tanpa skeleton, tautkan langsung
+			for mesh_inst in instance.find_children("*", "MeshInstance3D", true, false):
+				mesh_inst.reparent(skeleton, false)
+				mesh_inst.transform = Transform3D.IDENTITY
+				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
+	
+	_load_direct.call(hair_id, "_hair_", "SK_HUMN_BASE_%02d_02HAIR_HU01.fbx")
+	_load_direct.call(beard_id, "_beard_", "SK_HUMN_BASE_%02d_09FCHR_HU01.fbx")
+	
+	# Sembunyikan Cust_Hair/Cust_Beard default jika custom hair/beard berhasil diload
+	var cust_hair_default = skeleton.get_node_or_null("Cust_Hair")
+	var cust_beard_default = skeleton.get_node_or_null("Cust_Beard")
+	var has_custom_hair = skeleton.find_children("_hair_*", "MeshInstance3D", true, false).size() > 0
+	var has_custom_beard = skeleton.find_children("_beard_*", "MeshInstance3D", true, false).size() > 0
+	if is_instance_valid(cust_hair_default):
+		cust_hair_default.visible = not has_custom_hair
+	if is_instance_valid(cust_beard_default):
+		cust_beard_default.visible = not has_custom_beard
+
+
 func _ready():
 	add_to_group("Player")
 	status_manager = StatusEffectManager.new()
@@ -307,6 +382,7 @@ func _ready():
 	
 	update_equipped_weapon()
 	update_visual_equipment()
+	update_character_customization()
 
 
 	# Strip X/Z translation from ALL animations so they are in-place.
@@ -506,6 +582,18 @@ func _update_interaction_prompt():
 	player_ui_manager._update_interaction_prompt()
 func _open_crafting_menu():
 	player_ui_manager._open_crafting_menu()
+func _open_customization():
+	var canvas = _get_hud_canvas()
+	if canvas:
+		# Tutup jika sudah ada
+		var existing = canvas.get_node_or_null("CharacterCustomization")
+		if existing:
+			existing.queue_free()
+			return
+		var cust_scene = load("res://Scenes/UI/CharacterCustomization.tscn")
+		if cust_scene:
+			var inst = cust_scene.instantiate()
+			canvas.add_child(inst)
 
 func get_mouse_3d_pos() -> Vector3:
 	var camera = get_viewport().get_camera_3d()

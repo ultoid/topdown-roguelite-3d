@@ -1,0 +1,127 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3yq1p8c7f2k4"]
+
+[ext_resource type="Script" path="res://Scripts/UI/character_customization_ui.gd" id="1_d5k2a"]
+
+[node name="CharacterCustomization" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_d5k2a")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -220.0
+offset_right = 320.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2
+custom_minimum_size = Vector2(260, 0)
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Panel/HBoxContainer/SubViewportContainer"]
+size = Vector2i(260, 380)
+render_target_update_mode = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="LabelTitle" type="Label" parent="Panel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Kustomisasi Karakter"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HairRow" type="HBoxContainer" parent="Panel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/VBoxContainer/HairRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Rambut:"
+
+[node name="BtnPrev" type="Button" parent="Panel/HBoxContainer/VBoxContainer/HairRow"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "<"
+
+[node name="LabelValue" type="Label" parent="Panel/HBoxContainer/VBoxContainer/HairRow"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "1"
+horizontal_alignment = 1
+
+[node name="BtnNext" type="Button" parent="Panel/HBoxContainer/VBoxContainer/HairRow"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = ">"
+
+[node name="BeardRow" type="HBoxContainer" parent="Panel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Panel/HBoxContainer/VBoxContainer/BeardRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Jenggot:"
+
+[node name="BtnPrev" type="Button" parent="Panel/HBoxContainer/VBoxContainer/BeardRow"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "<"
+
+[node name="LabelValue" type="Label" parent="Panel/HBoxContainer/VBoxContainer/BeardRow"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "0"
+horizontal_alignment = 1
+
+[node name="BtnNext" type="Button" parent="Panel/HBoxContainer/VBoxContainer/BeardRow"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = ">"
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Tutup"
+
+[connection signal="pressed" from="Panel/HBoxContainer/VBoxContainer/HairRow/BtnPrev" to="." method="_on_hair_prev_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/VBoxContainer/HairRow/BtnNext" to="." method="_on_hair_next_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/VBoxContainer/BeardRow/BtnPrev" to="." method="_on_beard_prev_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/VBoxContainer/BeardRow/BtnNext" to="." method="_on_beard_next_pressed"]
+[connection signal="pressed" from="Panel/HBoxContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

@@ -60,6 +60,17 @@ var equipment: Dictionary = {
 	"artifact": ""
 }
 
+# Character Customization State
+# Storing the ID of the mesh to load (e.g. 1 -> SK_HUMN_BASE_01_02HAIR)
+var customization: Dictionary = {
+	"hair": 1,
+	"eyebrows": 1,
+	"facialhair": 0, # 0 means none
+	"ears": 1,
+	"nose": 1,
+	"teeth": 1
+}
+
 var quick_items = ["", "", "", ""] # item_id slot 1 to 4
 
 var unlocked_skills: Dictionary = {} # ID skill : level
@@ -255,6 +266,7 @@ func _setup_inputs():
 		"open_inventory": KEY_B,
 		"open_skill_menu": KEY_K,
 		"open_crafting": KEY_J,
+		"open_customization": KEY_P,
 		"skill_1": KEY_1,
 		"skill_2": KEY_2,
 		"skill_3": KEY_3,
