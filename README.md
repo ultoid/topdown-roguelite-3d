@@ -17,7 +17,15 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [ ] Staff Animation
   - [x] Rune Animation
   - [ ] Lance Animation
-- [ ] Implementasi animasi ke game
+- [x] Implementasi animasi ke game (Synty Modular)
+- [ ] Sistem Visual Equipment (Armor, Helm, Boots)
+  - [x] Struktur slot node di player.tscn
+  - [x] Fungsi `update_visual_equipment()` di player.gd
+  - [ ] Membuat scene armor/helm/boots pertama
+  - [ ] Integrasi dengan ItemDB
+- [ ] Sistem Character Customization
+  - [ ] UI Kustomisasi (Rambut, Wajah, Kulit)
+  - [ ] Menyimpan pilihan ke Global.gd
 
 ## Architecture & Dev Notes
 
@@ -35,6 +43,9 @@ Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** 
 4. **Modular Weapon Scenes**: Senjata kini diimplementasikan menggunakan pendekatan *Modular Scene*. Fisik 3D senjata beserta *hitbox* area serangannya disimpan di dalam file `.tscn` terpisah dan di-*load* berdasarkan `weapon_scene_path` dari *Item Database*.
 
 ## Change Log
+
+### 30 Juni 2026
+[Lihat detail perubahan](Change%20Log/2026-06-30.md)
 
 ### 29 Juni 2026
 [Lihat detail perubahan](Change%20Log/2026-06-29.md)

@@ -222,6 +222,83 @@ func update_equipped_weapon():
 				var weapon_instance = weapon_scene.instantiate()
 				attachment.add_child(weapon_instance)
 
+func update_visual_equipment():
+	var item_db = get_node_or_null("/root/ItemDB")
+	if not item_db or not get_node_or_null("/root/Global"): return
+	
+	# Cari Slot Node (Target)
+	var slot_helm = find_child("Slot_Helm", true, false)
+	var slot_armor = find_child("Slot_Armor", true, false)
+	var slot_boots = find_child("Slot_Boots", true, false)
+	
+	# Cari Base Node (Yang akan disembunyikan)
+	var base_head = find_child("Base_Head_Group", true, false)
+	var cust_hair = find_child("Cust_Hair", true, false)
+	var cust_beard = find_child("Cust_Beard", true, false)
+	var base_body = find_child("Base_Body", true, false)
+	var base_feet = find_child("Base_Feet", true, false)
+	
+	# Cari Skeleton utama untuk me-reassign tulang jika perlu
+	var skeleton = find_child("Skeleton3D", true, false)
+	if not skeleton:
+		skeleton = find_child("GeneralSkeleton", true, false)
+	
+	# Fungsi helper untuk memuat scene/mesh ke slot
+	var _load_visual = func(item_id: String, target_slot: Node3D) -> bool:
+		if not is_instance_valid(target_slot): return false
+		# Bersihkan slot
+		for c in target_slot.get_children():
+			c.queue_free()
+			
+		if item_id == "": return false
+		
+		var data = item_db.get_item(item_id)
+		if not data: return false
+		
+		var vis_path = data.get("visual_path", "")
+		if vis_path == "": return false
+		
+		var res = load(vis_path)
+		if not res: return false
+		
+		var instance = null
+		if res is PackedScene:
+			instance = res.instantiate()
+		elif res is Mesh:
+			instance = MeshInstance3D.new()
+			instance.mesh = res
+			
+		if instance:
+			target_slot.add_child(instance)
+			# Otomatis sambungkan properti skeleton untuk semua MeshInstance3D di dalam baju
+			if skeleton:
+				if instance is MeshInstance3D:
+					instance.skeleton = instance.get_path_to(skeleton)
+				else:
+					for child in instance.find_children("*", "MeshInstance3D"):
+						child.skeleton = child.get_path_to(skeleton)
+			return true
+		return false
+
+	# Eksekusi Armor
+	var has_armor = _load_visual.call(Global.equipment.get("armor", ""), slot_armor)
+	if is_instance_valid(base_body):
+		base_body.visible = not has_armor
+
+	# Eksekusi Helm
+	var has_helm = _load_visual.call(Global.equipment.get("helm", ""), slot_helm)
+	if is_instance_valid(base_head):
+		base_head.visible = not has_helm
+	if is_instance_valid(cust_hair):
+		cust_hair.visible = not has_helm
+	if is_instance_valid(cust_beard):
+		cust_beard.visible = not has_helm
+
+	# Eksekusi Boots
+	var has_boots = _load_visual.call(Global.equipment.get("boots", ""), slot_boots)
+	if is_instance_valid(base_feet):
+		base_feet.visible = not has_boots
+
 func _ready():
 	add_to_group("Player")
 	status_manager = StatusEffectManager.new()
@@ -229,30 +306,33 @@ func _ready():
 	status_manager.setup(self)
 	
 	update_equipped_weapon()
+	update_visual_equipment()
 
 
-	# Strip X/Z translation from the dash animation to prevent the visual mesh from moving away from the root collision shape
-	var ap = get_node_or_null("Visuals/HeroModel/AnimationPlayer")
+	# Strip X/Z translation from ALL animations so they are in-place.
+	# This prevents the visual mesh from drifting away from the CollisionShape.
+	var ap = get_node_or_null("Visuals/PlayerVisual/GeneralSkeleton/AnimationPlayer")
 	if ap:
-		for anim_name in ap.get_animation_list():
-			var lower_name = anim_name.to_lower()
-			if "dash" in lower_name or "attack" in lower_name:
-				var anim = ap.get_animation(anim_name)
+		for lib_name in ap.get_animation_library_list():
+			var lib = ap.get_animation_library(lib_name)
+			for anim_name in lib.get_animation_list():
+				var anim = lib.get_animation(anim_name)
+				var lower_name = anim_name.to_lower()
 				if "dash" in lower_name:
-					dash_anim_length = anim.length # Fallback
-					
-				var track_idx = -1
+					dash_anim_length = anim.length
+				
+				# Cari track posisi di tulang Root/Hips dan hapus gerakan X/Z-nya
 				for j in range(anim.get_track_count()):
 					if anim.track_get_type(j) == Animation.TYPE_POSITION_3D:
 						var path_str = str(anim.track_get_path(j))
-						if path_str.ends_with(":Hips") or path_str.ends_with(":mixamorig_Hips"):
-							track_idx = j
+						# Cocokkan tulang root/hips dari berbagai konvensi nama
+						if path_str.ends_with(":Hips") or path_str.ends_with(":Root") \
+						or path_str.ends_with(":mixamorig_Hips") or path_str.ends_with(":pelvis"):
+							for i in range(anim.track_get_key_count(j)):
+								var val = anim.track_get_key_value(j, i)
+								# Hanya simpan gerakan Y (naik-turun), hapus X dan Z
+								anim.track_set_key_value(j, i, Vector3(0, val.y, 0))
 							break
-				
-				if track_idx != -1:
-					for i in range(anim.track_get_key_count(track_idx)):
-						var val = anim.track_get_key_value(track_idx, i)
-						anim.track_set_key_value(track_idx, i, Vector3(0, val.y, 0))
 	
 	if get_node_or_null("/root/Global"):
 		coins = Global.coins

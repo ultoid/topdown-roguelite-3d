@@ -302,6 +302,8 @@ func _equip_item(slot: String, item_id: String):
 			hud._update_hp_mp_ep()
 	if player.has_method("update_equipped_weapon"):
 		player.update_equipped_weapon()
+	if player.has_method("update_visual_equipment"):
+		player.update_visual_equipment()
 			
 	_update_equipment_ui()
 	_update_ui()
@@ -333,6 +335,8 @@ func _unequip_item(slot: String):
 			hud._update_hp_mp_ep()
 	if player.has_method("update_equipped_weapon"):
 		player.update_equipped_weapon()
+	if player.has_method("update_visual_equipment"):
+		player.update_visual_equipment()
 			
 	_update_equipment_ui()
 	_update_ui()
