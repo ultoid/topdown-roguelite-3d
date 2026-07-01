@@ -123,9 +123,6 @@ func _unhandled_key_input(event):
 	elif event.is_action_pressed("open_crafting"):
 		player._open_crafting_menu()
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("open_customization"):
-		player._open_customization()
-		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("item_1"):
 		_use_quick_item(0)
 	elif event.is_action_pressed("item_2"):

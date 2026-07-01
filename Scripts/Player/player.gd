@@ -299,116 +299,7 @@ func update_visual_equipment():
 	if is_instance_valid(base_feet):
 		base_feet.visible = not has_boots
 
-func update_character_customization():
-	if not get_node_or_null("/root/Global"): return
-	
-	var cust = Global.customization
-	var skeleton = find_child("GeneralSkeleton", true, false)
-	if not skeleton: return
 
-	# Bersihkan instance rambut/jenggot lama - cari node langsung di bawah skeleton
-	# yang punya nama dimulai dengan prefix kita
-	for child in skeleton.get_children():
-		if child.name.begins_with("_cust_hair_") or child.name.begins_with("_cust_beard_"):
-			child.queue_free()
-	# Tunggu satu frame agar queue_free selesai sebelum menambah yang baru
-	await get_tree().process_frame
-	
-	var hair_id = cust.get("hair", 0)
-	var beard_id = cust.get("facialhair", 0)
-	
-	var _load_async = func(part_type: String, part_id: int, prefix: String):
-		if part_id <= 0: return
-		var db = get_node_or_null("/root/CustomizationDB")
-		if not db: return
-		
-		var data = db.get_part_data(part_type, str(part_id))
-		if data.is_empty(): return
-		
-		var path = data.get("mesh_path", "")
-		if path == "": return
-		
-		if not ResourceLoader.exists(path): return
-		
-		ResourceLoader.load_threaded_request(path)
-		
-		while ResourceLoader.load_threaded_get_status(path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
-			await get_tree().process_frame
-			
-		if ResourceLoader.load_threaded_get_status(path) != ResourceLoader.THREAD_LOAD_LOADED:
-			return
-			
-		var res = ResourceLoader.load_threaded_get(path)
-		if not (res is PackedScene): return
-		var instance = res.instantiate()
-		# Beri nama unik agar bisa dibersihkan saat ganti rambut
-		instance.name = prefix + str(part_id)
-		skeleton.add_child(instance)
-		
-		# Cari Skeleton3D dari dalam instance
-		var all_skeletons = instance.find_children("*", "Skeleton3D", true, false)
-		var source_skeleton: Skeleton3D = all_skeletons[0] if all_skeletons.size() > 0 else null
-		
-		if source_skeleton:
-			# === Cara yang benar untuk skinned mesh ===
-			# Jangan pindahkan MeshInstance3D satu per satu!
-			# Biarkan seluruh sub-tree FBX tetap utuh sebagai anak dari GeneralSkeleton.
-			# Biarkan instance tetap memiliki transform bawaannya (termasuk scale 0.01 dll dari FBX)
-			
-			# Terapkan offset dari DB ke ROOT node instance (bukan ke mesh individual)
-			if data.get("apply_offset", false):
-				if data.has("position_offset"): instance.position = data["position_offset"]
-				if data.has("rotation_offset"): instance.rotation_degrees = data["rotation_offset"]
-				if data.has("scale_offset") and data["scale_offset"] != Vector3.ONE: instance.scale = data["scale_offset"]
-			
-			# Pastikan semua MeshInstance3D di dalamnya tahu di mana skeleton-nya
-			# (agar skinning berjalan ke GeneralSkeleton, bukan ke source_skeleton)
-			for mesh_inst in instance.find_children("*", "MeshInstance3D", true, false):
-				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
-			
-			# Perbaiki tulang dinamis (physics bones) ke GeneralSkeleton jika belum ada
-			for i in range(source_skeleton.get_bone_count()):
-				var b_name = source_skeleton.get_bone_name(i)
-				if skeleton.find_bone(b_name) == -1:
-					skeleton.add_bone(b_name)
-					var new_idx = skeleton.find_bone(b_name)
-					skeleton.set_bone_rest(new_idx, source_skeleton.get_bone_rest(i))
-					var p_idx = source_skeleton.get_bone_parent(i)
-					if p_idx != -1:
-						var p_name = source_skeleton.get_bone_name(p_idx)
-						var target_p_idx = skeleton.find_bone(p_name)
-						if target_p_idx != -1:
-							skeleton.set_bone_parent(new_idx, target_p_idx)
-		else:
-			# Tanpa skeleton internal, biarkan transform bawaan FBX
-			if data.get("apply_offset", false):
-				if data.has("position_offset"): instance.position = data["position_offset"]
-				if data.has("rotation_offset"): instance.rotation_degrees = data["rotation_offset"]
-				if data.has("scale_offset") and data["scale_offset"] != Vector3.ONE: instance.scale = data["scale_offset"]
-			for mesh_inst in instance.find_children("*", "MeshInstance3D", true, false):
-				mesh_inst.skeleton = mesh_inst.get_path_to(skeleton)
-				
-		# Update visibility of base parts
-		if part_type == "Hair":
-			var base = skeleton.get_node_or_null("Cust_Hair")
-			if base: base.visible = false
-		elif part_type == "Beard":
-			var base = skeleton.get_node_or_null("Cust_Beard")
-			if base: base.visible = false
-	
-	# Panggil dengan await karena sekarang asinkronus
-	var has_custom_hair = cust.get("hair", 0) > 0
-	var has_custom_beard = cust.get("facialhair", 0) > 0
-	
-	if has_custom_hair: await _load_async.call("Hair", hair_id, "_cust_hair_")
-	else:
-		var base = skeleton.get_node_or_null("Cust_Hair")
-		if base: base.visible = true
-		
-	if has_custom_beard: await _load_async.call("Beard", beard_id, "_cust_beard_")
-	else:
-		var base = skeleton.get_node_or_null("Cust_Beard")
-		if base: base.visible = true
 
 
 func _ready():
@@ -419,7 +310,6 @@ func _ready():
 	
 	update_equipped_weapon()
 	update_visual_equipment()
-	update_character_customization()
 
 
 	# Strip X/Z translation from ALL animations so they are in-place.
@@ -619,18 +509,7 @@ func _update_interaction_prompt():
 	player_ui_manager._update_interaction_prompt()
 func _open_crafting_menu():
 	player_ui_manager._open_crafting_menu()
-func _open_customization():
-	var canvas = _get_hud_canvas()
-	if canvas:
-		# Tutup jika sudah ada
-		var existing = canvas.get_node_or_null("CharacterCustomization")
-		if existing:
-			existing.queue_free()
-			return
-		var cust_scene = load("res://Scenes/UI/CharacterCustomization.tscn")
-		if cust_scene:
-			var inst = cust_scene.instantiate()
-			canvas.add_child(inst)
+
 
 func get_mouse_3d_pos() -> Vector3:
 	var camera = get_viewport().get_camera_3d()
