@@ -33,6 +33,19 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [ ] Selesaikan `Hair_db.tscn` & `Beard_db.tscn`
   - [ ] Tambahkan variasi Wajah & Warna Kulit
 
+## Known Issues
+
+### ⚠️ Skin Bind Tulang Jari Tangan Tidak Menempel
+Saat runtime, Godot menampilkan notifikasi berulang:
+```
+_notification: Skin bind #XX contains named bind 'index_01_l' but Skeleton3D has no bone by that name.
+```
+Penyebabnya adalah **perbedaan konvensi penamaan tulang** antara Skin mesh dan `Skeleton3D`:
+- Skin mencari: `index_01_l`, `middle_01_r`, dst. *(snake_case / Mixamo-style)*
+- Skeleton3D memiliki: `RightIndexProximal`, `RightMiddleProximal`, dst. *(PascalCase / Humanoid-style)*
+
+Game masih bisa berjalan (bukan error fatal), namun **animasi jari tangan tidak berfungsi**. Belum terselesaikan.
+
 ## Architecture & Dev Notes
 
 ### Dynamic Animation System
@@ -59,6 +72,9 @@ Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** 
 Model rambut Synty memiliki 3 tulang physics tambahan (`hair_dyr_01`, `hair_dyr_01_l`, dll) yang tidak ada di `GeneralSkeleton` standar (88 bone). Jika tidak di-merge, vertex yang terpengaruh tulang ini akan "nyangkut" di posisi kaki karakter. Script `PlayerVisual.gd` menangani ini secara otomatis menggunakan inverse bind matrix dari `Skin` resource.
 
 ## Change Log
+
+### 2 Juli 2026
+[Lihat detail perubahan](Change%20Log/2026-07-02.md)
 
 ### 30 Juni 2026
 [Lihat detail perubahan](Change%20Log/2026-06-30.md)
