@@ -40,7 +40,7 @@ materials/extract_path=""
 _subresources={
 "nodes": {
 "PATH:Skeleton3D": {
-"retarget/bone_map": Resource("uid://bh81iv64263gp", "res://Assets/Models/CharacterCustomization/base_bonemap.tres")
+"retarget/bone_map": Resource("uid://b4hgh8lx3pwma", "res://Assets/Models/CharacterCustomization/base_bonemap2.tres")
 }
 }
 }

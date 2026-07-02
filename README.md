@@ -30,6 +30,7 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [x] Offset system & PartAlignmentTool (DevTool)
   - [x] Perbaikan orientasi & skala offset part kustomisasi
   - [x] `PlayerVisual.gd` — Auto bone merge editor tool untuk workflow Hair/Beard DB
+  - [x] `SyntyColorTool` — Editor Plugin untuk Dynamic Real-time Component Coloring ala Unity Sidekick
   - [ ] Selesaikan `Hair_db.tscn` & `Beard_db.tscn`
   - [ ] Tambahkan variasi Wajah & Warna Kulit
 
