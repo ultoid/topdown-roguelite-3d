@@ -7,7 +7,8 @@ extends CharacterBody3D
 @onready var player_input = get_node_or_null("PlayerInput")
 
 @onready var animation_tree = get_node_or_null("AnimationTree")
-@onready var state_machine = animation_tree.get("parameters/playback") if animation_tree else null
+@onready var state_machine = animation_tree.get("parameters/BaseStateMachine/playback") if animation_tree else null
+@onready var upper_state_machine = animation_tree.get("parameters/UpperStateMachine/playback") if animation_tree else null
 var sword_hitbox_area: Area3D:
 	get:
 		var item_db = get_node_or_null("/root/ItemDB")
@@ -436,15 +437,95 @@ func get_anim_state(base_state: String) -> String:
 		
 	var specific_state = w_type.replace("_", "") + "_" + base_state
 	
-	if animation_tree and animation_tree.tree_root is AnimationNodeStateMachine:
-		if animation_tree.tree_root.has_node(specific_state):
-			return specific_state
-			
-		var lower_state = specific_state.to_lower()
-		if animation_tree.tree_root.has_node(lower_state):
-			return lower_state
+	if animation_tree:
+		var root = animation_tree.tree_root
+		var sm_to_check = root
+		if root is AnimationNodeBlendTree:
+			if root.has_node("UpperStateMachine") and root.get_node("UpperStateMachine").has_node(specific_state):
+				return specific_state
+			if root.has_node("BaseStateMachine"):
+				sm_to_check = root.get_node("BaseStateMachine")
+		if sm_to_check is AnimationNodeStateMachine:
+			if sm_to_check.has_node(specific_state):
+				return specific_state
+				
+			var lower_state = specific_state.to_lower()
+			if sm_to_check.has_node(lower_state):
+				return lower_state
 	
 	return base_state
+
+func play_anim(base_state: String):
+	if not animation_tree: return
+	
+	var w_type = "None"
+	var item_db = get_node_or_null("/root/ItemDB")
+	if item_db and Global.equipment.get("main_weapon", "") != "":
+		var w_data = item_db.get_item(Global.equipment["main_weapon"])
+		w_type = w_data.get("weapon_type", "None")
+		
+	var is_full_body = "Attack" in base_state or "Skill" in base_state or base_state in ["Dash", "Jump"]
+	
+	if is_full_body:
+		# Animasi serangan/dash bersifat Full Body, matikan maskable blend
+		if animation_tree.tree_root is AnimationNodeBlendTree and animation_tree.tree_root.has_node("Blend2"):
+			animation_tree.set("parameters/Blend2/blend_amount", 0.0)
+			
+		if state_machine:
+			var specific_state = base_state
+			if w_type != "None" and w_type != "":
+				specific_state = w_type.replace("_", "") + "_" + base_state
+				
+			var target_base = specific_state
+			var root = animation_tree.tree_root
+			var sm_node = root.get_node("BaseStateMachine") if root is AnimationNodeBlendTree and root.has_node("BaseStateMachine") else null
+			if not sm_node and root is AnimationNodeStateMachine: sm_node = root
+			
+			if sm_node and sm_node is AnimationNodeStateMachine:
+				if not sm_node.has_node(specific_state):
+					if sm_node.has_node(specific_state.to_lower()):
+						target_base = specific_state.to_lower()
+					elif sm_node.has_node(base_state):
+						target_base = base_state
+			state_machine.travel(target_base)
+		return
+
+	# Logika untuk locomotion / idle (menggunakan maskable blend)
+	if state_machine:
+		state_machine.travel(base_state)
+		
+	if w_type != "None" and w_type != "":
+		# Aktifkan maskable blend (Blend2 amount 1.0)
+		if animation_tree.tree_root is AnimationNodeBlendTree and animation_tree.tree_root.has_node("Blend2"):
+			animation_tree.set("parameters/Blend2/blend_amount", 1.0)
+			
+		if upper_state_machine:
+			var specific_state = w_type.replace("_", "") + "_" + base_state
+			var target_upper = specific_state
+			
+			var root = animation_tree.tree_root
+			var sm_node = root.get_node("UpperStateMachine") if root is AnimationNodeBlendTree and root.has_node("UpperStateMachine") else null
+			if sm_node and sm_node is AnimationNodeStateMachine:
+				if not sm_node.has_node(specific_state):
+					if sm_node.has_node(specific_state.to_lower()):
+						target_upper = specific_state.to_lower()
+					elif sm_node.has_node(w_type.replace("_", "") + "_Idle"):
+						target_upper = w_type.replace("_", "") + "_Idle"
+					elif sm_node.has_node(w_type.replace("_", "") + "_idle"):
+						target_upper = w_type.replace("_", "") + "_idle"
+					elif sm_node.has_node(base_state):
+						target_upper = base_state
+						
+			if upper_state_machine.get_current_node() != target_upper:
+				if "Idle" in target_upper or "idle" in target_upper:
+					upper_state_machine.start(target_upper)
+				else:
+					upper_state_machine.travel(target_upper)
+	else:
+		# Matikan maskable blend jika tidak ada senjata
+		if animation_tree.tree_root is AnimationNodeBlendTree and animation_tree.tree_root.has_node("Blend2"):
+			animation_tree.set("parameters/Blend2/blend_amount", 0.0)
+
 func _perform_spin_attack(dmg: int, is_mana_burst: bool = false):
 	player_combat._perform_spin_attack(dmg, is_mana_burst)
 func _create_charge_bar():

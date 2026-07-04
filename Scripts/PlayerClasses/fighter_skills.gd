@@ -55,7 +55,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 		if p.animation_tree:
 			p.animation_tree.set("parameters/AttackTimeScale/scale", 2.5)
 		if p.state_machine:
-			p.state_machine.travel("Attack")
+			p.play_anim("Attack")
 		
 		stab_tween.tween_property(p, "global_position", stab_pos, 0.1).set_ease(Tween.EASE_OUT)
 		stab_tween.tween_callback(func():
@@ -74,7 +74,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 			p.critical_chance = old_crit
 			p.is_attacking = false
 			if p.state_machine:
-				p.state_machine.travel("Idle")
+				p.play_anim("Idle")
 		)
 		
 	elif skill_id == "impact_wave":

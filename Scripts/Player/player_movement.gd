@@ -141,7 +141,7 @@ func _physics_process(delta):
 					player.current_energy -= 10.0
 					player.emit_signal("energy_changed", player.current_energy, player.max_energy)
 					player.is_dashing = true
-					if player.state_machine: player.state_machine.travel(player.get_anim_state("Dash"))
+					player.play_anim("Dash")
 					player.dash_timer = player.dash_duration / player.global_movement_scale
 					player.current_dash_cooldown = player.dash_cooldown
 					# Hitung arah dash dari input saat ini
@@ -311,15 +311,15 @@ func _physics_process(delta):
 		
 		if player.state_machine and not player.is_attacking and not player.is_damaged:
 			if player.is_running_from_double_tap and player.current_energy > 0:
-				player.state_machine.travel(player.get_anim_state("Run"))
+				player.play_anim("Run")
 			else:
-				player.state_machine.travel(player.get_anim_state("Walk"))
+				player.play_anim("Walk")
 	else:
 		player.velocity.x = 0
 		player.velocity.z = 0
 		player.velocity.y = current_y_velocity
 		if player.state_machine and not player.is_attacking and not player.is_damaged:
-			player.state_machine.travel(player.get_anim_state("Idle"))
+			player.play_anim("Idle")
 		
 	player.move_and_slide()
 		

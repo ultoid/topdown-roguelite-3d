@@ -58,7 +58,7 @@ func _on_resurrect_pressed():
 			p.emit_signal("energy_changed", p.current_energy, p.max_energy)
 			p.emit_signal("coin_changed", Global.coins)
 			if p.animation_tree: p.animation_tree.active = true
-			if p.state_machine: p.state_machine.travel("Idle")
+			if p.state_machine: p.play_anim("Idle")
 		
 		get_tree().paused = false
 		queue_free()

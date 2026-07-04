@@ -359,29 +359,61 @@ func attack(is_charge: bool):
 	if player.status_manager: player.current_attack_speed *= player.status_manager.get_attack_speed_multiplier()
 	
 	var target_state = ""
+	var base_state_name = ""
 	if is_charge:
 		target_state = player.get_anim_state("HeavyAttack")
+		base_state_name = "HeavyAttack"
 	else:
 		# Combo dilanjutkan selama player terus menyerang.
 		# Combo reset hanya terjadi saat player terkena serangan musuh.
 			
 		var combo_state = "Attack" + str(player.combo_step)
 		target_state = player.get_anim_state(combo_state)
+		base_state_name = combo_state
 		
 		# Fallback to normal "Attack" if the combo state doesn't exist (e.g. for bare hands)
-		if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
-			if not player.animation_tree.tree_root.has_node(target_state):
-				target_state = player.get_anim_state("Attack")
+		var has_combo = false
+		if player.animation_tree:
+			var root = player.animation_tree.tree_root
+			if root is AnimationNodeStateMachine and root.has_node(target_state):
+				has_combo = true
+			elif root is AnimationNodeBlendTree:
+				if root.has_node("BaseStateMachine") and root.get_node("BaseStateMachine").has_node(target_state): has_combo = true
+				if root.has_node("UpperStateMachine") and root.get_node("UpperStateMachine").has_node(target_state): has_combo = true
+		
+		if not has_combo:
+			target_state = player.get_anim_state("Attack")
+			base_state_name = "Attack"
 		
 		player.combo_step += 1
 		if player.combo_step > 3:
 			player.combo_step = 1
 			
-	if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
-		if not player.animation_tree.tree_root.has_node(target_state):
-			target_state = player.get_anim_state("Attack")
-			if not player.animation_tree.tree_root.has_node(target_state):
-				target_state = "Attack"
+	var has_target = false
+	if player.animation_tree:
+		var root = player.animation_tree.tree_root
+		if root is AnimationNodeStateMachine and root.has_node(target_state):
+			has_target = true
+		elif root is AnimationNodeBlendTree:
+			if root.has_node("BaseStateMachine") and root.get_node("BaseStateMachine").has_node(target_state): has_target = true
+			if root.has_node("UpperStateMachine") and root.get_node("UpperStateMachine").has_node(target_state): has_target = true
+			
+	if not has_target:
+		target_state = player.get_anim_state("Attack")
+		base_state_name = "Attack"
+		
+		# Final fallback
+		var has_fallback = false
+		if player.animation_tree:
+			var root = player.animation_tree.tree_root
+			if root is AnimationNodeStateMachine and root.has_node(target_state):
+				has_fallback = true
+			elif root is AnimationNodeBlendTree:
+				if root.has_node("BaseStateMachine") and root.get_node("BaseStateMachine").has_node(target_state): has_fallback = true
+		
+		if not has_fallback:
+			target_state = "Attack"
+			base_state_name = "Attack"
 	var base_dur = player.base_attack_duration
 	if is_charge and (w_type == "long_sword" or w_type == "rune"):
 		base_dur = 1.2
@@ -401,8 +433,7 @@ func attack(is_charge: bool):
 	if player.animation_tree:
 		player.animation_tree.set("parameters/AttackTimeScale/scale", player.current_attack_speed * player.current_anim_speed_ratio)
 	
-	if player.state_machine:
-		player.state_machine.travel(target_state)
+	player.play_anim(base_state_name)
 		
 	var current_attack_duration = base_dur / player.current_attack_speed
 
@@ -431,15 +462,26 @@ func attack_finished():
 	player.current_attack_speed = 1.0
 	player.last_attack_time = Time.get_ticks_msec() / 1000.0
 	# Deactivate di-handle oleh AnimationPlayer (atau reset state)
-	pass
-	if player.state_machine: player.state_machine.travel(player.get_anim_state("Idle"))
+	player.play_anim("Idle")
 
 
 func _get_state_length(state_name: String, fallback: float) -> float:
 	if not player.animation_tree: return fallback
-	if not player.animation_tree.tree_root is AnimationNodeStateMachine: return fallback
-	var sm = player.animation_tree.tree_root as AnimationNodeStateMachine
+	
+	var root = player.animation_tree.tree_root
+	var sm: AnimationNodeStateMachine = null
+	
+	if root is AnimationNodeStateMachine:
+		sm = root
+	elif root is AnimationNodeBlendTree:
+		if root.has_node("BaseStateMachine") and root.get_node("BaseStateMachine").has_node(state_name):
+			sm = root.get_node("BaseStateMachine")
+		elif root.has_node("UpperStateMachine") and root.get_node("UpperStateMachine").has_node(state_name):
+			sm = root.get_node("UpperStateMachine")
+			
+	if not sm: return fallback
 	if not sm.has_node(state_name): return fallback
+	
 	var node = sm.get_node(state_name)
 	if node is AnimationNodeAnimation:
 		var anim_name = node.animation
@@ -615,8 +657,8 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 	
 	if player.animation_tree:
 		player.animation_tree.set("parameters/AttackTimeScale/scale", player.current_attack_speed * player.current_anim_speed_ratio)
-	if player.state_machine:
-		player.state_machine.travel(target_state)
+			
+	player.play_anim("Attack")
 		
 	var duration = (player.base_attack_duration / player.current_attack_speed)
 	var spawn_delay = duration * 0.5
@@ -746,7 +788,7 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 	await get_tree().create_timer(duration - spawn_delay).timeout
 	if player.is_attacking:
 		player.is_attacking = false
-		if player.state_machine: player.state_machine.travel(player.get_anim_state("Idle"))
+		player.play_anim("Idle")
 
 
 func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_element: String = "netral", kb_force: float = 200.0):
@@ -819,8 +861,11 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_e
 			Global.spawn_hit_spark(player.global_position + Vector3(0, 1.0, 0), current_scene)
 	if player.state_machine and not player.is_dead and not player.is_dashing:
 		var target_state = player.get_anim_state("Damaged")
-		if player.animation_tree and player.animation_tree.tree_root is AnimationNodeStateMachine:
-			if player.animation_tree.tree_root.has_node(target_state):
+		if player.animation_tree:
+			var root = player.animation_tree.tree_root
+			var sm = root
+			if root is AnimationNodeBlendTree and root.has_node("BaseStateMachine"): sm = root.get_node("BaseStateMachine")
+			if sm is AnimationNodeStateMachine and sm.has_node(target_state):
 				player.state_machine.travel(target_state)
 				player.is_damaged = true
 				var dmg_len = player._get_state_length(target_state, 0.5)

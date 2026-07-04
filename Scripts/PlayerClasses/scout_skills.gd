@@ -34,7 +34,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 				if p.animation_tree:
 					p.animation_tree.set("parameters/Attack/blend_position", anim_dir)
 					
-				if p.state_machine: p.state_machine.travel("Attack")
+				if p.state_machine: p.play_anim("Attack")
 				p.apply_camera_shake(3.0, 0.1)
 				
 				var proj = proj_scene.instantiate()
@@ -60,7 +60,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 				tween.tween_property(p.sprite, "position:y", p.base_y_offset + 1.0, 0.1).set_ease(Tween.EASE_OUT)
 				tween.tween_property(p.sprite, "position:y", p.base_y_offset, 0.1).set_ease(Tween.EASE_IN)
 				
-				if p.state_machine: p.state_machine.travel("Attack")
+				if p.state_machine: p.play_anim("Attack")
 				
 				await p.get_tree().create_timer(0.3, false, false, true).timeout
 				
@@ -92,7 +92,7 @@ static func execute(p: Node3D, skill_id: String, data: Dictionary, t_pos: Vector
 			Engine.time_scale = 0.3
 			if p.animation_tree:
 				p.animation_tree.set("parameters/Attack/blend_position", Vector2(0, -1))
-			if p.state_machine: p.state_machine.travel("Attack")
+			if p.state_machine: p.play_anim("Attack")
 			
 			var tween = p.get_tree().create_tween().set_ignore_time_scale(true).set_parallel(true)
 			tween.tween_property(p.sprite, "position:y", p.base_y_offset + 2.0, 0.2).set_ease(Tween.EASE_OUT)

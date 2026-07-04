@@ -119,13 +119,13 @@ func _life_skill_loop():
 			player.animation_tree.set("parameters/AttackTimeScale/scale", 1.0 * player.current_anim_speed_ratio)
 			
 		if player.state_machine:
-			player.state_machine.travel("Attack")
+			player.play_anim("Attack")
 			
 		var duration = player.base_attack_duration
 		await get_tree().create_timer(duration).timeout
 		
 		player.is_attacking = false
-		if player.state_machine: player.state_machine.travel("Idle")
+		player.play_anim("Idle")
 		
 		if not player.is_doing_life_skill or not is_instance_valid(player.life_skill_target):
 			break
