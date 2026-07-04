@@ -203,6 +203,7 @@ func recalculate_stats():
 func _recalculate_elemental_stats():
 	player_stats._recalculate_elemental_stats()
 func update_equipped_weapon():
+	return # BYPASS: keep scene visuals
 	var attachment = find_child("BoneAttachment3D", true, false)
 	if not attachment: return
 	
@@ -223,6 +224,7 @@ func update_equipped_weapon():
 				attachment.add_child(weapon_instance)
 
 func update_visual_equipment():
+	return # BYPASS: keep scene visuals
 	var item_db = get_node_or_null("/root/ItemDB")
 	if not item_db or not get_node_or_null("/root/Global"): return
 	
