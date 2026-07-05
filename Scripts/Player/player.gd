@@ -34,6 +34,7 @@ var sword_hitbox: CollisionShape3D:
 @onready var nav_agent = get_node_or_null("NavigationAgent3D")
 @onready var animation_player = get_node_or_null("AnimationPlayer")
 @onready var sprite = get_node_or_null("Visuals")
+@onready var left_hand_ik = find_child("IK_TanganKiri", true, false)
 
 var modulate: Color = Color(1, 1, 1) # Dummy for 3D
 
@@ -246,6 +247,35 @@ func update_visual_equipment():
 				print("Checking child: ", child.name, " (norm: ", norm_child, ") -> Match? ", is_match)
 				child.visible = is_match
 				
+		# --- Logika IK untuk Senjata 2 Tangan ---
+		if left_hand_ik:
+			var item_db = get_node_or_null("/root/ItemDB")
+			var w_type = ""
+			if item_db and equipped_weapon != "":
+				var w_data = item_db.get_item(equipped_weapon)
+				if w_data:
+					w_type = w_data.get("weapon_type", "")
+					
+			var two_handed_types = ["long_sword", "staff", "lance", "long_bow", "crossbow"]
+			if w_type in two_handed_types:
+				# Cari node senjata yang aktif
+				var active_weapon_node = null
+				for child in slot_weapon.get_children():
+					if child.visible:
+						active_weapon_node = child
+						break
+				
+				# Update target IK secara dinamis jika ada Marker3D bernama LeftHand_Target di senjata tersebut
+				if active_weapon_node:
+					var target_node = active_weapon_node.find_child("LeftHand_Target", true, false)
+					if target_node:
+						# Assign path node ke property target_node milik SkeletonIK3D
+						left_hand_ik.target_node = left_hand_ik.get_path_to(target_node)
+				
+				left_hand_ik.start()
+			else:
+				left_hand_ik.stop()
+				
 	return # BYPASS: keep scene visuals
 	var item_db = get_node_or_null("/root/ItemDB")
 	if not item_db or not get_node_or_null("/root/Global"): return
@@ -334,7 +364,6 @@ func _ready():
 	
 	update_equipped_weapon()
 	update_visual_equipment()
-
 
 	# Strip X/Z translation from ALL animations so they are in-place.
 	# This prevents the visual mesh from drifting away from the CollisionShape.

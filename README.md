@@ -58,6 +58,7 @@ Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** 
 2. Kode akan memanggil state `[weapon_type]_[base_state]` ke `AnimationTree`. Contoh: jika memanggil `Attack` dengan pedang, ia akan otomatis mencari node `long_sword_Attack`.
 3. Jika node tersebut tidak ditemukan di *AnimationTree*, sistem akan melakukan *fallback* dengan selamat ke state `Attack` biasa.
 4. **Skill Animasi**: Durasi skill didapatkan dengan membaca durasi state animasi yang namanya persis seperti nama skill (contoh: skill `seismic_fissure` akan mencari state bernama `SeismicFissure`).
+5. **Inverse Kinematics (IK) Senjata 2 Tangan**: Terdapat sistem `SkeletonIK3D` otomatis untuk tangan kiri (*off-hand*). Sistem mendeteksi senjata bertipe 2-tangan, lalu mengikat tangan kiri ke node `LeftHand_Target` (Marker3D) pada senjata tersebut secara dinamis.
 
 ### Workflow Aset 3D & Animasi
 1. Model karakter dan model senjata **harus diekspor secara terpisah** dari Blender menggunakan format **`.fbx`** (bukan `.glb`). Pedang/senjata diletakkan di Blender hanya sebagai referensi animasi.
