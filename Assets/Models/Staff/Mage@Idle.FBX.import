@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dacli6wpfu6cm"
+uid="uid://b86sfujdx7um4"
 path="res://.godot/imported/Mage@Idle.FBX-bbdb4ef46f86dc9012733f8b37b16e6e.scn"
 
 [deps]
@@ -41,10 +41,10 @@ _subresources={
 "animations": {
 "Take 001": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Staff/staff_idle3.res",
-"save_to_file/keep_custom_tracks": false,
-"save_to_file/path": "uid://b5ncqhboqvj5f",
-"settings/loop_mode": 1,
+"save_to_file/fallback_path": "res://Assets/Models/Staff/staff_idle2.res",
+"save_to_file/keep_custom_tracks": true,
+"save_to_file/path": "uid://c4ydapfilqp65",
+"settings/loop_mode": 0,
 "slice_1/end_frame": 0,
 "slice_1/loop_mode": 0,
 "slice_1/name": "",
