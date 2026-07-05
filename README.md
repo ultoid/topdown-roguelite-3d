@@ -14,7 +14,7 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [ ] Bow Animation
   - [ ] Crossbow Animation
   - [ ] Dagger Animation
-  - [ ] Staff Animation
+  - [x] Staff Animation
   - [x] Rune Animation
   - [ ] Lance Animation
 - [x] Implementasi animasi ke game (Synty Modular)

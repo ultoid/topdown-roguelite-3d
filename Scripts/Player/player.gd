@@ -69,6 +69,7 @@ var stat_dex: int = 1
 var stat_points: int = 0
 
 var is_damaged: bool = false
+var damage_speed_scale: float = 1.0
 
 # Derived stats
 var physical_attack: int = 10
@@ -186,6 +187,8 @@ var cast_bar: ProgressBar = null
 var active_skill_cooldowns: Dictionary = {}
 var charge_attack_cooldown: float = 0.0
 var charge_lunge_timer: float = 0.0
+var charge_lunge_duration: float = 0.0
+var charge_lunge_speed: float = 0.0
 var attack_lunge_timer: float = 0.0
 var attack_lunge_speed: float = 0.0
 
@@ -204,6 +207,7 @@ func recalculate_stats():
 func _recalculate_elemental_stats():
 	player_stats._recalculate_elemental_stats()
 func update_equipped_weapon():
+	update_visual_equipment()
 	return # BYPASS: keep scene visuals
 	var attachment = find_child("BoneAttachment3D", true, false)
 	if not attachment: return
@@ -225,6 +229,23 @@ func update_equipped_weapon():
 				attachment.add_child(weapon_instance)
 
 func update_visual_equipment():
+	var slot_weapon = find_child("Slot_Weapon", true, false)
+	print("--- UPDATE VISUAL EQUIPMENT ---")
+	print("Found Slot_Weapon: ", slot_weapon)
+	if slot_weapon:
+		var equipped_weapon = ""
+		if get_node_or_null("/root/Global"):
+			equipped_weapon = Global.equipment.get("main_weapon", "")
+		print("Equipped weapon ID: ", equipped_weapon)
+		
+		var norm_equipped = equipped_weapon.replace("_", "")
+		for child in slot_weapon.get_children():
+			if child is Node3D or child is Node:
+				var norm_child = child.name.replace("_", "")
+				var is_match = (norm_child == norm_equipped)
+				print("Checking child: ", child.name, " (norm: ", norm_child, ") -> Match? ", is_match)
+				child.visible = is_match
+				
 	return # BYPASS: keep scene visuals
 	var item_db = get_node_or_null("/root/ItemDB")
 	if not item_db or not get_node_or_null("/root/Global"): return
@@ -465,6 +486,10 @@ func play_anim(base_state: String):
 		w_type = w_data.get("weapon_type", "None")
 		
 	var is_full_body = "Attack" in base_state or "Skill" in base_state or base_state in ["Dash", "Jump"]
+	
+	# Matikan sistem blend (pembagian tubuh atas/bawah) khusus untuk pedang 1 tangan (sword)
+	if w_type.to_lower() == "sword":
+		is_full_body = true
 	
 	if is_full_body:
 		# Animasi serangan/dash bersifat Full Body, matikan maskable blend

@@ -341,8 +341,11 @@ func attack(is_charge: bool):
 			player.apply_camera_shake(12.0, 0.2) # Uppercut shake
 		elif w_type == "lance":
 			player.apply_camera_shake(5.0, 0.15) # Jousting shake
+		elif w_type == "sword":
+			player.current_attack_speed *= 2.0
 			
-		player.current_attack_speed *= 1.5
+		if w_type != "sword":
+			player.current_attack_speed *= 1.5
 	else:
 		match w_type:
 			"long_sword", "rune": player.current_attack_speed *= 0.7 
@@ -415,8 +418,11 @@ func attack(is_charge: bool):
 			target_state = "Attack"
 			base_state_name = "Attack"
 	var base_dur = player.base_attack_duration
-	if is_charge and (w_type == "long_sword" or w_type == "rune"):
-		base_dur = 1.2
+	if is_charge:
+		if w_type == "long_sword" or w_type == "rune":
+			base_dur = 1.2
+		elif w_type == "sword":
+			base_dur = 2.3333
 	elif not is_charge:
 		if "Attack1" in target_state:
 			base_dur = 0.5
@@ -441,7 +447,14 @@ func attack(is_charge: bool):
 	# Tambahkan activate_weapon_hitbox() dan deactivate_weapon_hitbox() di tiap animasi attack.
 
 	if is_charge and should_lunge:
-		player.charge_lunge_timer = current_attack_duration * 0.2
+		if w_type == "sword":
+			player.charge_lunge_timer = current_attack_duration
+			player.charge_lunge_duration = current_attack_duration
+			player.charge_lunge_speed = 3.0 / current_attack_duration
+		else:
+			player.charge_lunge_timer = current_attack_duration * 0.2
+			player.charge_lunge_duration = current_attack_duration * 0.2
+			player.charge_lunge_speed = player.dash_speed
 	elif not is_charge and w_type == "long_sword":
 		player.attack_lunge_timer = current_attack_duration * 0.15 # Slide smoothly for a fraction of the attack duration
 		player.attack_lunge_speed = player.dash_speed * 0.4 # A subtle, realistic lunge (40% of dash speed)
@@ -869,6 +882,14 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_e
 				player.state_machine.travel(target_state)
 				player.is_damaged = true
 				var dmg_len = player._get_state_length(target_state, 0.5)
+				
+				# Ensure max duration is 0.5 seconds
+				if dmg_len > 0.5:
+					player.damage_speed_scale = dmg_len / 0.5
+					dmg_len = 0.5
+				else:
+					player.damage_speed_scale = 1.0
+					
 				get_tree().create_timer(dmg_len).timeout.connect(func(): player.is_damaged = false)
 				
 	await get_tree().create_timer(0.1).timeout

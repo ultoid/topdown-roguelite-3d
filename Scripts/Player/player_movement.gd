@@ -245,6 +245,11 @@ func _physics_process(delta):
 					
 	var input_direction = raw_input.normalized() if not player.is_auto_walking else raw_input
 	
+	if player.is_damaged:
+		input_direction = Vector3.ZERO
+		if player.animation_tree and player.damage_speed_scale > 1.0:
+			player.animation_tree.advance(delta * (player.damage_speed_scale - 1.0))
+	
 	if player.status_manager:
 		if not player.status_manager.can_move() or player.is_animating_skill:
 			input_direction = Vector3.ZERO
@@ -259,7 +264,26 @@ func _physics_process(delta):
 		
 		if player.is_charge_attacking and player.charge_lunge_timer > 0:
 			player.charge_lunge_timer -= delta
-			player.velocity = player.last_direction * player.dash_speed
+			
+			var current_spd = player.charge_lunge_speed
+			
+			if w_type == "sword" and player.charge_lunge_duration > 0:
+				var progress = 1.0 - (player.charge_lunge_timer / player.charge_lunge_duration)
+				
+				# Fokuskan pergerakan hanya di fase melayang di udara (20% - 60% dari animasi)
+				var jump_start = 0.20
+				var jump_end = 0.60
+				
+				if progress >= jump_start and progress <= jump_end:
+					var jump_length = jump_end - jump_start
+					var local_progress = (progress - jump_start) / jump_length
+					var actual_jump_time = player.charge_lunge_duration * jump_length
+					var max_speed = (3.0 / actual_jump_time) * (PI / 2.0)
+					current_spd = max_speed * sin(local_progress * PI)
+				else:
+					current_spd = 0.0
+			
+			player.velocity = player.last_direction * current_spd
 			player.velocity.y = current_y_velocity
 		elif not player.is_charge_attacking and player.attack_lunge_timer > 0:
 			player.attack_lunge_timer -= delta
