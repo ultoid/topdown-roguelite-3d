@@ -77,18 +77,36 @@ func _physics_process(delta):
 					player.spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))
 			elif player.magic_charge_timer == 0.0 and not player.is_attacking and not player.is_casting:
 				if player.charge_attack_cooldown <= 0:
-					if player.current_mana < 30:
-						if Input.is_action_just_pressed("charge_attack"):
-							player.spawn_floating_text("MP Tidak Cukup!", Color(0.2, 0.5, 1))
+					if w_type == "long_bow":
+						if player.current_energy < 15:
+							if Input.is_action_just_pressed("charge_attack"):
+								player.spawn_floating_text("EP Tidak Cukup!", Color(1, 0.5, 0))
+						else:
+							player.is_casting = true
+							player._create_charge_bar()
+							player.play_anim("AttackLoad")
 					else:
-						player.is_casting = true
-						player._create_charge_bar()
-						player.play_anim("ChargeAttackHold")
+						if player.current_mana < 30:
+							if Input.is_action_just_pressed("charge_attack"):
+								player.spawn_floating_text("MP Tidak Cukup!", Color(0.2, 0.5, 1))
+						else:
+							player.is_casting = true
+							player._create_charge_bar()
+							player.play_anim("ChargeAttackHold")
 					
 			if player.magic_charge_timer > 0.0:
 				player._update_aim_to_mouse(true)
 				player.magic_charge_timer += delta
 				if player.magic_charge_timer > 2.0: player.magic_charge_timer = 2.0
+				
+				if w_type == "long_bow":
+					var load_state = player.get_anim_state("AttackLoad")
+					var load_len = player._get_state_length(load_state, 0.2)
+					if player.magic_charge_timer >= load_len:
+						var hold_state = player.get_anim_state("AttackHold")
+						if player.state_machine and player.state_machine.get_current_node() != hold_state:
+							player.play_anim("AttackHold")
+							
 				if is_instance_valid(player.magic_charge_bar):
 					player.magic_charge_bar.value = player.magic_charge_timer
 					
@@ -150,7 +168,9 @@ func _physics_process(delta):
 					player.is_dashing = true
 					player.play_anim("Dash")
 					player.dash_timer = player.dash_duration / player.global_movement_scale
-					player.current_dash_cooldown = player.dash_cooldown
+					
+					var cd_reduction = player.stat_agi * 0.03
+					player.current_dash_cooldown = max(0.5, player.dash_cooldown - cd_reduction)
 					# Hitung arah dash dari input saat ini
 					var input_x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 					var input_z = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
@@ -309,7 +329,10 @@ func _physics_process(delta):
 	
 	if player.is_casting:
 		player._update_aim_to_mouse(false)
-		current_speed = player.walk_speed * 0.5
+		if w_type == "long_bow":
+			current_speed = player.walk_speed * 0.25
+		else:
+			current_speed = player.walk_speed * 0.5
 	elif player.is_running_from_double_tap and player.current_energy > 0:
 		current_speed = player.run_speed
 		anim_stride = 4.8

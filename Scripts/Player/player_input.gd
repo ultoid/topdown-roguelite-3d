@@ -28,7 +28,9 @@ func _unhandled_input(event):
 				match w_type:
 					"staff":
 						player._fire_projectile("magic", false)
-					"long_bow", "crossbow":
+					"crossbow":
+						player._fire_projectile("arrow", false)
+					"long_bow":
 						player._fire_projectile("arrow", false)
 					"dagger":
 						# Dual hit logic will be inside player.attack

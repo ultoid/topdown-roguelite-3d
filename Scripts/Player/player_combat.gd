@@ -302,8 +302,6 @@ func attack(is_charge: bool):
 	if player.status_manager and player.status_manager.has_effect("shadow_walk"):
 		player.status_manager.remove_effect("shadow_walk")
 	player._update_aim_to_mouse(true)
-	player.is_attacking = true
-	player.is_charge_attacking = is_charge
 	
 	var item_db = get_node_or_null("/root/ItemDB")
 	var w_type = "None"
@@ -315,7 +313,13 @@ func attack(is_charge: bool):
 			var sec_data = item_db.get_item(Global.equipment["secondary_weapon"])
 			if sec_data.get("weapon_type", "None") == "dagger":
 				is_dual_wield = true
+				
+
+	player.is_attacking = true
+	player.is_charge_attacking = is_charge
 	
+	
+
 	var is_crit = randf() * 100.0 < player.critical_chance
 	if w_type == "rune":
 		player.current_attack_damage = player.magic_attack
@@ -354,7 +358,7 @@ func attack(is_charge: bool):
 			
 	player.is_current_attack_critical = is_crit
 	if is_crit:
-		player.current_attack_damage = int(player.current_attack_damage * 2.0)
+		player.current_attack_damage = int(player.current_attack_damage * player.critical_damage_multiplier)
 		print("CRITICAL HIT!")
 		
 	# Hitbox pedang tidak lagi diaktifkan secara instan di sini.
@@ -619,7 +623,13 @@ func _create_charge_bar():
 	player._get_hud_canvas().add_child(player.magic_charge_bar)
 	player.magic_charge_timer = 0.01
 
-	if not is_instance_valid(player.magic_charge_visual):
+	var item_db = get_node_or_null("/root/ItemDB")
+	var w_type = "None"
+	if item_db and Global.equipment.get("main_weapon", "") != "":
+		var w_data = item_db.get_item(Global.equipment["main_weapon"])
+		w_type = w_data.get("weapon_type", "None")
+
+	if w_type != "long_bow" and not is_instance_valid(player.magic_charge_visual):
 		var orb = MeshInstance3D.new()
 		var sphere = SphereMesh.new()
 		sphere.radius = 0.15
@@ -663,7 +673,21 @@ func _release_magic_charge():
 		player.current_energy -= 30
 		if player.current_energy < 0: player.current_energy = 0
 		player.emit_signal("energy_changed", player.current_energy, player.max_energy)
+		
+		player.is_attacking = true
+		player.play_anim("AttackRelease")
+		
+		# Tembakkan panah charged langsung saat Release mulai
 		player._fire_projectile("arrow", true, charge_time)
+		
+		# Tunggu durasi release selesai lalu reset attack state
+		var release_state = player.get_anim_state("AttackRelease")
+		var rel_raw = player._get_state_length(release_state, 0.5)
+		await get_tree().create_timer(rel_raw).timeout
+		
+		if player.is_attacking:
+			player.attack_finished()
+			
 	else:
 		player.current_mana -= 30
 		if player.current_mana < 0: player.current_mana = 0
@@ -695,10 +719,59 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 		player.animation_tree.set("parameters/AttackTimeScale/scale", player.current_attack_speed * player.current_anim_speed_ratio)
 			
 	if is_charge:
-		target_state = player.get_anim_state("ChargeAttackRelease")
-		player.play_anim("ChargeAttackRelease")
+		if type == "arrow":
+			target_state = player.get_anim_state("AttackRelease")
+			player.play_anim("AttackRelease")
+		else:
+			target_state = player.get_anim_state("ChargeAttackRelease")
+			player.play_anim("ChargeAttackRelease")
 	else:
-		player.play_anim("Attack")
+		if type == "arrow":
+			# Untuk basic attack panah: Load dulu, lalu Release
+			var w_type_check = "None"
+			var item_db_check = get_node_or_null("/root/ItemDB")
+			if item_db_check and Global.equipment.get("main_weapon", "") != "":
+				var w_check = item_db_check.get_item(Global.equipment["main_weapon"])
+				if w_check: w_type_check = w_check.get("weapon_type", "None")
+			
+			if w_type_check == "long_bow":
+				var load_state = player.get_anim_state("AttackLoad")
+				var release_state_name = player.get_anim_state("AttackRelease")
+				var load_raw = player._get_state_length(load_state, 0.3)
+				var rel_raw = player._get_state_length(release_state_name, 0.8)
+				
+				# Mainkan Load dengan kecepatan normal (tanpa scaling)
+				player.play_anim("AttackLoad")
+				await get_tree().create_timer(load_raw).timeout
+				if player.is_dead or not player.is_attacking: return
+				
+				# Mainkan Release
+				player.play_anim("AttackRelease")
+				await get_tree().create_timer(0.05).timeout
+				if player.is_dead or not player.is_attacking: return
+				
+				# Spawn proyektil
+				var arrow_scene_bow = load("res://Scenes/Skills/arrow_projectile.tscn")
+				if arrow_scene_bow:
+					var proj = arrow_scene_bow.instantiate()
+					proj.position = player.global_position + Vector3(0, 0.85, 0)
+					proj.direction = player.last_direction
+					proj.damage = player.physical_attack
+					if "atk_elements" in proj: proj.atk_elements = player.atk_elements.duplicate()
+					proj.rotation.y = atan2(-player.last_direction.z, player.last_direction.x)
+					get_tree().current_scene.add_child(proj)
+				
+				# Tunggu sisa Release (potong 30% ekor agar responsif)
+				await get_tree().create_timer((rel_raw - 0.05) * 0.7).timeout
+				if player.is_attacking:
+					player.is_attacking = false
+					player.play_anim("Idle")
+				return
+			else:
+				target_state = player.get_anim_state("AttackRelease")
+				player.play_anim("AttackRelease")
+		else:
+			player.play_anim("Attack")
 		
 	var duration = (player.base_attack_duration / player.current_attack_speed)
 	var spawn_delay = duration * 0.5

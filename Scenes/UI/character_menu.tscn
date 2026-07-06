@@ -421,9 +421,9 @@ text = "0 + 0"
 [node name="@Label@28" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=26606899]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-text = "Hit"
+text = "C.Dmg"
 
-[node name="DetailHit" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=674245541]
+[node name="DetailCDmg" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=674245541]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "0 + 0"
@@ -431,9 +431,9 @@ text = "0 + 0"
 [node name="@Label@29" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=1789320859]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
-text = "Flee"
+text = "Dash.Cd"
 
-[node name="DetailFlee" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=852301595]
+[node name="DetailDashCd" type="Label" parent="Panel/MainVBox/StatHBox/DetailGrid" unique_id=852301595]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 text = "0 + 0"

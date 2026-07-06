@@ -30,7 +30,7 @@ window/size/viewport_height=720
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/synty_color_tool/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/animation_combiner/plugin.cfg", "res://addons/synty_color_tool/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [gui]
 

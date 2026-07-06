@@ -35,6 +35,13 @@ var sword_hitbox: CollisionShape3D:
 @onready var animation_player = get_node_or_null("AnimationPlayer")
 @onready var sprite = get_node_or_null("Visuals")
 @onready var left_hand_ik = find_child("IK_TanganKiri", true, false)
+@onready var general_skeleton: Skeleton3D = find_child("GeneralSkeleton", true, false)
+
+# --- Head Look-At System ---
+var head_look_enabled: bool = false
+var head_look_weight: float = 0.0  # 0.0 = animasi asli, 1.0 = full look-at
+var head_look_speed: float = 5.0   # Kecepatan transisi smooth
+var _head_bone_idx: int = -1
 
 var modulate: Color = Color(1, 1, 1) # Dummy for 3D
 
@@ -83,6 +90,7 @@ var walk_speed: float = 5.0 * (1000.0 / 3600.0) # 5 km/h
 var run_speed: float = 20.0 * (1000.0 / 3600.0) # 20 km/h
 var attack_speed_multiplier: float = 1.0
 var accuracy: float = 1.0
+var critical_damage_multiplier: float = 1.5
 
 var current_attack_damage: int = 10
 
@@ -101,6 +109,7 @@ var is_attacking: bool = false
 var current_attack_speed: float = 1.0
 var current_anim_speed_ratio: float = 1.0
 var is_charge_attacking: bool = false
+var last_charge_time: float = 0.0
 var last_direction: Vector3 = Vector3(0, 0, 1)
 
 var combo_step: int = 1
@@ -515,6 +524,16 @@ func play_anim(base_state: String):
 		var w_data = item_db.get_item(Global.equipment["main_weapon"])
 		w_type = w_data.get("weapon_type", "None")
 		
+	if left_hand_ik:
+		var two_handed_types = ["long_sword", "staff", "lance", "crossbow"]
+		if w_type in two_handed_types:
+			if w_type == "staff" and base_state.to_lower() == "dash":
+				left_hand_ik.stop()
+			else:
+				left_hand_ik.start()
+		else:
+			left_hand_ik.stop()
+				
 	var is_full_body = "Attack" in base_state or "Skill" in base_state or base_state in ["Dash", "Jump"]
 	
 	# Matikan sistem blend (pembagian tubuh atas/bawah) khusus untuk pedang 1 tangan (sword)
@@ -542,6 +561,7 @@ func play_anim(base_state: String):
 						target_base = specific_state.to_lower()
 					elif sm_node.has_node(base_state):
 						target_base = base_state
+			
 			state_machine.travel(target_base)
 		return
 
@@ -711,17 +731,24 @@ func _update_aim_to_mouse(instant: bool = false):
 					sword_hitbox_area.rotation.y = sprite.rotation.y
 
 func activate_weapon_hitbox():
+	var item_db = get_node_or_null("/root/ItemDB")
+	var w_type = ""
+	if item_db and Global.equipment.get("main_weapon", "") != "":
+		var w_data = item_db.get_item(Global.equipment["main_weapon"])
+		w_type = w_data.get("weapon_type", "") if w_data else ""
+		
+	# Untuk long_bow/crossbow, panah ditembakkan langsung dari script player_combat.gd
+	# BUKAN dari activate_weapon_hitbox, untuk menghindari double-fire
+	if w_type in ["long_bow", "crossbow"]:
+		return
+		
 	if is_charge_attacking:
-		var item_db = get_node_or_null("/root/ItemDB")
-		if item_db and Global.equipment.get("main_weapon", "") != "":
-			var w_data = item_db.get_item(Global.equipment["main_weapon"])
-			var w_type = w_data.get("weapon_type", "") if w_data else ""
-			if w_type == "long_sword":
-				_perform_spin_attack_aoe()
-				return
-			elif w_type == "rune":
-				_perform_spin_attack(current_attack_damage * 2, true)
-				return
+		if w_type == "long_sword":
+			_perform_spin_attack_aoe()
+			return
+		elif w_type == "rune":
+			_perform_spin_attack(current_attack_damage * 2, true)
+			return
 				
 	if sword_hitbox_area and sword_hitbox_area.has_method("clear_hit_list"):
 		sword_hitbox_area.clear_hit_list()
@@ -803,3 +830,58 @@ func _perform_spin_attack_aoe():
 func deactivate_weapon_hitbox():
 	if sword_hitbox_area and sword_hitbox_area.has_method("deactivate"):
 		sword_hitbox_area.deactivate()
+
+
+# --- Head Look-At: dieksekusi setiap frame setelah AnimationTree memproses pose ---
+func _process(delta: float):
+	_update_head_look_at(delta)
+
+
+func _update_head_look_at(delta: float):
+	if not general_skeleton: return
+
+	# Cek apakah senjata yang dipakai adalah bow
+	var item_db = get_node_or_null("/root/ItemDB")
+	var w_type = "None"
+	if item_db and Global.equipment.get("main_weapon", "") != "":
+		var w_data = item_db.get_item(Global.equipment["main_weapon"])
+		if w_data: w_type = w_data.get("weapon_type", "None")
+
+	# Aktifkan head look-at hanya saat animasi bow AND sedang menyerang/aiming
+	var bow_anim_active = (w_type == "long_bow") and (is_attacking or is_casting)
+	head_look_enabled = bow_anim_active and not is_dead and not is_dashing
+
+	# Transisi weight secara smooth
+	var target_weight = 1.0 if head_look_enabled else 0.0
+	head_look_weight = move_toward(head_look_weight, target_weight, head_look_speed * delta)
+
+	if head_look_weight <= 0.01: return
+
+	# Cari index tulang Head (cache agar tidak dicari setiap frame)
+	if _head_bone_idx == -1:
+		_head_bone_idx = general_skeleton.find_bone("Head")
+		if _head_bone_idx == -1: return
+
+	# Hitung arah dari kepala karakter ke posisi mouse di dunia 3D
+	var head_global_pos = general_skeleton.get_bone_global_pose(_head_bone_idx).origin
+	head_global_pos = general_skeleton.global_transform * head_global_pos
+
+	var look_target = get_mouse_3d_pos()
+	look_target.y = head_global_pos.y  # Jaga agar kepala tidak menunduk/mendongak
+
+	var look_dir = (look_target - head_global_pos).normalized()
+	if look_dir.length_squared() < 0.01: return
+
+	# Bangun rotasi target: kepala menghadap ke arah look_dir
+	# Godot Skeleton3D menggunakan local space, jadi kita perlu konversi dari world ke local skeleton
+	var skeleton_basis = general_skeleton.global_transform.basis
+	var local_look_dir = skeleton_basis.inverse() * look_dir
+
+	# Buat quaternion rotasi untuk tulang Head berdasarkan arah look
+	# Asumsi: forward tulang Head adalah +Z lokal
+	var target_rotation = Quaternion(Vector3.FORWARD, local_look_dir) if local_look_dir.length_squared() > 0.01 else Quaternion.IDENTITY
+
+	# Ambil rotasi bawaan animasi lalu blend dengan target look-at
+	var anim_pose = general_skeleton.get_bone_pose_rotation(_head_bone_idx)
+	var blended = anim_pose.slerp(target_rotation, head_look_weight)
+	general_skeleton.set_bone_pose_rotation(_head_bone_idx, blended)

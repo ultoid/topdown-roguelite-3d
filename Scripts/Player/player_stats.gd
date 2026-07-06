@@ -79,13 +79,31 @@ func recalculate_stats():
 		
 	player.walk_speed = (10.0 * 1000.0 / 3600.0) + (t_agi * 0.04) + (bonuses.get("aspd", 0) * 0.02)
 	player.run_speed = player.walk_speed * 2.0
-	player.attack_speed_multiplier = 1.0 + (t_dex * 0.05) + (bonuses.get("aspd", 0) * 0.01)
+	
+	# Attack speed multiplier sekarang menggunakan t_agi, sesuai dengan UI ASPD (AGI)
+	player.attack_speed_multiplier = 1.0 + (t_agi * 0.05) + (bonuses.get("aspd", 0) * 0.01)
+	
 	player.energy_regen = 5.0 + (t_agi * 0.5)
 	
-	player.physical_attack = 10 + (t_str * 2) + bonuses["p_atk"] + wp_bonus
+	var item_db = get_node_or_null("/root/ItemDB")
+	var w_type = "None"
+	if item_db and get_node_or_null("/root/Global") and Global.equipment.get("main_weapon", "") != "":
+		var w_data = item_db.get_item(Global.equipment["main_weapon"])
+		if w_data: w_type = w_data.get("weapon_type", "None")
+		
+	if w_type in ["long_bow", "crossbow"]:
+		player.physical_attack = 10 + (t_dex * 2) + bonuses["p_atk"] + wp_bonus
+	else:
+		player.physical_attack = 10 + (t_str * 2) + bonuses["p_atk"] + wp_bonus
+		
 	player.magic_attack = 10 + (t_int * 2) + bonuses["m_atk"]
 	player.casting_speed = 1.0 + (t_dex * 0.05)
 	player.critical_chance = t_luk * 1.0 + bonuses.get("critical", 0)
+	
+	# DEX sekarang menambah multiplier Critical Damage (1.5 base + 1% per DEX)
+	player.critical_damage_multiplier = 1.5 + (t_dex * 0.01)
+	
+	# Accuracy dipertahankan secara struktural meskipun tidak dipakai di damage formula
 	player.accuracy = 1.0 + (t_dex * 0.05) + (bonuses.get("hit", 0) * 0.01)
 	
 	if get_node_or_null("/root/Global"):

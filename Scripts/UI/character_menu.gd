@@ -44,7 +44,7 @@ func _ready():
 			
 	var detail_grid = find_child("DetailGrid", true, false)
 	if detail_grid:
-		for d in ["MaxHP", "MaxMP", "Atk", "Matk", "Def", "Mdef", "Hit", "Flee", "Critical", "Aspd"]:
+		for d in ["MaxHP", "MaxMP", "Atk", "Matk", "Def", "Mdef", "CDmg", "DashCd", "Critical", "Aspd"]:
 			ui_details[d] = detail_grid.get_node("Detail" + d)
 			
 		var elem_vbox = VBoxContainer.new()
@@ -382,8 +382,10 @@ func _update_ui():
 	var sim_m_def = int(t_vit / 2.0 + t_int / 2.0) + bonuses.get("m_def", 0)
 	var sim_spd = 80.0 + (t_agi * 4.0) + bonuses.get("aspd", 0)
 	var sim_crit = (t_luk * 1.0) + bonuses.get("critical", 0)
-	var sim_hit = (t_dex * 2) + bonuses.get("hit", 0)
-	var sim_flee = (t_agi * 2) + bonuses.get("flee", 0)
+	var sim_cdmg = (1.5 + (t_dex * 0.01)) * 100.0
+	
+	var base_dash_cd = player.dash_cooldown if player else 3.0
+	var sim_dash_cd = max(0.5, base_dash_cd - (t_agi * 0.03))
 	
 	if ui_details.has("MaxHP"): ui_details["MaxHP"].text = str(sim_hp)
 	if ui_details.has("MaxMP"): ui_details["MaxMP"].text = str(sim_mp)
@@ -391,8 +393,8 @@ func _update_ui():
 	if ui_details.has("Matk"): ui_details["Matk"].text = str(sim_m_atk)
 	if ui_details.has("Def"): ui_details["Def"].text = str(sim_p_def)
 	if ui_details.has("Mdef"): ui_details["Mdef"].text = str(sim_m_def)
-	if ui_details.has("Hit"): ui_details["Hit"].text = str(sim_hit)
-	if ui_details.has("Flee"): ui_details["Flee"].text = str(sim_flee)
+	if ui_details.has("CDmg"): ui_details["CDmg"].text = "%.0f%%" % sim_cdmg
+	if ui_details.has("DashCd"): ui_details["DashCd"].text = "%.2fs" % sim_dash_cd
 	if ui_details.has("Critical"): ui_details["Critical"].text = "%.1f%%" % sim_crit
 	if ui_details.has("Aspd"): ui_details["Aspd"].text = str(sim_spd)
 	
