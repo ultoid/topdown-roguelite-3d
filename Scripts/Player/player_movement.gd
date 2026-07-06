@@ -83,6 +83,7 @@ func _physics_process(delta):
 					else:
 						player.is_casting = true
 						player._create_charge_bar()
+						player.play_anim("ChargeAttackHold")
 					
 			if player.magic_charge_timer > 0.0:
 				player._update_aim_to_mouse(true)
@@ -90,6 +91,12 @@ func _physics_process(delta):
 				if player.magic_charge_timer > 2.0: player.magic_charge_timer = 2.0
 				if is_instance_valid(player.magic_charge_bar):
 					player.magic_charge_bar.value = player.magic_charge_timer
+					
+				if is_instance_valid(player.magic_charge_visual):
+					# Tumbuh dari skala 1x hingga 2.5x saat charge penuh (2.0 detik)
+					var scale_factor = 1.0 + (player.magic_charge_timer / 2.0) * 1.5
+					player.magic_charge_visual.scale = Vector3(scale_factor, scale_factor, scale_factor)
+
 		else:
 			if player.magic_charge_timer > 0.0:
 				player._release_magic_charge()
@@ -316,7 +323,7 @@ func _physics_process(delta):
 	if player.animation_player:
 		if not player.is_attacking and not player.is_casting and not player.is_dashing and not player.is_jumping and not player.is_spinning:
 			player.animation_player.speed_scale = anim_speed
-		else:
+		elif player.magic_charge_timer == 0.0:
 			player.animation_player.speed_scale = 1.0
 		
 	if input_direction != Vector3.ZERO:
@@ -333,7 +340,7 @@ func _physics_process(delta):
 			if is_instance_valid(player.sword_hitbox_area):
 				player.sword_hitbox_area.rotation.y = player.sprite.rotation.y
 		
-		if player.state_machine and not player.is_attacking and not player.is_damaged:
+		if player.state_machine and not player.is_attacking and not player.is_damaged and player.magic_charge_timer == 0.0:
 			if player.is_running_from_double_tap and player.current_energy > 0:
 				player.play_anim("Run")
 			else:
@@ -342,7 +349,7 @@ func _physics_process(delta):
 		player.velocity.x = 0
 		player.velocity.z = 0
 		player.velocity.y = current_y_velocity
-		if player.state_machine and not player.is_attacking and not player.is_damaged:
+		if player.state_machine and not player.is_attacking and not player.is_damaged and player.magic_charge_timer == 0.0:
 			player.play_anim("Idle")
 		
 	player.move_and_slide()

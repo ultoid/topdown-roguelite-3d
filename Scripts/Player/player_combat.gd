@@ -619,6 +619,29 @@ func _create_charge_bar():
 	player._get_hud_canvas().add_child(player.magic_charge_bar)
 	player.magic_charge_timer = 0.01
 
+	if not is_instance_valid(player.magic_charge_visual):
+		var orb = MeshInstance3D.new()
+		var sphere = SphereMesh.new()
+		sphere.radius = 0.15
+		sphere.height = 0.3
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = Color(0.2, 0.8, 1.0, 0.7)
+		mat.emission_enabled = true
+		mat.emission = Color(0.2, 0.8, 1.0)
+		mat.emission_energy_multiplier = 2.0
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		sphere.material = mat
+		orb.mesh = sphere
+		
+		if player.sprite:
+			player.sprite.add_child(orb)
+		else:
+			player.add_child(orb)
+			
+		# Lokasi disesuaikan: Tinggi 1.0, maju ke depan (-Z) sejauh 2.2 dari tengah karakter agar pas di ujung tongkat
+		orb.position = Vector3(0, 1.0, -2.2)
+		player.magic_charge_visual = orb
+
 
 func _release_magic_charge():
 	var charge_time = player.magic_charge_timer
@@ -671,10 +694,15 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 	if player.animation_tree:
 		player.animation_tree.set("parameters/AttackTimeScale/scale", player.current_attack_speed * player.current_anim_speed_ratio)
 			
-	player.play_anim("Attack")
+	if is_charge:
+		target_state = player.get_anim_state("ChargeAttackRelease")
+		player.play_anim("ChargeAttackRelease")
+	else:
+		player.play_anim("Attack")
 		
 	var duration = (player.base_attack_duration / player.current_attack_speed)
 	var spawn_delay = duration * 0.5
+	var finish_delay = duration - spawn_delay
 	
 	if player.sword_hitbox_area:
 		player.sword_hitbox_area.is_active = false
@@ -684,6 +712,10 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 		)
 	
 	await get_tree().create_timer(spawn_delay).timeout
+	
+	if is_instance_valid(player.magic_charge_visual):
+		player.magic_charge_visual.queue_free()
+		player.magic_charge_visual = null
 	
 	if player.is_dead or not player.is_attacking: return
 		
@@ -798,7 +830,7 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 				proj.rotation.y = atan2(-proj.direction.z, proj.direction.x)
 				get_tree().current_scene.add_child(proj)
 				
-	await get_tree().create_timer(duration - spawn_delay).timeout
+	await get_tree().create_timer(finish_delay).timeout
 	if player.is_attacking:
 		player.is_attacking = false
 		player.play_anim("Idle")

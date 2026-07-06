@@ -1,5 +1,0 @@
-﻿extends SceneTree
-func _init():
-    var anim = load("res://Assets/Models/attack.res")
-    print("attack length: ", anim.length)
-    quit()

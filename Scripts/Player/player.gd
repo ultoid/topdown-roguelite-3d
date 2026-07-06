@@ -127,6 +127,7 @@ var is_animating_skill: bool = false
 var is_charging_magic: bool = false
 var magic_charge_timer: float = 0.0
 var magic_charge_bar: ProgressBar = null
+var magic_charge_visual: Node3D = null
 
 var is_current_attack_critical: bool = false
 var stats_manager = null
