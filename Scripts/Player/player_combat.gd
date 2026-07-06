@@ -742,7 +742,8 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 				
 				# Mainkan Load dengan kecepatan normal (tanpa scaling)
 				player.play_anim("AttackLoad")
-				await get_tree().create_timer(load_raw).timeout
+				# Potong ekor animasi load agar langsung masuk ke release tanpa jeda/delay
+				await get_tree().create_timer(load_raw * 0.6).timeout
 				if player.is_dead or not player.is_attacking: return
 				
 				# Mainkan Release
@@ -761,8 +762,8 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 					proj.rotation.y = atan2(-player.last_direction.z, player.last_direction.x)
 					get_tree().current_scene.add_child(proj)
 				
-				# Tunggu sisa Release (potong 30% ekor agar responsif)
-				await get_tree().create_timer((rel_raw - 0.05) * 0.7).timeout
+				# Tunggu sisa Release (potong ekor lebih banyak agar responsif dan tidak ada delay)
+				await get_tree().create_timer((rel_raw - 0.05) * 0.3).timeout
 				if player.is_attacking:
 					player.is_attacking = false
 					player.play_anim("Idle")
