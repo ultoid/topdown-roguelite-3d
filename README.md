@@ -78,6 +78,9 @@ Model rambut Synty memiliki 3 tulang physics tambahan (`hair_dyr_01`, `hair_dyr_
 
 ## Change Log
 
+### 7 Juli 2026
+[Lihat detail perubahan](Change%20Log/2026-07-07.md)
+
 ### 6 Juli 2026
 [Lihat detail perubahan](Change%20Log/2026-07-06.md)
 
