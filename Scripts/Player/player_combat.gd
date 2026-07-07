@@ -674,20 +674,9 @@ func _release_magic_charge():
 		if player.current_energy < 0: player.current_energy = 0
 		player.emit_signal("energy_changed", player.current_energy, player.max_energy)
 		
-		player.is_attacking = true
-		player.play_anim("AttackRelease")
-		
-		# Tembakkan panah charged langsung saat Release mulai
+		# Tembakkan panah charged (animasi dan reset state akan diurus sepenuhnya oleh _fire_projectile)
 		player._fire_projectile("arrow", true, charge_time)
-		
-		# Tunggu durasi release selesai lalu reset attack state
-		var release_state = player.get_anim_state("AttackRelease")
-		var rel_raw = player._get_state_length(release_state, 0.5)
-		await get_tree().create_timer(rel_raw).timeout
-		
-		if player.is_attacking:
-			player.attack_finished()
-			
+
 	else:
 		player.current_mana -= 30
 		if player.current_mana < 0: player.current_mana = 0
@@ -778,13 +767,7 @@ func _fire_projectile(type: String, is_charge: bool, charge_time: float = 0.0):
 	var spawn_delay = duration * 0.5
 	var finish_delay = duration - spawn_delay
 	
-	if player.sword_hitbox_area:
-		player.sword_hitbox_area.is_active = false
-		get_tree().create_timer(duration).timeout.connect(func():
-			if is_instance_valid(player.sword_hitbox_area):
-				player.sword_hitbox_area.is_active = true
-		)
-	
+
 	await get_tree().create_timer(spawn_delay).timeout
 	
 	if is_instance_valid(player.magic_charge_visual):

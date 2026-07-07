@@ -11,21 +11,29 @@ extends CharacterBody3D
 @onready var upper_state_machine = animation_tree.get("parameters/UpperStateMachine/playback") if animation_tree else null
 var sword_hitbox_area: Area3D:
 	get:
-		var item_db = get_node_or_null("/root/ItemDB")
-		var w_type = "None"
-		if item_db and Global.equipment.get("main_weapon", "") != "":
-			var w_data = item_db.get_item(Global.equipment["main_weapon"])
-			w_type = w_data.get("weapon_type", "None")
-			
+		var slot = find_child("Slot_Weapon", true, false)
+		if slot:
+			for child in slot.get_children():
+				if child.visible:
+					# Cari node Area3D yang memiliki kata "Hitbox" di namanya
+					var hb = _find_hitbox_recursive(child)
+					if hb: return hb
+					
+		# Fallback ke hitbox tangan jika tidak bawa senjata
 		var rh = find_child("RightHandHitBox", true, false)
-		# Gunakan hitbox di tangan kanan untuk senjata jarak dekat DAN pukulan tangan kosong (base)
-		if w_type in ["long_sword", "dagger", "lance", "axe", "mace", "None", ""] and is_instance_valid(rh):
-			return rh
-			
-		# Fallback ke hitbox kuno jika belum punya RightHandHitBox
+		if is_instance_valid(rh): return rh
 		var hb = find_child("HitBox", true, false)
 		if is_instance_valid(hb): return hb
 		return find_child("SwordHitBox", true, false)
+
+func _find_hitbox_recursive(node: Node) -> Area3D:
+	if node is Area3D and "Hitbox" in node.name.replace("_", ""):
+		return node
+	for child in node.get_children():
+		var res = _find_hitbox_recursive(child)
+		if res: return res
+	return null
+
 
 var sword_hitbox: CollisionShape3D:
 	get:
@@ -750,35 +758,19 @@ func activate_weapon_hitbox():
 			_perform_spin_attack(current_attack_damage * 2, true)
 			return
 				
-	if sword_hitbox_area and sword_hitbox_area.has_method("clear_hit_list"):
-		sword_hitbox_area.clear_hit_list()
+	if sword_hitbox_area:
+		if sword_hitbox_area.has_method("clear_hit_list"):
+			sword_hitbox_area.clear_hit_list()
+		elif "is_active" in sword_hitbox_area:
+			sword_hitbox_area.is_active = true
 	
-	# --- DIRECT DAMAGE FALLBACK untuk long_sword ---
-	# Karena sistem hitbox melalui BoneAttachment tidak reliable,
-	# kita langsung hitung jarak musuh dari posisi player.
 	var _item_db = get_node_or_null("/root/ItemDB")
 	var _w_type = "None"
 	if _item_db and Global.equipment.get("main_weapon", "") != "":
 		var _w_data = _item_db.get_item(Global.equipment["main_weapon"])
 		if _w_data: _w_type = _w_data.get("weapon_type", "None")
 	
-	if _w_type == "long_sword":
-		var _hit_radius = 3.5
-		var _enemies = get_tree().get_nodes_in_group("Enemy")
-		for _e in _enemies:
-			if is_instance_valid(_e) and _e.has_method("take_damage"):
-				var _d = Vector2(global_position.x, global_position.z).distance_to(
-					Vector2(_e.global_position.x, _e.global_position.z))
-				if _d <= _hit_radius:
-					var _el = atk_elements.duplicate()
-					if status_manager:
-						var _ov = status_manager.get_override_element()
-						if _ov != "": _el = [_ov]
-					if is_current_attack_critical:
-						_el.append("CRITICAL")
-					_e.take_damage(current_attack_damage, global_position, _el, 6.0)
-					apply_camera_shake(3.0, 0.1)
-	elif _w_type == "rune":
+	if _w_type == "rune":
 		var is_third_attack = (combo_step == 1)
 		var proj_scene = load("res://Scenes/Skills/player_projectile.tscn")
 		if proj_scene:
@@ -828,8 +820,11 @@ func _perform_spin_attack_aoe():
 		apply_camera_shake(8.0, 0.2)
 
 func deactivate_weapon_hitbox():
-	if sword_hitbox_area and sword_hitbox_area.has_method("deactivate"):
-		sword_hitbox_area.deactivate()
+	if sword_hitbox_area:
+		if sword_hitbox_area.has_method("deactivate"):
+			sword_hitbox_area.deactivate()
+		elif "is_active" in sword_hitbox_area:
+			sword_hitbox_area.is_active = false
 
 
 # --- Head Look-At: dieksekusi setiap frame setelah AnimationTree memproses pose ---

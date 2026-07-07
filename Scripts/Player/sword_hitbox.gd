@@ -106,7 +106,10 @@ func _deal_damage(enemy_node):
 			if item_db and Global.equipment.get("main_weapon", "") != "":
 				var w_data = item_db.get_item(Global.equipment["main_weapon"])
 				if w_data and w_data.get("weapon_type", "") == "long_sword":
-					kb_force = 6.0
+					if player.get("combo_step") == 1: # Karena urutan rotasinya 2 -> 3 -> 1
+						kb_force = 6.0
+					else:
+						kb_force = 3.0
 					
 		print("[DEBUG] SUCCESS: Calling take_damage(", current_damage, ") on ", enemy_node.name)
 		var passed_elements = atk_elements.duplicate()

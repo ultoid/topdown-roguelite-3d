@@ -1,33 +1,33 @@
 [gd_scene format=3 uid="uid://b0pc87wkevgk"]
 
-[ext_resource type="Script" path="res://Scripts/Enemy/enemy.gd" id="1_4gyqm"]
+[ext_resource type="Script" uid="uid://c7ywbt3wd18lq" path="res://Scripts/Enemy/enemy.gd" id="1_4gyqm"]
 [ext_resource type="PackedScene" uid="uid://cwxo62rhd3kl0" path="res://Assets/Models/Enemy/enemy.glb" id="2_p0l6d"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_enemy"]
-radius = 0.384277
-height = 2.37295
+radius = 1.1518555
+height = 2.533423
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hurtbox"]
-radius = 0.469238
-height = 1.73442
+radius = 1.1445313
+height = 2.5783691
 
-[node name="enemy" type="CharacterBody3D"]
+[node name="enemy" type="CharacterBody3D" unique_id=616051225]
 script = ExtResource("1_4gyqm")
 
-[node name="Visuals" type="Node3D" parent="."]
+[node name="Visuals" type="Node3D" parent="." unique_id=1709922463]
 transform = Transform3D(5.667, 0, 0, 0, 5.667, 0, 0, 0, 5.667, 0, 0, 0)
 
-[node name="enemy_model" parent="Visuals" instance=ExtResource("2_p0l6d")]
+[node name="enemy_model" parent="Visuals" unique_id=1074280930 instance=ExtResource("2_p0l6d")]
 transform = Transform3D(1.84224, 0, 0, 0, 1.84224, 0, 0, 0, 1.84224, 0.001, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18647, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1371727893]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0071609, 0)
 shape = SubResource("CapsuleShape3D_enemy")
 
-[node name="Hurtbox" type="Area3D" parent="."]
+[node name="Hurtbox" type="Area3D" parent="." unique_id=860811388]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.817212, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" unique_id=2008819098]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9696778, 0)
 shape = SubResource("CapsuleShape3D_hurtbox")
 
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
