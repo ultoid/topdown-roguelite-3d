@@ -50,6 +50,15 @@ Penyebabnya adalah **perbedaan konvensi penamaan tulang** antara Skin mesh dan `
 
 Game masih bisa berjalan (bukan error fatal), namun **animasi jari tangan tidak berfungsi**. Belum terselesaikan.
 
+### ⏳ Retargeting Animasi Explosive LLC → Mixamo (Dalam Proses)
+Integrasi animasi **Explosive LLC** (skeleton Unreal/`B_Pelvis`) ke karakter **Synty** (Mixamo rig) menghadapi beberapa rintangan:
+
+- FBX *Animation Only* dari Explosive LLC **tidak membentuk `Armature`** saat diimpor ke Blender — melainkan hierarki objek **`Empty`/Null node**.
+- Akibatnya, **Rokoko Studio Live** menolak sumber animasi tersebut (*"No results found"*) karena hanya menerima `Armature`.
+- **BoneMap Retargeting bawaan Godot 4** juga gagal karena FBX tanpa mesh tidak menghasilkan node `Skeleton3D` yang valid.
+
+**Solusi yang sedang diuji:** Script Python Blender otomatis (`DevTools/blender_retarget_explosive_to_mixamo.py`) yang mengkonversi hierarki `Empty` → `Armature`, lalu melakukan retarget via constraint + visual bake.
+
 ## Architecture & Dev Notes
 
 ### Dynamic Animation System
