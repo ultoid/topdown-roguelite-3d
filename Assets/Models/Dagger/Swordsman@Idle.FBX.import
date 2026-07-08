@@ -40,7 +40,7 @@ materials/extract_path=""
 _subresources={
 "animations": {
 "Take 001": {
-"save_to_file/enabled": false,
+"save_to_file/enabled": true,
 "save_to_file/fallback_path": "res://Assets/Models/Dagger/dagger_idle3.res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://bhdell0ifbt2k",
