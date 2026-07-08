@@ -33,6 +33,12 @@ Perubahan mendasar yang ada dalam sistem 3D ini meliputi penggantian `CharacterB
   - [x] `SyntyColorTool` — Editor Plugin untuk Dynamic Real-time Component Coloring ala Unity Sidekick
   - [ ] Selesaikan `Hair_db.tscn` & `Beard_db.tscn`
   - [ ] Tambahkan variasi Wajah & Warna Kulit
+- [/] **[REFACTOR — Branch `refactor/animation-skeleton`]** Merombak total struktur skeleton, model, dan animasi:
+  - [/] Reorganisasi folder aset animasi ke struktur terpusat (`Assets/Models/Animation/`)
+  - [/] Pembuatan ulang `visual_player.tscn` dengan skeleton yang lebih rapi
+  - [/] Pembersihan file animasi lama (per-weapon FBX, Mixamo, file temp)
+  - [ ] Fix Death Animation (karakter melayang — perlu custom track override posisi)
+  - [ ] Selesaikan semua animasi base (idle, walk, run, attack, death, damage)
 - [ ] Memperbarui animasi base, weapon, serta combat dengan animasi baru dari Unity Asset Store (Berhenti menggunakan Mixamo)
 - [ ] Melengkapi animasi weapon untuk semua weapon
 - [ ] Melanjutkan development ke arah mapping dan scenario story
@@ -86,6 +92,9 @@ Sistem animasi *combat* dan *movement* karakter bersifat **sepenuhnya dinamis** 
 Model rambut Synty memiliki 3 tulang physics tambahan (`hair_dyr_01`, `hair_dyr_01_l`, dll) yang tidak ada di `GeneralSkeleton` standar (88 bone). Jika tidak di-merge, vertex yang terpengaruh tulang ini akan "nyangkut" di posisi kaki karakter. Script `PlayerVisual.gd` menangani ini secara otomatis menggunakan inverse bind matrix dari `Skin` resource.
 
 ## Change Log
+
+### 8 Juli 2026
+[Lihat detail perubahan](Change%20Log/2026-07-08.md)
 
 ### 7 Juli 2026
 [Lihat detail perubahan](Change%20Log/2026-07-07.md)

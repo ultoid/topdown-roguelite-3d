@@ -1,7 +1,13 @@
 [gd_scene format=3 uid="uid://jdl5sp2cswea"]
 
-[ext_resource type="PackedScene" uid="uid://c6teg26na3vpc" path="res://Scenes/PlayerVisual.tscn" id="1_visual"]
-[ext_resource type="Animation" uid="uid://d2e7fx3rt4dse" path="res://Assets/Models/idle.res" id="2_idle"]
+[ext_resource type="PackedScene" uid="uid://c6teg26na3vpc" path="res://Scenes/visual_player.tscn" id="1_visual"]
+[ext_resource type="Animation" uid="uid://d2e7fx3rt4dse" path="res://Assets/Models/_Old Animations/idle.res" id="2_idle"]
+[ext_resource type="Animation" uid="uid://c4ydapfilqp65" path="res://Assets/Models/_Old Animations/staff_idle2.res" id="2_rldqm"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vlsfl"]
+_data = {
+&"Take 001": ExtResource("2_rldqm")
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dev"]
 _data = {
@@ -34,6 +40,84 @@ bones/58/rotation = Quaternion(-0.16180095, 0.8512396, -0.45553112, 0.20421304)
 bones/60/rotation = Quaternion(0.044747192, 0.7106011, -0.038559105, 0.7011113)
 bones/62/rotation = Quaternion(0.013338279, -0.5743313, 0.06358378, 0.81604093)
 
+[node name="Base_Head" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group" parent_id_path=PackedInt32Array(1847464265, 350939871) index="0" unique_id=36035089]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_03EBRL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="0" unique_id=225347091]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_04EBRR" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="1" unique_id=1522907753]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_05EYEL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="2" unique_id=542011823]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_06EYER" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="3" unique_id=749158241]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_07EARL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="4" unique_id=657723866]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_08EARR" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="5" unique_id=1282736903]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_35NOSE" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="6" unique_id=712517247]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_36TETH" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="7" unique_id=604086109]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_37TONG" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Head_Group/Base_Head" index="8" unique_id=1742430351]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_18LEGL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Feet" parent_id_path=PackedInt32Array(1847464265, 638011070) index="0" unique_id=11387844]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_19LEGR" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Feet" parent_id_path=PackedInt32Array(1847464265, 638011070) index="1" unique_id=1313059416]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_20FOTL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Feet" parent_id_path=PackedInt32Array(1847464265, 638011070) index="2" unique_id=127344784]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_21FOTR" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Feet" parent_id_path=PackedInt32Array(1847464265, 638011070) index="3" unique_id=454299620]
+surface_material_override/0 = null
+
+[node name="Hair_1" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Hair" parent_id_path=PackedInt32Array(1847464265, 787246082) index="0" unique_id=859463904]
+surface_material_override/0 = null
+
+[node name="BoneAttachment3D" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Hair/SK_HUMN_BASE_02_02HAIR_HU02" parent_id_path=PackedInt32Array(1847464265, 714575144) index="0" unique_id=675446913]
+transform = Transform3D(0.9986998, -0.035222508, -0.03685232, 0.038727596, 0.9943156, 0.099178076, 0.033149555, -0.100476354, 0.9943871, -0.00015283469, 1.5479869, 0.01736971)
+
+[node name="Cust_Beard" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton" index="3" unique_id=1222668273]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_10TORS" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="0" unique_id=1446797541]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_11AUPL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="1" unique_id=229725942]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_12AUPR" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="2" unique_id=2119785896]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_13ALWL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="3" unique_id=804490128]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_14ALWR" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="4" unique_id=1668754148]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_15HNDL" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="5" unique_id=1393334718]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_16HNDR" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="6" unique_id=1778237400]
+surface_material_override/0 = null
+
+[node name="SK_SPEC_HUMN_BASE_01_17HIPS" parent="PlayerVisual/SK_BaseModel/GeneralSkeleton/Base_Body" parent_id_path=PackedInt32Array(1847464265, 593927690) index="7" unique_id=857307576]
+surface_material_override/0 = null
+
+[node name="AnimationPlayer" parent="PlayerVisual/Mage_Idle" parent_id_path=PackedInt32Array(1847464265, 657385535) index="1" unique_id=1448909875]
+libraries/ = SubResource("AnimationLibrary_vlsfl")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1063198648]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 5, 0)
 light_energy = 2.0
@@ -57,3 +141,6 @@ libraries/ = SubResource("AnimationLibrary_dev")
 autoplay = &"idle"
 
 [editable path="PlayerVisual"]
+[editable path="PlayerVisual/HumanM_Model_Mixamo_new"]
+[editable path="PlayerVisual/HumanM_Model2"]
+[editable path="PlayerVisual/Mage_Idle"]
