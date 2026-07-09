@@ -1,0 +1,317 @@
+﻿================================================================================
+   IMPLEMENTASI HITBOX & HURTBOX ALA DIABLO IMMORTAL
+   Top Down Action Game — Godot 4
+   Dibuat: 2026-07-09
+================================================================================
+
+RINGKASAN SISTEM
+----------------
+Diablo Immortal menggunakan 3 layer hit detection:
+
+  [1] SURE HIT        -- Primary attack, selalu kena jika enemy dalam range
+  [2] AOE TRIGGER     -- Skill area effect, cek overlap radius per tick
+  [3] PROJECTILE      -- Entitas fisik yang bergerak, bisa miss
+
+Kamu sudah punya fondasi untuk ketiganya. Berikut arahan konsolidasi
+dan penyempurnaannya.
+
+================================================================================
+STATUS SISTEM SAAT INI
+================================================================================
+
+  [SUDAH ADA]
+  - sword_hitbox.gd       : Area3D overlap + manual radius fallback  (Layer 1)
+  - _perform_spin_attack  : AoE distance check                       (Layer 2, masih ad-hoc)
+  - _fire_projectile()    : Spawn projectile entity                  (Layer 3)
+
+  [PERLU DIPERKUAT]
+  - AoE skill : logika tersebar, perlu dikonsolidasi ke satu fungsi generik
+  - Hurtbox enemy : saat ini implisit via group "Enemy", belum ada komponen
+
+================================================================================
+LAYER 1 -- SURE HIT: PRIMARY ATTACK
+================================================================================
+
+File Target : Scripts/Player/sword_hitbox.gd
+
+MASALAH:
+  manual_hit_radius diset statis di inspector, tidak berubah sesuai weapon type.
+
+PERBAIKAN -- Tambahkan fungsi berikut ke sword_hitbox.gd:
+
+----------
+func set_radius_by_weapon(w_type: String):
+    match w_type:
+        "sword":      manual_hit_radius = 1.8
+        "long_sword": manual_hit_radius = 2.5
+        "dagger":     manual_hit_radius = 1.4
+        "lance":      manual_hit_radius = 3.0
+        "gloves":     manual_hit_radius = 1.2
+        "rune":       manual_hit_radius = 0.0  # Rune pakai projectile
+        _:            manual_hit_radius = 1.5  # Default
+----------
+
+CARA MEMANGGIL -- Di player_combat.gd, fungsi attack(), setelah baris
+"player.is_attacking = true" (sekitar L.318):
+
+----------
+if player.sword_hitbox_area and player.sword_hitbox_area.has_method("set_radius_by_weapon"):
+    player.sword_hitbox_area.set_radius_by_weapon(w_type)
+----------
+
+CARA KERJA LAYER 1 (alur lengkap):
+  1. Player tekan attack
+  2. attack() dipanggil di player_combat.gd
+  3. Radius hitbox disesuaikan dengan weapon via set_radius_by_weapon()
+  4. Animasi attack dimulai
+  5. AnimationPlayer memanggil activate_weapon_hitbox() via Method Track
+  6. sword_hitbox.gd: clear_hit_list() -- hitbox aktif
+  7. Tiap frame (_physics_process): cek overlap Area3D + manual radius check
+  8. Jika enemy ditemukan -> _deal_damage() dipanggil SEKALI per enemy (dicegah hit_enemies[])
+  9. AnimationPlayer memanggil deactivate() di akhir swing
+
+CATATAN:
+  manual_hit_radius adalah "sure hit fallback" paling penting.
+  Jika physics engine gagal detect overlap karena animasi terlalu cepat,
+  fallback ini memastikan hit tetap terdaftar setiap frame.
+
+================================================================================
+LAYER 2 -- AOE TRIGGER VOLUME: SKILL AREA EFFECT
+================================================================================
+
+File Target : Scripts/Player/player_combat.gd
+
+TAMBAHKAN 3 fungsi ini ke player_combat.gd.
+Letakkan tepat sebelum fungsi _process() di bagian bawah file.
+
+----------
+# =================================================================
+# SISTEM AOE GENERIK -- DIABLO IMMORTAL STYLE
+# =================================================================
+
+## [AOE INSTANT] Deal damage ke semua enemy dalam radius secara instan.
+## Gunakan untuk: Spin Attack, Ground Slam, Explosion, dsb.
+## Return: Array berisi enemy yang terkena.
+func _aoe_instant_hit(
+    origin: Vector3,
+    radius: float,
+    damage: int,
+    elements: Array = ["netral"],
+    kb_force: float = 3.0,
+    exclude_list: Array = []
+) -> Array:
+    var hit_list = []
+    var enemies = get_tree().get_nodes_in_group("Enemy")
+    for e in enemies:
+        if not is_instance_valid(e): continue
+        if e in exclude_list: continue
+        if e.get("is_dead", false): continue
+        # Cek jarak di XZ plane saja -- ignore Y persis seperti Diablo Immortal
+        var e_pos = Vector3(e.global_position.x, 0, e.global_position.z)
+        var o_pos = Vector3(origin.x, 0, origin.z)
+        if e_pos.distance_to(o_pos) <= radius:
+            hit_list.append(e)
+            if e.has_method("take_damage"):
+                e.take_damage(damage, origin, elements, kb_force)
+    return hit_list
+
+
+## [AOE DELAYED] AoE dengan jeda sebelum hit (Earthquake, Meteor, dsb).
+## Enemy di dalam area SAAT DELAY SELESAI yang terkena damage.
+func _aoe_delayed_hit(
+    origin: Vector3,
+    radius: float,
+    damage: int,
+    delay: float,
+    elements: Array = ["netral"],
+    kb_force: float = 3.0
+):
+    await get_tree().create_timer(delay).timeout
+    if not is_instance_valid(player) or player.is_dead: return
+    _aoe_instant_hit(origin, radius, damage, elements, kb_force)
+
+
+## [AOE TICK] AoE berulang selama durasi tertentu (Whirlwind, Burn Zone, dsb).
+## origin_getter: Callable yang return posisi saat ini (bisa mengikuti player).
+## Contoh pemanggilan:
+##   func(): return player.global_position
+func _aoe_tick_hit(
+    origin_getter: Callable,
+    radius: float,
+    damage_per_tick: int,
+    tick_interval: float,
+    total_duration: float,
+    elements: Array = ["netral"],
+    kb_force: float = 1.0
+):
+    var elapsed = 0.0
+    while elapsed < total_duration:
+        await get_tree().create_timer(tick_interval).timeout
+        elapsed += tick_interval
+        if not is_instance_valid(player) or player.is_dead: return
+        _aoe_instant_hit(origin_getter.call(), radius, damage_per_tick, elements, kb_force)
+
+# =================================================================
+# END SISTEM AOE GENERIK
+# =================================================================
+----------
+
+CONTOH PENGGUNAAN DI SKILL:
+
+  [Spin Attack -- instan]
+  _aoe_instant_hit(player.global_position, 4.5, dmg, ["netral"], 3.0)
+
+  [Earthquake -- delay 0.5s sebelum hit]
+  _aoe_delayed_hit(t_pos, aoe_radius, dmg, 0.5, ["tanah"], 4.0)
+
+  [Seismic Fissure -- delay 0.8s di titik target]
+  _aoe_delayed_hit(t_pos, 2.0, dmg, 0.8, ["tanah"], 5.0)
+
+  [Whirlwind -- tick tiap 0.2s selama 3 detik, ikut player]
+  _aoe_tick_hit(
+      func(): return player.global_position,
+      3.0,    # radius
+      50,     # damage per tick
+      0.2,    # interval
+      3.0,    # total durasi
+      ["netral"]
+  )
+
+REFACTOR _perform_spin_attack() (opsional):
+  Bagian else (baris 569-605) bisa disederhanakan menjadi:
+
+  --- SEBELUM ---
+  var bodies = spin_area.get_overlapping_bodies()
+  for body in bodies:
+      if body.is_in_group("Enemy") and body.has_method("take_damage"):
+          body.take_damage(dmg, player.global_position)
+          ... # logika knockback manual
+
+  --- SESUDAH ---
+  _aoe_instant_hit(player.global_position, 4.5, dmg, ["netral"], 6.0)
+  # Tidak perlu lagi membuat Area3D temporary untuk spin
+
+================================================================================
+LAYER 3 -- PROJECTILE: COLLISION TRAVEL
+================================================================================
+
+File Target : Scenes/Skills/arrow_projectile.tscn
+              Scenes/Skills/player_projectile.tscn
+
+STATUS: TIDAK perlu diubah. Sudah benar.
+
+Sistem ini sudah mengimplementasikan Layer 3 dengan benar:
+  1. Projectile di-spawn sebagai entitas node terpisah
+  2. Bergerak tiap frame via direction * speed * delta
+  3. Collider di projectile mendeteksi body_entered dengan enemy
+  4. Enemy yang bergerak keluar jalur bisa menghindari projectile
+
+TIDAK ADA PERUBAHAN yang diperlukan untuk Layer 3.
+
+================================================================================
+LAYER BONUS -- ENEMY HURTBOX COMPONENT (Opsional, untuk fitur lanjutan)
+================================================================================
+
+Kapan dibutuhkan:
+  - Ingin enemy punya i-frame setelah terkena hit
+  - Ingin efek shield yang mengurangi damage
+  - Ingin titik lemah (weakpoint) di bagian tubuh tertentu
+
+File Baru : Scripts/Enemy/enemy_hurtbox.gd
+
+----------
+extends Area3D
+class_name EnemyHurtbox
+
+var is_active: bool = true
+var damage_multiplier: float = 1.0
+
+@onready var enemy: Node = get_parent()
+
+func _ready():
+    collision_layer = 4
+    collision_mask = 0
+
+## Panggil ini sebagai pengganti langsung take_damage()
+func receive_hit(damage: int, source_pos: Vector3,
+                 elements: Array = ["netral"], kb_force: float = 3.0):
+    if not is_active: return
+    if not is_instance_valid(enemy): return
+    if enemy.get("is_dead", false): return
+    var final_dmg = int(damage * damage_multiplier)
+    if enemy.has_method("take_damage"):
+        enemy.take_damage(final_dmg, source_pos, elements, kb_force)
+
+## Buat enemy invincible selama durasi (i-frame setelah kena hit)
+func set_invincible(duration: float):
+    is_active = false
+    get_tree().create_timer(duration).timeout.connect(func(): is_active = true)
+
+## Terapkan damage reduction dari shield
+func apply_shield(reduction_multiplier: float, duration: float):
+    damage_multiplier = reduction_multiplier
+    get_tree().create_timer(duration).timeout.connect(func(): damage_multiplier = 1.0)
+----------
+
+CARA PASANG:
+  1. Buat file Scripts/Enemy/enemy_hurtbox.gd dengan kode di atas
+  2. Di Scenes/Entities/enemy.tscn, tambahkan child node: Area3D
+  3. Rename node itu menjadi "Hurtbox"
+  4. Attach script enemy_hurtbox.gd ke node tersebut
+  5. Set Collision Layer = 4 di inspector
+
+UPGRADE _aoe_instant_hit() agar pakai Hurtbox (jika sudah dipasang):
+  Ganti baris "if e.has_method("take_damage"):" dengan:
+
+  var hurtbox = e.get_node_or_null("Hurtbox")
+  if hurtbox and hurtbox.has_method("receive_hit"):
+      hurtbox.receive_hit(damage, origin, elements, kb_force)
+  elif e.has_method("take_damage"):
+      e.take_damage(damage, origin, elements, kb_force)
+
+================================================================================
+URUTAN IMPLEMENTASI YANG DISARANKAN
+================================================================================
+
+TAHAP 1 -- Mudah, berdampak langsung (lakukan sekarang):
+  [ ] Tambahkan set_radius_by_weapon() ke Scripts/Player/sword_hitbox.gd
+  [ ] Panggil set_radius_by_weapon(w_type) di attack() di player_combat.gd
+      setelah baris "player.is_attacking = true" (L.318)
+
+TAHAP 2 -- Konsolidasi AoE (lakukan berikutnya):
+  [ ] Tambahkan _aoe_instant_hit(), _aoe_delayed_hit(), _aoe_tick_hit()
+      ke player_combat.gd (tepat sebelum fungsi _process())
+  [ ] Refactor _perform_spin_attack() bagian else pakai _aoe_instant_hit()
+  [ ] Ganti logika AoE ad-hoc di ApprenticeSkills / FighterSkills / ScoutSkills
+      dengan panggilan ke _aoe_instant_hit() atau _aoe_delayed_hit()
+
+TAHAP 3 -- Hurtbox Component (lakukan terakhir, opsional):
+  [ ] Buat Scripts/Enemy/enemy_hurtbox.gd
+  [ ] Tambahkan Hurtbox node ke Scenes/Entities/enemy.tscn
+  [ ] Update _aoe_instant_hit() untuk cek Hurtbox sebelum take_damage()
+  [ ] Tambah i-frame setelah enemy kena hit: hurtbox.set_invincible(0.15)
+
+================================================================================
+CATATAN PENTING
+================================================================================
+
+  1. Semua AoE check menggunakan XZ plane (Y di-ignore) persis seperti
+     Diablo Immortal. Ini mencegah bug "skill miss karena beda ketinggian".
+
+  2. manual_hit_radius di sword_hitbox.gd adalah sure hit fallback terpenting.
+     Jika physics engine gagal detect overlap karena animasi terlalu cepat,
+     fallback ini memastikan hit selalu terdaftar setiap frame.
+
+  3. _aoe_tick_hit() menerima Callable sebagai origin_getter sehingga bisa
+     mengikuti posisi player yang bergerak secara real-time.
+
+  4. Layer 3 (Projectile) SENGAJA tidak diubah karena ini satu-satunya tipe
+     serangan yang bisa miss -- sesuai desain intentional Diablo Immortal.
+
+  5. Penggunaan await di _aoe_delayed_hit() dan _aoe_tick_hit() tidak memblok
+     main thread. Pastikan fungsi pemanggil juga di-await atau dibiarkan
+     berjalan asynchronous (tidak perlu await dari sisi pemanggil biasanya).
+
+================================================================================
+END OF FILE
+================================================================================
