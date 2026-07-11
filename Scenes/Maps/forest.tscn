@@ -61,10 +61,11 @@ auto_shader = true
 [node name="Hutan" type="Node3D" unique_id=110844797]
 
 [node name="Player" parent="." unique_id=241310391 instance=ExtResource("5_3cnuo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.737106, 0, -89.502525)
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -38.737, 0, -89.503)
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1771738060]
-transform = Transform3D(1, 0, 0, 0, 0.49999997, 0.86602545, 0, -0.86602545, 0.49999997, 0, 8.025179, 3.7030487)
+transform = Transform3D(0.6666667, 0, 0, 0, 0.47140455, 0.47140455, 0, -0.47140455, 0.47140455, 0, 10, 8.763584)
+fov = 45.0
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=175033460]
 visible = false
@@ -78,6 +79,8 @@ shape = SubResource("BoxShape3D_qdt7u")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=674555059]
 transform = Transform3D(0.8520834, 0.02421035, 0.5228458, -0.523406, 0.03941345, 0.8511714, 0, -0.9989297, 0.04625539, 26.587252, 23.205418, 0)
+light_energy = 0.3
+shadow_enabled = true
 
 [node name="Terrain3D" type="Terrain3D" parent="." unique_id=540646147]
 data_directory = "res://Scenes/map"
@@ -136,25 +139,27 @@ transform = Transform3D(0.022752076, 0, -0.8747041, 0, 0.875, 0, 0.8747041, 0, 0
 [node name="ClassMentor" parent="." unique_id=578777692 instance=ExtResource("5_qdt7u")]
 transform = Transform3D(0.30355087, 0, 0.95281523, 0, 1, 0, -0.95281523, 0, 0.30355087, -43.339333, 0, -92.594315)
 
-[node name="red_player_enemy" parent="." unique_id=612183066 instance=ExtResource("6_3cnuo")]
+[node name="house_type1" parent="." unique_id=527082617 instance=ExtResource("6_en07k")]
+transform = Transform3D(1, 0, 0, 0, 0.99946, 0.032858633, 0, -0.032858633, 0.99946, -49.400463, 0.19706106, -91.93016)
+
+[node name="enemy_group" type="Node3D" parent="." unique_id=485415791]
+
+[node name="red_player_enemy" parent="enemy_group" unique_id=612183066 instance=ExtResource("6_3cnuo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.575397, 0, -94.86172)
 speed = 1.0
 max_health = 10000
 
-[node name="red_player_enemy2" parent="." unique_id=560630291 instance=ExtResource("6_3cnuo")]
+[node name="red_player_enemy2" parent="enemy_group" unique_id=560630291 instance=ExtResource("6_3cnuo")]
 transform = Transform3D(0.88709944, 0, -0.4615783, 0, 1, 0, 0.4615783, 0, 0.88709944, -35.166534, 0, -94.86172)
 speed = 1.0
 max_health = 10000
 
-[node name="red_player_enemy3" parent="." unique_id=12231354 instance=ExtResource("6_3cnuo")]
+[node name="red_player_enemy3" parent="enemy_group" unique_id=12231354 instance=ExtResource("6_3cnuo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.12422, 0, -94.86172)
 speed = 1.0
 max_health = 10000
 
-[node name="red_player_enemy4" parent="." unique_id=195722749 instance=ExtResource("6_3cnuo")]
+[node name="red_player_enemy4" parent="enemy_group" unique_id=195722749 instance=ExtResource("6_3cnuo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42.515717, 0, -94.86172)
 speed = 1.0
 max_health = 10000
-
-[node name="house_type1" parent="." unique_id=527082617 instance=ExtResource("6_en07k")]
-transform = Transform3D(1, 0, 0, 0, 0.99946, 0.032858633, 0, -0.032858633, 0.99946, -49.400463, 0.19706106, -91.93016)

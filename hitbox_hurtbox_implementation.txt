@@ -1,4 +1,4 @@
-﻿================================================================================
+================================================================================
    IMPLEMENTASI HITBOX & HURTBOX ALA DIABLO IMMORTAL
    Top Down Action Game — Godot 4
    Dibuat: 2026-07-09
@@ -315,3 +315,28 @@ CATATAN PENTING
 ================================================================================
 END OF FILE
 ================================================================================
+
+================================================================================
+RENCANA IMPLEMENTASI HITBOX & HURTBOX (DIABLO IMMORTAL STYLE)
+================================================================================
+Tujuan: Mengimplementasikan sistem 3-layer hit detection untuk Player dan Enemy (red_player_enemy).
+
+TAHAP 1: Modifikasi Scripts/Player/sword_hitbox.gd
+- Tambahkan fungsi set_radius_by_weapon(w_type: String) untuk mengubah manual_hit_radius secara dinamis.
+- Update _deal_damage untuk mendeteksi node Hurtbox pada musuh (Layer 4) sebelum mencoba memanggil take_damage() langsung di parent-nya.
+
+TAHAP 2: Modifikasi Scripts/Player/player_combat.gd
+- Panggil player.sword_hitbox_area.set_radius_by_weapon(w_type) di dalam fungsi attack().
+- Tambahkan 3 fungsi generik AOE (_aoe_instant_hit, _aoe_delayed_hit, _aoe_tick_hit) di bagian bawah file.
+- Update fungsi _perform_spin_attack untuk menggunakan _aoe_instant_hit.
+
+TAHAP 3: Pembuatan Scripts/Enemy/enemy_hurtbox.gd
+- Buat file script baru enemy_hurtbox.gd yang di-extend dari Area3D.
+- Berisi logika receive_hit(), set_invincible(), dan apply_shield().
+- Script ini akan meneruskan damage ke node parent (Enemy).
+
+TAHAP 4: Manual Update (Editor)
+- Buka Scenes/Entities/red_player_enemy.tscn di Godot Editor.
+- Tambahkan node Area3D sebagai child dari root node, beri nama "Hurtbox".
+- Pasang script enemy_hurtbox.gd ke node tersebut.
+- Pasang CollisionShape3D dan atur Collision Layer = 4, Mask = 0.

@@ -193,28 +193,41 @@ func _physics_process(delta):
 				player.spawn_floating_text("Masih Cooldown!", Color(0.4, 0.6, 1))
 		
 	if player.is_dashing:
-		var speed_multiplier = (player.dash_timer / player.dash_duration) * 2.0
-		player.velocity = player.last_direction * (player.dash_speed * speed_multiplier * player.global_movement_scale)
+		# Animasi dash sekarang in-place: gerak maju sepenuhnya dari kode.
+		# Pakai kecepatan konstan agar karakter bergerak sepanjang durasi dash.
+		# Sedikit ease-out di akhir (10% terakhir) agar terasa smooth saat berhenti.
+		var progress = 1.0 - clamp(player.dash_timer / player.dash_duration, 0.0, 1.0)
+		var ease_out = 1.0 - smoothstep(0.85, 1.0, progress)
+		player.velocity = player.last_direction * (player.dash_speed * ease_out * player.global_movement_scale)
+
 		player.velocity.y = current_y_velocity
 		player.dash_timer -= delta
 		player.move_and_slide()
 		player.modulate.a = 0.5
+		# Percepat animasi agar pas dengan durasi dash (advance seluruh tree sesuai rasio)
 		if player.animation_tree:
-			# Sesuaikan animasi pas dengan durasi dash
 			var current_dash_state = player.get_anim_state("Dash")
 			var actual_dash_length = player._get_state_length(current_dash_state, player.dash_anim_length)
 			var req_speed = (actual_dash_length / player.dash_duration) * player.global_movement_scale
 			var extra_advance = delta * (req_speed - 1.0)
-			if extra_advance != 0.0:
+			if extra_advance > 0.0:
 				player.animation_tree.advance(extra_advance)
 		if player.dash_timer <= 0:
 			player.is_dashing = false
 			player.modulate.a = 1.0
+			# Paksa langsung ke Idle tanpa crossfade (start = hard cut, tidak ada blend 0.2s)
+			# agar tidak ada "gerakan tambahan" dari blending Dash->Idle
+			if player.animation_player:
+				player.animation_player.speed_scale = 1.0
+			if player.state_machine:
+				player.state_machine.start("Idle", true)
 			var enemies = get_tree().get_nodes_in_group("Enemy")
 			for e in enemies:
 				if is_instance_valid(e) and e is CollisionObject3D:
 					player.remove_collision_exception_with(e)
 		return
+
+
 	
 	# --- FATAL SMASH: gerak karakter ke titik target via smoothstep ---
 	if player.is_smashing:
@@ -359,7 +372,7 @@ func _physics_process(delta):
 		
 		if player.sprite and not player.is_attacking and not player.is_casting and not player.is_spinning:
 			var target_angle = atan2(-input_direction.z, input_direction.x)
-			player.sprite.rotation.y = lerp_angle(player.sprite.rotation.y, target_angle - PI/2.0, 15.0 * delta)
+			player.sprite.rotation.y = lerp_angle(player.sprite.rotation.y, target_angle + PI/2.0, 15.0 * delta)
 			if is_instance_valid(player.sword_hitbox_area):
 				player.sword_hitbox_area.rotation.y = player.sprite.rotation.y
 		

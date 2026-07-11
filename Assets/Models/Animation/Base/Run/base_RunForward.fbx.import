@@ -41,9 +41,9 @@ _subresources={
 "animations": {
 "HumanM_Run01_Forward": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Unity Animations/Movement/Run/base_run2.res",
+"save_to_file/fallback_path": "res://Assets/Models/Animation/Base/Run/base_runforward.res",
 "save_to_file/keep_custom_tracks": true,
-"save_to_file/path": "uid://c6pirixifkct0",
+"save_to_file/path": "uid://bh3nik6c53y50",
 "settings/loop_mode": 1,
 "slice_1/end_frame": 0,
 "slice_1/loop_mode": 0,

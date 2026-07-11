@@ -40,8 +40,8 @@ var sword_hitbox: CollisionShape3D:
 		var area = sword_hitbox_area
 		return area.get_node_or_null("CollisionShape3D") if area else null
 @onready var nav_agent = get_node_or_null("NavigationAgent3D")
-@onready var animation_player = get_node_or_null("AnimationPlayer")
-@onready var sprite = get_node_or_null("Visuals")
+@onready var animation_player = get_node_or_null("visual_player/AnimationPlayer")
+@onready var sprite = get_node_or_null("visual_player")
 @onready var left_hand_ik = find_child("IK_TanganKiri", true, false)
 @onready var general_skeleton: Skeleton3D = find_child("GeneralSkeleton", true, false)
 
@@ -383,9 +383,23 @@ func _ready():
 	update_equipped_weapon()
 	update_visual_equipment()
 
-	# Strip X/Z translation from ALL animations so they are in-place.
-	# This prevents the visual mesh from drifting away from the CollisionShape.
-	var ap = get_node_or_null("Visuals/PlayerVisual/GeneralSkeleton/AnimationPlayer")
+	# Strip SEMUA translasi dari tulang Hips/Root di semua animasi.
+	# - X/Z: agar mesh tidak drift dari CollisionShape (in-place animation)
+	# - Y: agar kaki tidak melayang (Hips Y berbeda antar animasi → body terangkat)
+	# Jump dan gerakan vertikal dihandle sepenuhnya oleh kode, bukan animasi.
+	
+	# Cari AnimationPlayer dengan beberapa metode fallback
+	var ap: AnimationPlayer = null
+	# Metode 1: Lewat AnimationTree (paling akurat, pakai path yang sama dengan tree)
+	if animation_tree and animation_tree.anim_player != NodePath(""):
+		ap = animation_tree.get_node_or_null(animation_tree.anim_player)
+	# Metode 2: find_child rekursif
+	if not ap:
+		ap = find_child("AnimationPlayer", true, false) as AnimationPlayer
+	# Metode 3: path manual fallback
+	if not ap:
+		ap = get_node_or_null("visual_player/AnimationPlayer") as AnimationPlayer
+	
 	if ap:
 		for lib_name in ap.get_animation_library_list():
 			var lib = ap.get_animation_library(lib_name)
@@ -395,19 +409,30 @@ func _ready():
 				if "dash" in lower_name:
 					dash_anim_length = anim.length
 				
-				# Cari track posisi di tulang Root/Hips dan hapus gerakan X/Z-nya
+				# Cari track posisi di tulang Root/Hips dan nolkan semua axis
 				for j in range(anim.get_track_count()):
 					if anim.track_get_type(j) == Animation.TYPE_POSITION_3D:
 						var path_str = str(anim.track_get_path(j))
-						# Cocokkan tulang root/hips dari berbagai konvensi nama
-						if path_str.ends_with(":Hips") or path_str.ends_with(":Root") \
-						or path_str.ends_with(":mixamorig_Hips") or path_str.ends_with(":pelvis"):
+						# Cocokkan berbagai konvensi nama tulang root dari Mixamo/retarget
+						var is_root_bone = (
+							path_str.ends_with(":Hips") or
+							path_str.ends_with(":Root") or
+							path_str.ends_with(":root") or
+							path_str.ends_with(":mixamorig_Hips") or
+							path_str.ends_with(":pelvis") or
+							path_str.ends_with(":Pelvis") or
+							path_str.ends_with(":hip") or
+							path_str.ends_with(":Hip")
+						)
+						if is_root_bone:
 							for i in range(anim.track_get_key_count(j)):
 								var val = anim.track_get_key_value(j, i)
-								# Hanya simpan gerakan Y (naik-turun), hapus X dan Z
+								# Paksa X dan Z ke 0 mutlak agar semua animasi berpusat di titik yg sama.
+								# Biarkan Y tetap val.y agar pinggang tidak turun (menyungsep).
 								anim.track_set_key_value(j, i, Vector3(0, val.y, 0))
 							break
-	
+
+
 	if get_node_or_null("/root/Global"):
 		coins = Global.coins
 		level = Global.level
@@ -723,9 +748,9 @@ func _update_aim_to_mouse(instant: bool = false):
 		if sprite:
 			var target_angle = atan2(-aim_dir.z, aim_dir.x)
 			if instant:
-				sprite.rotation.y = target_angle - PI/2.0
+				sprite.rotation.y = target_angle + PI/2.0
 			else:
-				sprite.rotation.y = lerp_angle(sprite.rotation.y, target_angle - PI/2.0, 15.0 * get_physics_process_delta_time())
+				sprite.rotation.y = lerp_angle(sprite.rotation.y, target_angle + PI/2.0, 15.0 * get_physics_process_delta_time())
 			if is_instance_valid(sword_hitbox_area):
 				var is_bone_attached = false
 				var curr_parent = sword_hitbox_area.get_parent()
