@@ -14,7 +14,14 @@ func _unhandled_input(event):
 		return
 		
 	if event.is_action_pressed("basic_attack") and not player.is_targeting and not player.is_farming_targeting:
-		if not player.is_attacking and not player.is_jumping and not player.is_casting and player.magic_charge_timer == 0.0 and not player.is_animating_skill and not player.is_spinning and not player.is_dashing:
+		var clicked_enemy = player.get_enemy_under_mouse()
+		if is_instance_valid(clicked_enemy):
+			player.locked_target = clicked_enemy
+			# Jika menembak (range) atau serangan jarak dekat, player_movement.gd akan mengurus auto-walk
+			get_viewport().set_input_as_handled()
+			return
+			
+		if not player.is_attacking and not player.is_jumping and not player.is_casting and player.magic_charge_timer == 0.0 and not player.is_animating_skill and not player.is_spinning and not player.is_dashing and not player.is_damaged:
 			if player.status_manager and not player.status_manager.can_move():
 				var effect_name = player.status_manager.get_movement_restriction_name()
 				player.spawn_floating_text("Terkena " + effect_name + "!", Color(1, 0.2, 0.2))

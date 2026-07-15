@@ -316,6 +316,8 @@ func attack(is_charge: bool):
 				
 
 	player.is_attacking = true
+	if player.sword_hitbox_area and player.sword_hitbox_area.has_method("set_radius_by_weapon"):
+		player.sword_hitbox_area.set_radius_by_weapon(w_type)
 	player.is_charge_attacking = is_charge
 	
 	
@@ -446,9 +448,9 @@ func attack(is_charge: bool):
 	player.play_anim(base_state_name)
 		
 	var current_attack_duration = base_dur / player.current_attack_speed
-
-	# Hitbox dikendalikan sepenuhnya oleh Method Track di AnimationPlayer.
-	# Tambahkan activate_weapon_hitbox() dan deactivate_weapon_hitbox() di tiap animasi attack.
+	# Jika user belum menambahkan Method Track di AnimationPlayer, ini akan memanggil hitbox secara otomatis.
+	get_tree().create_timer(current_attack_duration * 0.3).timeout.connect(player.activate_weapon_hitbox)
+	get_tree().create_timer(current_attack_duration * 0.8).timeout.connect(player.deactivate_weapon_hitbox)
 
 	if is_charge and should_lunge:
 		if w_type == "sword":
@@ -567,42 +569,13 @@ func _perform_spin_attack(dmg: int, is_mana_burst: bool = false):
 		)
 		return
 	else:
-		var spin_area = Area3D.new()
-		spin_area.collision_layer = 0
-		spin_area.collision_mask = 5
-		spin_area.position = player.global_position
-		var col = CollisionShape3D.new()
-		var shape = CylinderShape3D.new()
-		shape.radius = 4.5
-		shape.height = 1.0
-		col.shape = shape
-		spin_area.add_child(col)
+		_aoe_instant_hit(player.global_position, 4.5, dmg, ["netral"], 6.0)
 		
 		# Spin player player.sprite
 		if player.sprite:
 			var t = get_tree().create_tween()
 			t.tween_property(player.sprite, "rotation", Vector3(0, PI * 2.0, 0), 0.2).as_relative()
 			t.tween_callback(func(): player.sprite.rotation.y = 0)
-			
-		get_tree().current_scene.add_child(spin_area)
-		
-		# Small delay to let physics detect
-		await get_tree().create_timer(0.05).timeout
-		var bodies = spin_area.get_overlapping_bodies()
-		for body in bodies:
-			if body.is_in_group("Enemy") and body.has_method("take_damage"):
-				body.take_damage(dmg, player.global_position)
-				if "player.knockback_velocity" in body:
-					var push_dir = (body.global_position - player.global_position)
-					push_dir.y = 0
-					if push_dir == Vector3.ZERO: push_dir = Vector3(0, 0, 1)
-					body.knockback_velocity = push_dir.normalized() * 6.0
-				elif body.get("player.velocity") != null:
-					var push_dir = (body.global_position - player.global_position).normalized()
-					body.velocity = push_dir * 800
-		
-		if is_instance_valid(spin_area):
-			spin_area.queue_free()
 
 
 func _create_charge_bar():
@@ -898,6 +871,7 @@ func take_damage(amount: int, knockback_source: Vector3 = Vector3.ZERO, attack_e
 	
 	# Reset combo saat terkena hit
 	player.combo_step = 1
+	player.is_attacking = false # Batalkan serangan jika sedang memukul
 	
 	player.apply_camera_shake(5.0, 0.15)
 	
@@ -1119,3 +1093,74 @@ func _process(delta):
 			if player.sprite: player.sprite.rotation.y = 0
 			if is_instance_valid(player.spin_bar):
 				player.spin_bar.queue_free()
+
+# =================================================================
+# SISTEM AOE GENERIK -- DIABLO IMMORTAL STYLE
+# =================================================================
+
+## [AOE INSTANT] Deal damage ke semua enemy dalam radius secara instan.
+## Gunakan untuk: Spin Attack, Ground Slam, Explosion, dsb.
+## Return: Array berisi enemy yang terkena.
+func _aoe_instant_hit(
+	origin: Vector3,
+	radius: float,
+	damage: int,
+	elements: Array = ["netral"],
+	kb_force: float = 3.0,
+	exclude_list: Array = []
+) -> Array:
+	var hit_list = []
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	for e in enemies:
+		if not is_instance_valid(e): continue
+		if e in exclude_list: continue
+		if e.get("is_dead"): continue
+		# Cek jarak di XZ plane saja -- ignore Y persis seperti Diablo Immortal
+		var e_pos = Vector3(e.global_position.x, 0, e.global_position.z)
+		var o_pos = Vector3(origin.x, 0, origin.z)
+		if e_pos.distance_to(o_pos) <= radius:
+			hit_list.append(e)
+			var hurtbox = e.get_node_or_null("Hurtbox")
+			if hurtbox and hurtbox.has_method("receive_hit"):
+				hurtbox.receive_hit(damage, origin, elements, kb_force)
+			elif e.has_method("take_damage"):
+				e.take_damage(damage, origin, elements, kb_force)
+	return hit_list
+
+
+## [AOE DELAYED] AoE dengan jeda sebelum hit (Earthquake, Meteor, dsb).
+## Enemy di dalam area SAAT DELAY SELESAI yang terkena damage.
+func _aoe_delayed_hit(
+	origin: Vector3,
+	radius: float,
+	damage: int,
+	delay: float,
+	elements: Array = ["netral"],
+	kb_force: float = 3.0
+):
+	await get_tree().create_timer(delay).timeout
+	if not is_instance_valid(player) or player.is_dead: return
+	_aoe_instant_hit(origin, radius, damage, elements, kb_force)
+
+
+## [AOE TICK] AoE berulang selama durasi tertentu (Whirlwind, Burn Zone, dsb).
+## origin_getter: Callable yang return posisi saat ini (bisa mengikuti player).
+func _aoe_tick_hit(
+	origin_getter: Callable,
+	radius: float,
+	damage_per_tick: int,
+	tick_interval: float,
+	total_duration: float,
+	elements: Array = ["netral"],
+	kb_force: float = 1.0
+):
+	var elapsed = 0.0
+	while elapsed < total_duration:
+		await get_tree().create_timer(tick_interval).timeout
+		elapsed += tick_interval
+		if not is_instance_valid(player) or player.is_dead: return
+		_aoe_instant_hit(origin_getter.call(), radius, damage_per_tick, elements, kb_force)
+
+# =================================================================
+# END SISTEM AOE GENERIK
+# =================================================================

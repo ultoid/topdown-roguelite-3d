@@ -2,14 +2,15 @@
 
 [ext_resource type="Script" uid="uid://08xnc7lwrdx0" path="res://Scripts/Enemy/red_enemy.gd" id="1_4gyqm"]
 [ext_resource type="PackedScene" uid="uid://cwxo62rhd3kl0" path="res://Assets/Models/Enemy/enemy.glb" id="2_p0l6d"]
+[ext_resource type="Script" uid="uid://bae5e25r1xhhw" path="res://Scripts/Enemy/enemy_hurtbox.gd" id="3_8gbt6"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_enemy"]
-radius = 0.6933594
-height = 2.0495605
+radius = 0.47851563
+height = 1.9069824
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hurtbox"]
-radius = 1.4326172
-height = 3.1291504
+radius = 0.7470703
+height = 1.894104
 
 [node name="red_player_enemy" type="CharacterBody3D" unique_id=612183066]
 script = ExtResource("1_4gyqm")
@@ -24,13 +25,16 @@ transform = Transform3D(5.667, 0, 0, 0, 5.667, 0, 0, 0, 5.667, 0, 0, 0)
 transform = Transform3D(1.8422446, 0, 0, 0, 1.8422446, 0, 0, 0, 1.8422446, 0.001, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=667609792]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8177185, 0.21049488)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.91378784, 0.21049488)
 shape = SubResource("CapsuleShape3D_enemy")
 
 [node name="Hurtbox" type="Area3D" parent="." unique_id=2026798835]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("3_8gbt6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox" unique_id=1227541942]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1201435, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.84398997, 0)
 shape = SubResource("CapsuleShape3D_hurtbox")
 
 [connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]

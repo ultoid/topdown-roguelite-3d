@@ -153,6 +153,15 @@ var farming_indicator: MeshInstance3D = null
 var farming_zone_ref: Node = null
 var is_targeting: bool = false
 var targeting_cancel_cooldown: float = 0.0
+
+var locked_target: Node3D = null
+var enemy_indicator_mesh: MeshInstance3D = null
+var hover_indicator_mesh: MeshInstance3D = null
+
+var _cam3d: Camera3D = null
+var _cam_offset: Vector3 = Vector3.ZERO
+var _cam_follow_speed: float = 6.5
+
 var charge_input_consumed: bool = false
 var current_targeting_skill: String = ""
 var target_pos: Vector3 = Vector3.ZERO
@@ -380,6 +389,11 @@ func _ready():
 	add_child(status_manager)
 	status_manager.setup(self)
 	
+	_cam3d = get_node_or_null("Camera3D")
+	if _cam3d:
+		_cam_offset = _cam3d.global_position - global_position
+		_cam3d.set_as_top_level(true)
+		
 	update_equipped_weapon()
 	update_visual_equipment()
 
@@ -739,7 +753,11 @@ func apply_camera_shake(intensity: float, duration: float):
 		tween.tween_property(cam2d, "offset", Vector2.ZERO, 0.01)
 
 func _update_aim_to_mouse(instant: bool = false):
-	var aim_dir = (get_mouse_3d_pos() - global_position)
+	var target_point = get_mouse_3d_pos()
+	if is_instance_valid(locked_target):
+		target_point = locked_target.global_position
+		
+	var aim_dir = (target_point - global_position)
 	aim_dir.y = 0
 	aim_dir = aim_dir.normalized()
 	if aim_dir != Vector3.ZERO:
@@ -764,6 +782,9 @@ func _update_aim_to_mouse(instant: bool = false):
 					sword_hitbox_area.rotation.y = sprite.rotation.y
 
 func activate_weapon_hitbox():
+	if not is_attacking and not is_charge_attacking:
+		return # Batal karena animasi serangan sudah terinterupsi (misal kena damage)
+		
 	var item_db = get_node_or_null("/root/ItemDB")
 	var w_type = ""
 	if item_db and Global.equipment.get("main_weapon", "") != "":
@@ -783,11 +804,17 @@ func activate_weapon_hitbox():
 			_perform_spin_attack(current_attack_damage * 2, true)
 			return
 				
+	print("[DEBUG] activate_weapon_hitbox called!")
 	if sword_hitbox_area:
+		print("[DEBUG] sword_hitbox_area found: ", sword_hitbox_area.name)
 		if sword_hitbox_area.has_method("clear_hit_list"):
 			sword_hitbox_area.clear_hit_list()
+			print("[DEBUG] clear_hit_list() called")
 		elif "is_active" in sword_hitbox_area:
 			sword_hitbox_area.is_active = true
+			print("[DEBUG] is_active set to true")
+	else:
+		print("[DEBUG] sword_hitbox_area IS NULL!")
 	
 	var _item_db = get_node_or_null("/root/ItemDB")
 	var _w_type = "None"
@@ -826,6 +853,10 @@ func activate_weapon_hitbox():
 			
 			get_parent().add_child(proj)
 			proj.global_position = global_position + Vector3(0, 1.0, 0) + fire_dir.normalized() * 1.0
+	else:
+		# Beri efek getaran kecil untuk semua serangan jarak dekat biasa saat senjata diayunkan
+		if has_method("apply_camera_shake"):
+			apply_camera_shake(2.0, 0.1)
 
 
 func _perform_spin_attack_aoe():
@@ -855,6 +886,12 @@ func deactivate_weapon_hitbox():
 # --- Head Look-At: dieksekusi setiap frame setelah AnimationTree memproses pose ---
 func _process(delta: float):
 	_update_head_look_at(delta)
+	_update_enemy_indicator()
+
+func _physics_process(delta: float):
+	if is_instance_valid(_cam3d):
+		var target_cam_pos = global_position + _cam_offset
+		_cam3d.global_position = _cam3d.global_position.lerp(target_cam_pos, _cam_follow_speed * delta)
 
 
 func _update_head_look_at(delta: float):
@@ -905,3 +942,86 @@ func _update_head_look_at(delta: float):
 	var anim_pose = general_skeleton.get_bone_pose_rotation(_head_bone_idx)
 	var blended = anim_pose.slerp(target_rotation, head_look_weight)
 	general_skeleton.set_bone_pose_rotation(_head_bone_idx, blended)
+
+func get_enemy_under_mouse() -> Node3D:
+	var camera = get_viewport().get_camera_3d()
+	if not camera: return null
+	var mouse_pos = get_viewport().get_mouse_position()
+	var ray_origin = camera.project_ray_origin(mouse_pos)
+	var ray_dir = camera.project_ray_normal(mouse_pos)
+	
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_origin + ray_dir * 1000.0)
+	query.collide_with_areas = true
+	
+	var max_iter = 5
+	while max_iter > 0:
+		var result = space_state.intersect_ray(query)
+		if result:
+			var collider = result.collider
+			if collider.is_in_group("Enemy"):
+				return collider
+			if collider is Area3D and collider.get_parent() and collider.get_parent().is_in_group("Enemy"):
+				return collider.get_parent()
+				
+			# Abaikan player dan semua hitbox/area milik player
+			if collider == self or is_ancestor_of(collider) or collider.is_in_group("Player"):
+				query.exclude.append(collider.get_rid())
+				max_iter -= 1
+				continue
+				
+			# Jika menabrak tanah/tembok, hentikan pencarian
+			return null
+		else:
+			return null
+			
+	return null
+
+func _update_enemy_indicator():
+	var hovered_enemy = get_enemy_under_mouse()
+	
+	if is_instance_valid(locked_target):
+		if not is_instance_valid(enemy_indicator_mesh):
+			enemy_indicator_mesh = MeshInstance3D.new()
+			var cyl = CylinderMesh.new()
+			cyl.height = 0.05
+			cyl.top_radius = 1.0
+			cyl.bottom_radius = 1.0
+			enemy_indicator_mesh.mesh = cyl
+			var mat = StandardMaterial3D.new()
+			mat.albedo_color = Color(1, 0, 0, 0.4)
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			enemy_indicator_mesh.material_override = mat
+			get_tree().get_root().add_child(enemy_indicator_mesh)
+		
+		enemy_indicator_mesh.visible = true
+		# Position under the enemy
+		var t_pos = locked_target.global_position
+		enemy_indicator_mesh.global_position = Vector3(t_pos.x, 0.05, t_pos.z)
+	else:
+		if is_instance_valid(enemy_indicator_mesh):
+			enemy_indicator_mesh.visible = false
+			locked_target = null
+			
+	if is_instance_valid(hovered_enemy) and hovered_enemy != locked_target:
+		if not is_instance_valid(hover_indicator_mesh):
+			hover_indicator_mesh = MeshInstance3D.new()
+			var cyl = CylinderMesh.new()
+			cyl.height = 0.05
+			cyl.top_radius = 1.0
+			cyl.bottom_radius = 1.0
+			hover_indicator_mesh.mesh = cyl
+			var mat = StandardMaterial3D.new()
+			mat.albedo_color = Color(1.0, 1.0, 0.0, 0.3) # Kuning pucat/transparan
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			hover_indicator_mesh.material_override = mat
+			get_tree().get_root().add_child(hover_indicator_mesh)
+		
+		hover_indicator_mesh.visible = true
+		var h_pos = hovered_enemy.global_position
+		hover_indicator_mesh.global_position = Vector3(h_pos.x, 0.06, h_pos.z) # Sedikit di atas merah
+	else:
+		if is_instance_valid(hover_indicator_mesh):
+			hover_indicator_mesh.visible = false

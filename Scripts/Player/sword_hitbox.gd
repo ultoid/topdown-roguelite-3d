@@ -4,6 +4,7 @@ extends Area3D
 
 var hit_enemies = []
 var is_active: bool = false
+var debug_radius_mesh: MeshInstance3D = null
 
 func _ready():
 	# Memastikan Area3D ini bisa mendeteksi tabrakan
@@ -49,6 +50,11 @@ func clear_hit_list():
 	if is_instance_valid(debug_sphere):
 		debug_sphere.visible = true
 		
+	if is_instance_valid(debug_radius_mesh):
+		debug_radius_mesh.visible = true
+		if debug_radius_mesh.material_override:
+			debug_radius_mesh.material_override.albedo_color = Color(1.0, 0.0, 0.0, 0.35)
+		
 	# Secara proaktif cek musuh yang sudah ada di dalam jangkauan
 	# (karena jika mereka sudah di dalam, signal body_entered tidak akan terpicu lagi)
 	for body in get_overlapping_bodies():
@@ -63,6 +69,11 @@ func deactivate():
 	var debug_sphere = get_node_or_null("DebugSphere")
 	if is_instance_valid(debug_sphere):
 		debug_sphere.visible = false
+		
+	if is_instance_valid(debug_radius_mesh):
+		debug_radius_mesh.visible = true
+		if debug_radius_mesh.material_override:
+			debug_radius_mesh.material_override.albedo_color = Color(1.0, 1.0, 1.0, 0.2)
 
 func _on_body_entered(body):
 	if not is_active: return
@@ -115,7 +126,12 @@ func _deal_damage(enemy_node):
 		var passed_elements = atk_elements.duplicate()
 		if player and player.get("is_current_attack_critical"):
 			passed_elements.append("CRITICAL")
-		enemy_node.take_damage(current_damage, global_position, passed_elements, kb_force)
+			
+		var hurtbox = enemy_node.get_node_or_null("Hurtbox")
+		if hurtbox and hurtbox.has_method("receive_hit"):
+			hurtbox.receive_hit(current_damage, global_position, passed_elements, kb_force)
+		else:
+			enemy_node.take_damage(current_damage, global_position, passed_elements, kb_force)
 		
 		if player and player.has_method("apply_camera_shake"):
 			if player.get("is_charge_attacking"):
@@ -124,3 +140,43 @@ func _deal_damage(enemy_node):
 				player.apply_camera_shake(3.0, 0.1)
 	else:
 		print("[DEBUG] FAILED: enemy_node has no take_damage method!")
+
+func set_radius_by_weapon(w_type: String):
+	match w_type:
+		"sword":      manual_hit_radius = 1.8
+		"long_sword": manual_hit_radius = 2.5
+		"dagger":     manual_hit_radius = 1.4
+		"lance":      manual_hit_radius = 3.0
+		"gloves":     manual_hit_radius = 1.2
+		"rune":       manual_hit_radius = 0.0  # Rune pakai projectile
+		_:            manual_hit_radius = 1.5  # Default
+		
+	_update_debug_radius()
+
+func _update_debug_radius():
+	if manual_hit_radius <= 0.0:
+		if is_instance_valid(debug_radius_mesh): debug_radius_mesh.visible = false
+		return
+		
+	var player_node = get_tree().get_first_node_in_group("Player")
+	if not is_instance_valid(player_node): return
+	
+	if not is_instance_valid(debug_radius_mesh):
+		debug_radius_mesh = MeshInstance3D.new()
+		var cyl = CylinderMesh.new()
+		cyl.height = 0.02
+		debug_radius_mesh.mesh = cyl
+		
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = Color(1.0, 0.0, 0.0, 0.35) if is_active else Color(1.0, 1.0, 1.0, 0.2)
+		mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		debug_radius_mesh.material_override = mat
+		
+		player_node.add_child(debug_radius_mesh)
+		debug_radius_mesh.position = Vector3(0, 0.05, 0) # Sedikit di atas tanah agar tidak z-fighting
+		
+	# Update radius
+	debug_radius_mesh.mesh.top_radius = manual_hit_radius
+	debug_radius_mesh.mesh.bottom_radius = manual_hit_radius
+	debug_radius_mesh.visible = true

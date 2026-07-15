@@ -266,6 +266,49 @@ func _physics_process(delta):
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"), 0, Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 	)
 	
+	if is_instance_valid(player.locked_target):
+		# Batal HANYA JIKA player menekan tombol gerakan BARU. 
+		# Jika tombol sudah ditahan sebelum klik, biarkan auto-walk mengambil alih sementara!
+		if Input.is_action_just_pressed("move_right") or Input.is_action_just_pressed("move_left") or Input.is_action_just_pressed("move_up") or Input.is_action_just_pressed("move_down"):
+			player.locked_target = null # Batal jika player gerak sendiri
+		else:
+			var t_pos = player.locked_target.global_position
+			var dist = player.global_position.distance_to(t_pos)
+			var attack_range = 1.5
+			if is_instance_valid(player.sword_hitbox_area) and "manual_hit_radius" in player.sword_hitbox_area:
+				attack_range = player.sword_hitbox_area.manual_hit_radius
+			if attack_range <= 0.0: attack_range = 1.5
+			
+			if dist <= attack_range:
+				# Sudah dalam jarak, saatnya menyerang!
+				var dir = (t_pos - player.global_position)
+				dir.y = 0
+				if dir.length_squared() > 0.01:
+					player.last_direction = dir.normalized()
+				if not player.is_attacking and not player.is_casting and not player.is_dashing and not player.is_jumping and not player.is_damaged:
+					player.attack(false)
+					# Hanya serang SATU kali, lalu hapus lock-on agar tidak nyepam auto-attack
+					if player.is_attacking:
+						player.locked_target = null
+			else:
+				# Berjalan ke arah musuh
+				if player.nav_agent:
+					player.nav_agent.target_position = t_pos
+					if not player.nav_agent.is_navigation_finished():
+						var next_pos = player.nav_agent.get_next_path_position()
+						raw_input = (next_pos - player.global_position)
+						raw_input.y = 0
+						raw_input = raw_input.normalized()
+					else:
+						raw_input = (t_pos - player.global_position)
+						raw_input.y = 0
+						raw_input = raw_input.normalized()
+				else:
+					raw_input = (t_pos - player.global_position)
+					raw_input.y = 0
+					raw_input = raw_input.normalized()
+
+	
 	if player.is_auto_walking:
 		if raw_input != Vector3.ZERO:
 			player._cancel_auto_walk()
