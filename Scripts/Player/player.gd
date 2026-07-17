@@ -609,7 +609,12 @@ func play_anim(base_state: String):
 					elif sm_node.has_node(base_state):
 						target_base = base_state
 			
-			state_machine.travel(target_base)
+			# Gunakan start() untuk Attack agar animasi dipaksa reset dari awal.
+			# travel() bisa gagal jika state machine sedang mid-transition (penyebab animasi hilang saat spam klik).
+			if "Attack" in base_state or "HeavyAttack" in base_state:
+				state_machine.start(target_base)
+			else:
+				state_machine.travel(target_base)
 		return
 
 	# Logika untuk locomotion / idle (menggunakan maskable blend)

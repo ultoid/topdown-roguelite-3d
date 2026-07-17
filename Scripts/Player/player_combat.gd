@@ -1,6 +1,12 @@
 extends Node
 class_name PlayerCombat
 
+# Jeda waktu (dalam detik) sebelum urutan combo direset kembali ke serangan pertama
+const COMBO_TIMEOUT: float = 1.0
+
+# Sequence counter untuk mencegah timer dari serangan lama mengaktifkan hitbox serangan baru
+var _attack_seq: int = 0
+
 @onready var player: CharacterBody3D = get_parent()
 
 func _execute_skill(skill_id: String, data: Dictionary, t_pos: Vector3, indicator: Node = null):
@@ -299,6 +305,18 @@ func _start_cast_skill(skill_id: String, data: Dictionary, cost: int, t_pos: Vec
 
 func attack(is_charge: bool):
 	if player.status_manager and not player.status_manager.can_attack(): return
+	
+	var current_time = Time.get_ticks_msec() / 1000.0
+	# Reset combo jika pemain diam tidak menyerang lebih dari batas waktu yang ditentukan
+	if current_time - player.last_attack_time > COMBO_TIMEOUT:
+		player.combo_step = 1
+		
+	# Increment sequence & deactivate hitbox lama agar timer dari serangan sebelumnya tidak bisa
+	# mengaktifkan hitbox yang sudah milik serangan baru
+	_attack_seq += 1
+	if player.sword_hitbox_area and player.sword_hitbox_area.has_method("deactivate"):
+		player.sword_hitbox_area.deactivate()
+	
 	if player.status_manager and player.status_manager.has_effect("shadow_walk"):
 		player.status_manager.remove_effect("shadow_walk")
 	player._update_aim_to_mouse(true)
@@ -449,8 +467,13 @@ func attack(is_charge: bool):
 		
 	var current_attack_duration = base_dur / player.current_attack_speed
 	# Jika user belum menambahkan Method Track di AnimationPlayer, ini akan memanggil hitbox secara otomatis.
-	get_tree().create_timer(current_attack_duration * 0.3).timeout.connect(player.activate_weapon_hitbox)
-	get_tree().create_timer(current_attack_duration * 0.8).timeout.connect(player.deactivate_weapon_hitbox)
+	var seq = _attack_seq
+	get_tree().create_timer(current_attack_duration * 0.3).timeout.connect(func():
+		if _attack_seq == seq: player.activate_weapon_hitbox()
+	)
+	get_tree().create_timer(current_attack_duration * 0.8).timeout.connect(func():
+		if _attack_seq == seq: player.deactivate_weapon_hitbox()
+	)
 
 	if is_charge and should_lunge:
 		if w_type == "sword":
@@ -472,7 +495,7 @@ func attack(is_charge: bool):
 		# Tambahkan buffer 0.05s agar animasi tidak terpotong sebelum Call Method Track dieksekusi saat klik di-spam
 		await get_tree().create_timer(current_attack_duration + 0.05).timeout
 
-	if player.is_attacking:
+	if player.is_attacking and _attack_seq == seq:
 		player.attack_finished()
 
 
