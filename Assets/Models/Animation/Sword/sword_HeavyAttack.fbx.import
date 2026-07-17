@@ -41,7 +41,7 @@ _subresources={
 "animations": {
 "mixamo_com": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Old Animations/sword_heavyattack.res",
+"save_to_file/fallback_path": "res://Assets/Models/_Old Animations/sword_heavyattack.res",
 "save_to_file/keep_custom_tracks": "",
 "save_to_file/path": "uid://bpmbqfis8e50s",
 "settings/loop_mode": 0,

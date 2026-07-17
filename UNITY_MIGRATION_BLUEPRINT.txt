@@ -1,0 +1,1187 @@
+================================================================================
+ GODOT → UNITY MIGRATION BLUEPRINT
+ Game: "Nusvanir: Tales of The Dark Time 3D"
+ Genre: 3D Top-Down Action Roguelite RPG (Diablo-style)
+ Engine Source: Godot 4.6 (Forward Plus, Jolt Physics)
+ Target: Unity (URP or HDRP, C#)
+ Resolution: 1280x720
+================================================================================
+
+TABLE OF CONTENTS
+─────────────────
+1.  PROJECT OVERVIEW & ARCHITECTURE
+2.  AUTOLOAD / SINGLETON SYSTEMS (Global State)
+3.  PLAYER SYSTEM (Complete Breakdown)
+4.  COMBAT SYSTEM
+5.  ANIMATION SYSTEM (Dynamic Weapon-Based)
+6.  WEAPON SYSTEM (Modular Scene)
+7.  SKILL / CLASS SYSTEM
+8.  STAT & FORMULA SYSTEM
+9.  ENEMY AI SYSTEM
+10. ITEM DATABASE SYSTEM
+11. SKILL DATABASE SYSTEM
+12. ELEMENT / ELEMENTAL SYSTEM
+13. STATUS EFFECT SYSTEM
+14. INVENTORY & EQUIPMENT SYSTEM
+15. UI SYSTEM (HUD, Menus)
+16. LIFE SKILLS (Farming, Mining, Foraging, Crafting)
+17. NPC & DIALOGUE SYSTEM
+18. WORLD / MAP SYSTEM
+19. CHARACTER CUSTOMIZATION SYSTEM
+20. INPUT MAPPING
+21. CAMERA SYSTEM
+22. NAVIGATION / PATHFINDING
+23. SCENE STRUCTURE / NODE HIERARCHY
+24. KEY GODOT→UNITY CONCEPT MAPPING
+
+================================================================================
+1. PROJECT OVERVIEW & ARCHITECTURE
+================================================================================
+
+This is a 3D top-down (isometric/Diablo-style) Action Roguelite RPG. The player
+controls a single character from a fixed camera angle, fights enemies using
+various weapon types (swords, bows, staves, daggers, lances, gloves, runes,
+crossbows), uses class-based skills, and engages in life skills (farming, mining,
+crafting). The game uses Synty modular 3D character models with Mixamo-retargeted
+animations.
+
+CORE ARCHITECTURE:
+- Player is a CharacterBody3D (equivalent to Unity CharacterController)
+- Component-based design: player.gd is the main hub, with child nodes for
+  PlayerCombat, PlayerStats, PlayerInput, PlayerMovement, PlayerLifeSkill,
+  PlayerUIManager, PlayerVisual
+- Singletons (Autoloads): Global, ItemDB, SkillDB, CustomizationDB, PlayerHUD
+- Enemies are also CharacterBody3D with AI state machines
+- All databases are scene-based: items/skills are Sprite2D nodes with exported
+  properties, built into dictionaries at runtime
+
+PHYSICS:
+- 3D physics with Jolt Physics engine
+- Gravity: ProjectSettings default (9.8 m/s²)
+- CharacterBody3D with move_and_slide() for all characters
+- Area3D for hitboxes, hurtboxes, interaction zones
+- NavigationAgent3D for pathfinding
+
+================================================================================
+2. AUTOLOAD / SINGLETON SYSTEMS
+================================================================================
+
+These are global singletons always accessible from anywhere. In Unity, implement
+as static classes, ScriptableObjects, or DontDestroyOnLoad MonoBehaviours.
+
+──── Global.gd (Autoload: "Global") ────
+Persistent game state manager. Equivalent to a GameManager singleton in Unity.
+
+STATE DATA:
+  coins: int = 0
+  level: int = 1
+  current_exp: int = 0
+  max_exp: int = 10
+  current_health: float = -1.0  // -1 means "not set, use max"
+  current_mana: float = -1.0
+  current_energy: float = -1.0
+
+CLASS JOB SYSTEM:
+  current_class: String = ""  // "fighter", "apprentice", or "scout"
+  class_levels: Dictionary = {"fighter": 1, "apprentice": 1, "scout": 1}
+  class_exp: Dictionary = {"fighter": 0, "apprentice": 0, "scout": 0}
+  class_max_exp: Dictionary = {"fighter": 10, "apprentice": 10, "scout": 10}
+  class_skill_points: Dictionary = {"fighter": 0, "apprentice": 0, "scout": 0}
+
+  CLASS_BASE_STATS (const):
+    "fighter":     {str:9, agi:3, vit:6, int:1, dex:1, luk:5}
+    "apprentice":  {str:1, agi:2, vit:2, int:9, dex:6, luk:5}
+    "scout":       {str:4, agi:8, vit:2, int:1, dex:5, luk:5}
+
+PERMANENT STATS (from level-up stat points):
+  perm_stat_str, perm_stat_vit, perm_stat_int,
+  perm_stat_luk, perm_stat_agi, perm_stat_dex: all int = 0
+
+INVENTORY:
+  inventory: Dictionary<string, int>  // item_id -> quantity
+  Default items: potion:5, ether:5, pickaxe:1, axe:1, hoe:1, watering_can:1,
+    + all practice weapons (one each, dagger has 2)
+
+EQUIPMENT SLOTS:
+  equipment: Dictionary<string, string> = {
+    "main_weapon": "",
+    "secondary_weapon": "",
+    "helm": "",
+    "armor": "",
+    "boots": "",
+    "accessory1": "",
+    "accessory2": "",
+    "artifact": ""
+  }
+
+CHARACTER CUSTOMIZATION:
+  customization: Dictionary = {
+    "hair": 1, "eyebrows": 1, "facialhair": 0,
+    "ears": 1, "nose": 1, "teeth": 1
+  }
+
+QUICK SLOTS:
+  quick_items: Array[4] of string  // item_id for consumable hotbar
+  quick_skills: Array[8] of string  // skill_id for skill hotbar
+
+SKILLS:
+  unlocked_skills: Dictionary<string, int>  // skill_id -> level
+  unlocked_recipes: Array of string
+
+FARMING:
+  farm_plots: Dictionary  // plot_id -> {state, growth_time, max_growth_time, watered_time_left}
+
+CRAFTING:
+  is_crafting: bool, craft_timer: float, craft_duration: float, craft_recipe_id: string
+  CRAFTING_RECIPES: Dictionary  // auto-built from ItemDB is_craftable items
+
+ELEMENT MULTIPLIER TABLE (10 elements + netral):
+  Elements: netral, api(fire), air(water), tanah(earth), udara(wind),
+            listrik(lightning), es(ice), besi(iron), suara(sound),
+            cahaya(light), kegelapan(darkness)
+
+  Rock-paper-scissors style weaknesses/resistances:
+  api vs tanah/es/besi = 2.0x, api vs api/air = 0.5x
+  air vs api = 2.0x, air vs air/tanah = 0.5x
+  tanah vs udara/listrik = 2.0x, tanah vs api/tanah = 0.5x
+  udara vs air = 2.0x, udara vs tanah = 0.0x (immune), udara vs udara = 0.5x
+  listrik vs air/besi = 2.0x, listrik vs tanah/es = 0.0x (immune)
+  es vs api = 0.5x, es vs listrik = 2.0x
+  besi vs suara = 2.0x, besi vs api/listrik/besi = 0.5x
+  suara vs es = 2.0x, suara vs besi = 0.0x (immune)
+  cahaya vs kegelapan = 2.0x, cahaya vs cahaya = 0.5x
+  kegelapan vs cahaya = 2.0x, kegelapan vs kegelapan = 0.5x
+  Everything else = 1.0x (neutral)
+
+  Function get_element_multiplier(atk_elements: Array, def_element: String):
+    - Takes BEST multiplier from all attack elements vs defender's element
+    - "netral" always = 1.0x
+
+UTILITY FUNCTIONS:
+  flash_red_3d(node): Applies red overlay material for 0.15s
+  spawn_hit_spark(pos, parent): Creates GPU particle burst (15 particles, 0.25s)
+
+INPUT MAPPING (setup programmatically in _ready):
+  WASD = move_up/down/left/right
+  Shift = run
+  Space = jump (actually dash)
+  Q = interact
+  C = open_menu (character menu)
+  B = open_inventory
+  K = open_skill_menu
+  J = open_crafting
+  P = open_customization
+  1-8 = skill_1 through skill_8
+  9,0,-,= = item_1 through item_4
+  Left Mouse = basic_attack
+  Right Mouse = charge_attack
+
+================================================================================
+3. PLAYER SYSTEM
+================================================================================
+
+The player is built as a main CharacterBody3D with multiple child component nodes.
+
+──── Node Hierarchy ────
+Player (CharacterBody3D) [player.gd]
+├── PlayerCombat (Node) [player_combat.gd]
+├── PlayerStats (Node) [player_stats.gd]
+├── PlayerLifeSkill (Node) [player_life_skill.gd]
+├── PlayerUIManager (Node) [player_ui_manager.gd]
+├── PlayerMovement (Node) [player_movement.gd]
+├── PlayerInput (Node) [player_input.gd]
+├── AnimationTree
+├── visual_player (Node3D) [player_visual.gd]
+│   └── SK_BaseModel
+│       └── GeneralSkeleton (Skeleton3D, 88+ bones)
+│           ├── BoneAttachment3D (weapon mount)
+│           │   └── Slot_Weapon (contains all weapon scene children)
+│           ├── Base_Hair (container for hair FBX variants)
+│           ├── Cust_Beard (container for beard FBX variants)
+│           ├── Base_Head_Group, Base_Body, Base_Feet
+│           ├── Slot_Helm, Slot_Armor, Slot_Boots
+│           └── IK_TanganKiri (SkeletonIK3D for left hand)
+├── Camera3D (set as top-level, follows with smooth lerp)
+├── NavigationAgent3D
+└── StatusEffectManager (runtime-created child)
+
+──── Core Player Variables ────
+HEALTH/MANA/ENERGY:
+  max_health: int = 100 (base, recalculated)
+  current_health: int
+  current_mana: int, max_mana: int = 50
+  current_energy: float = 100.0, max_energy: float = 100.0
+  energy_regen: float = 7.5 per second
+
+BASE STATS (6 core):
+  stat_str, stat_vit, stat_int, stat_luk, stat_agi, stat_dex: int
+  stat_points: int = 0 (earned on level up)
+
+DERIVED STATS (computed in recalculate_stats):
+  physical_attack: int = 10
+  magic_attack: int = 10
+  casting_speed: float = 1.0
+  physical_defense: int = 0
+  magic_defense: int = 0
+  critical_chance: float = 0.0 (percentage)
+  walk_speed: float = 5 km/h converted to m/s (5 * 1000/3600)
+  run_speed: float = 20 km/h converted to m/s
+  attack_speed_multiplier: float = 1.0
+  accuracy: float = 1.0
+  critical_damage_multiplier: float = 1.5
+
+ELEMENTAL:
+  atk_elements: Array = ["netral"]  // from weapon
+  def_element: String = "netral"  // from artifact
+  def_resistances: Dictionary = {}  // max 3 types
+  element_dmg_bonus: Dictionary = {}
+
+PROGRESSION:
+  coins: int, level: int, current_exp: int, max_exp: int
+  Level up: max_exp *= 1.5, stat_points += 1
+
+STATE FLAGS:
+  is_attacking, is_charge_attacking, is_dead, is_invincible,
+  is_dashing, is_casting, is_animating_skill, is_jumping,
+  is_running_from_double_tap, is_spinning, is_smashing,
+  is_damaged, is_farming_targeting, is_targeting,
+  is_doing_life_skill, is_auto_walking, is_fishing,
+  is_charging_magic, falcon_dive_active
+
+COMBAT:
+  current_attack_damage: int = 10
+  current_attack_speed: float = 1.0
+  combo_step: int = 1 (cycles 1→2→3→1)
+  last_attack_time: float (for combo timeout)
+  COMBO_TIMEOUT: float = 1.0 seconds
+  knockback_velocity: Vector3
+
+DASH:
+  dash_timer, dash_duration: 0.4s, dash_speed: 15.0
+  dash_cooldown: 3.0s (reduced by AGI * 0.03)
+  Energy cost: 10 EP
+
+CHARGE ATTACK:
+  charge_attack_cooldown, magic_charge_timer (max 2.0s)
+  charge_lunge_timer/duration/speed, attack_lunge_timer/speed
+
+TARGET LOCK:
+  locked_target: Node3D (enemy clicked by mouse)
+  Auto-walk to enemy → attack when in range → release lock after 1 attack
+
+SIGNALS (Events in Unity):
+  health_changed(current, max)
+  mana_changed(current, max)
+  energy_changed(current, max)
+  player_died(survival_time, enemies_killed, level, coins)
+  coin_changed(coins)
+  exp_changed(current_exp, max_exp, level)
+
+================================================================================
+4. COMBAT SYSTEM
+================================================================================
+
+──── Basic Attack Flow ────
+1. Left-click triggers basic_attack
+2. Check weapon type from ItemDB
+3. For MELEE weapons (sword, long_sword, dagger, gloves, lance):
+   - Call player.attack(false)
+   - Combo system: Attack1 → Attack2 → Attack3 → loops
+   - Combo resets if: timeout (1.0s) OR player takes damage
+   - Hitbox activated via timer (30% of attack duration)
+   - Hitbox deactivated at 80% of attack duration
+   - Attack lunge (forward movement) for long_sword
+4. For RANGED weapons (staff, long_bow, crossbow):
+   - Call _fire_projectile(type, false)
+   - Staff: fires magic projectile
+   - Long bow: Load animation → Release animation → spawn arrow
+   - Crossbow: fires arrow projectile
+5. For RUNE weapon:
+   - Fires magic projectile (3rd combo = double damage + larger)
+
+──── Charge Attack (Right-click) ────
+TAP WEAPONS (long_sword, sword, gloves, lance, rune, crossbow, dagger):
+  - Single press: instant heavy attack
+  - Cost: 30 EP (or 20 MP for rune)
+  - Cooldown: 2.0s (crossbow: 1.0s)
+  - Special behaviors per weapon:
+    - long_sword charge: spin AoE attack (3.5m radius)
+    - rune charge: mana burst AoE (knockback 10m)
+    - sword charge: jumping slash with arc movement
+    - gloves charge: 1.5x damage + camera shake
+    - lance charge: dash + camera shake
+    - crossbow charge: rapid-fire 5 bolts
+    - dagger charge: throw 3 daggers in fan pattern
+
+HOLD WEAPONS (staff, long_bow):
+  - Hold right-click to charge (up to 2.0s)
+  - Creates charge bar + visual orb (staff) or load anim (bow)
+  - Release fires charged projectile
+  - Staff: costs 30 MP, damage = magic_attack * (1.0 + charge_time)
+  - Bow: costs 30 EP, damage = physical_attack * 2.0 * (1.0 + charge/2)
+
+──── Damage Calculation (Player → Enemy) ────
+1. Determine base damage:
+   - Melee: physical_attack
+   - Rune: magic_attack
+   - Skill: formula per skill
+2. Critical check: random < critical_chance
+   - If crit: damage *= critical_damage_multiplier (1.5 + DEX*0.01)
+3. Pass to enemy.take_damage(damage, position, elements, kb_force)
+4. Enemy applies:
+   - Element multiplier (from Global table)
+   - Status effect multipliers (hunters_mark = 2x, etc.)
+   - Knockback in direction away from attacker
+
+──── Damage Calculation (Enemy → Player) ────
+1. Base: enemy.damage
+2. Subtract physical_defense (min 1 damage)
+3. Holy Veil absorbs damage first (shield HP)
+4. Status multipliers (vulnerable/sleep = 1.5x)
+5. Element multiplier (attack element vs player def_element)
+6. Elemental resistance reduction
+7. If endure buff: no knockback
+8. Knockback: 40 velocity units, decays at 800/sec = ~1 meter
+9. Combo resets, attack canceled
+10. Flash red 0.15s, play Damaged animation (max 0.5s)
+11. Death at 0 HP
+
+──── Hitbox System (SwordHitbox / sword_hitbox.gd) ────
+- Area3D with manual_hit_radius fallback
+- Uses hit_enemies list to prevent multi-hit same enemy
+- clear_hit_list() + is_active flag
+- _physics_process polls overlapping bodies each frame
+- Manual radius fallback: checks distance from player center
+- Weapon-specific radii:
+    sword: 1.8m, long_sword: 2.5m, dagger: 1.4m,
+    lance: 3.0m, gloves: 1.2m, rune: 0.0 (projectile), default: 1.5m
+- Long_sword combo_step 1 (3rd hit): kb_force = 6.0, else 3.0
+- Supports Hurtbox system on enemies (receive_hit method)
+
+──── Projectile System ────
+Player Projectile (player_projectile.gd):
+  - direction: Vector3, damage: int, speed: float
+  - lifetime: float, is_piercing: bool
+  - atk_elements: Array
+
+Arrow Projectile (arrow_projectile.gd):
+  - Similar to player projectile but arrow-specific
+
+Enemy Projectile (enemy_projectile.gd):
+  - direction: Vector3, damage: int
+
+──── AoE System (Generic, Diablo Immortal style) ────
+Three reusable functions in player_combat.gd:
+
+_aoe_instant_hit(origin, radius, damage, elements, kb_force, exclude_list):
+  - Instant damage to all enemies in radius (XZ plane only, ignores Y)
+  - Returns array of hit enemies
+
+_aoe_delayed_hit(origin, radius, damage, delay, elements, kb_force):
+  - Waits delay seconds, then does instant AoE
+
+_aoe_tick_hit(origin_getter, radius, dmg_per_tick, tick_interval, duration, elements, kb_force):
+  - Repeated AoE for duration, origin can move (follows player etc.)
+
+================================================================================
+5. ANIMATION SYSTEM
+================================================================================
+
+Uses AnimationTree with a BlendTree root containing:
+  - BaseStateMachine (AnimationNodeStateMachine) — full body
+  - UpperStateMachine (AnimationNodeStateMachine) — upper body overlay
+  - Blend2 node — blends upper/lower body for locomotion with weapon poses
+  - AttackTimeScale (TimeScale node) — controls attack animation speed
+
+──── Dynamic Animation Lookup ────
+Function get_anim_state(base_state) → String:
+  1. Get current weapon_type from ItemDB (e.g., "long_sword")
+  2. Build specific_state = weapon_type.replace("_","") + "_" + base_state
+     Example: "longsword_Attack1"
+  3. Check if state exists in BaseStateMachine or UpperStateMachine
+  4. If not found, try lowercase version
+  5. If still not found, fallback to base_state ("Attack1")
+
+Function play_anim(base_state):
+  1. Determine if full-body or blended:
+     - Full body: Attack*, Skill*, Dash, Jump, or sword weapon type
+     - Blended: Idle, Walk, Run (upper body gets weapon pose)
+  2. For full body:
+     - Set Blend2 amount to 0.0 (disable upper body override)
+     - Play in BaseStateMachine
+     - Use start() for Attack (force reset), travel() for others
+  3. For blended locomotion:
+     - Play Walk/Run/Idle in BaseStateMachine
+     - Set Blend2 amount to 1.0
+     - Play weapon-specific idle/walk in UpperStateMachine
+
+──── Root Motion Stripping ────
+On _ready(), ALL animations have their Hips/Root bone position tracks
+modified: X and Z zeroed (in-place), Y preserved (prevent sinking).
+This ensures characters don't drift from their collision body.
+
+──── Animation Speed Control ────
+- Attack speed: AttackTimeScale = attack_speed_multiplier * anim_speed_ratio
+- anim_speed_ratio = actual_animation_length / base_attack_duration
+- Walk/Run: animation_player.speed_scale = current_speed / stride_length
+  (walk stride: 1.6, run stride: 4.8)
+- Damage animation: if length > 0.5s, speed up to fit 0.5s
+
+──── IK System ────
+- SkeletonIK3D for left hand (IK_TanganKiri)
+- Two-handed weapons: auto-finds LeftHand_Target (Marker3D) on active weapon
+- Dynamically starts/stops based on weapon type
+- Disabled during dash with staff
+
+──── Head Look-At ────
+- Only active when using long_bow AND attacking/aiming
+- Smooth blend weight (0.0 to 1.0, speed 5.0)
+- Finds "Head" bone, rotates toward mouse world position
+- Uses skeleton local space quaternion slerp
+
+================================================================================
+6. WEAPON SYSTEM (Modular Scene)
+================================================================================
+
+Each weapon is a separate .tscn scene containing:
+  - Root: Node3D
+  - Visual: MeshInstance3D (3D model)
+  - Hitbox: Area3D named "RightHandHitBox" or containing "Hitbox" in name
+    - Script: sword_hitbox.gd
+    - CollisionShape3D
+  - (Optional) LeftHand_Target: Marker3D for IK grip
+
+WEAPON TYPES (from ItemData):
+  long_sword, sword, gloves, lance, staff, rune, long_bow, crossbow, dagger
+
+WEAPON EQUIP FLOW:
+  1. Global.equipment["main_weapon"] = item_id
+  2. update_visual_equipment() called
+  3. Iterates children of Slot_Weapon node
+  4. Shows only the child whose name matches item_id (normalized, underscore-removed)
+  5. For 2-handed weapons: activates left hand IK
+  6. For 1-handed: stops IK
+
+DUAL WIELD:
+  - Only daggers support dual wield
+  - Requires secondary_weapon slot also has dagger
+  - Attack animation calls activate_weapon_hitbox() twice
+
+================================================================================
+7. SKILL / CLASS SYSTEM
+================================================================================
+
+Three classes, each with its own skill tree:
+
+──── FIGHTER CLASS ────
+Skills:
+  - dash (passive, level 1): enables dash mechanic
+  - heavy (passive, level 1): enables heavy/charge attacks
+  - weapon_mastery (max 10): +physical_attack bonus
+  - vitality_mastery (max 10): +defense bonus
+  - cyclone_sweep (max 5): spin attack, duration scales with level
+      → Player spins visually, damages enemies in 3.0m radius every 15 frames
+      → Shows duration progress bar
+  - fatal_blow (max 10): instant dash-stab forward 5m
+      → Teleport forward, AoE 5m, high crit chance, knockback 800
+  - impact_wave (max 5): forward shockwave (crescent shape)
+      → CSGPolygon3D visual, travels 4m forward in 0.4s
+      → Applies slow on hit, damage = physical_attack + skill_dmg
+  - fatal_smash (max 1): leap to target AoE
+      → Invincible during, smoothstep movement to target
+      → Jump arc (sprite Y offset), landing = AoE + knockback 1500
+      → Expanding ring visual
+  - endure (max 10): self-buff, prevents knockback
+  - provoke (max 5): AoE taunt 5m radius, enemies forced to target player
+  - implosion (max 1): AoE vacuum pull
+      → Pulls enemies to player position, then stuns 2.0s
+      → Shrinking circle visual
+
+──── APPRENTICE CLASS ────
+Skills:
+  - heal (max 10): restore HP = skill_dmg + magic_attack * 0.5
+  - spell_mastery (max 10): MP regen per second + cooldown reduction (2%/level)
+  - elemental_mastery (max 10): +max MP, +elemental damage bonus %
+  - aqua_blast (max 5): AoE water blast from player position
+      → Expanding ring, enemies hit once as ring passes them
+      → Damage = magic_attack * 1.5 + skill_dmg, knockback 10m
+  - fire_bolt (max 5): homing fire projectile
+      → Targets closest enemy or indicator target
+      → Damage = magic_attack * 2.0 + skill_dmg, element: "api"
+  - sonic_boom (max 5): frontal cone AoE
+      → Triangle collision area, stuns enemies (2-5s based on level)
+      → Element: "udara"
+  - seismic_fissure (max 1): line of ground hazards
+      → Spawns sequential hazard nodes from player to target
+      → Each hazard damages + slows, element: "tanah"
+  - holy_veil (max 1): damage absorption shield
+      → Shield HP = magic_attack * 2.0 + skill_dmg
+      → Visual: yellow transparent cylinder around player
+  - hex (max 10): single-target curse debuff
+      → Target gets "curse" status, enables Soul Drain combo
+  - soul_drain (max 1): AoE drain on cursed enemies
+      → Only hits enemies with curse status
+      → Damage = magic_attack * 1.5, heals player 50% of damage
+
+──── SCOUT CLASS ────
+Skills:
+  - dodge (passive): enables dodge/dash
+  - evasion_mastery (max 10): evasion bonus
+  - agility_mastery (max 10): agility bonus
+  - hunters_mark (max 5): single target debuff
+      → Marked enemy takes 2x damage from ALL sources
+  - falcon_dive (max 5): rapid multi-shot (requires bow/crossbow)
+      → Fires 3 arrows at target, then 1 final big arrow
+      → Slow-motion effect (Engine.time_scale = 0.3) for final shot
+  - arrow_rain (max 5): AoE rain of arrows at target position
+      → Requires bow/crossbow, slow-motion spin animation
+      → Spawns arrow_rain.tscn at target, deals damage over duration
+  - haste (max 5): self-buff, doubles attack speed
+  - mirage_strike (max 5): gives 3 charges of illusory strikes
+  - poison_weapon (max 5): self-buff, adds poison to attacks
+  - shadow_walk (max 5): stealth mode
+      → Player becomes 50% transparent
+      → Enemies lose aggro (chase radius = -1)
+      → Broken by attacking or using certain skills
+  - thief (max 1): steal loot from nearby enemy (<2m)
+  - phantom_strike (max 5): teleport behind target + 2x damage
+  - phantom_flurry (max 1): 10 rapid teleport strikes
+      → Player invincible, teleports around target 10 times
+      → 10% damage per hit, 0.1s interval
+
+SKILL ACTIVATION FLOW:
+  1. Press skill hotkey (1-8)
+  2. Check: dead, casting, dashing, targeting, spinning, animating
+  3. Check weapon requirements (bow skills need bow)
+  4. Check cooldown, MP cost, EP cost
+  5. Cancel current attack if attacking
+  6. Determine skill type:
+     - "instant" / "buff": execute immediately
+     - "target_aoe" / "target_single" / "target_cone":
+       → Enter targeting mode (Engine.time_scale = 0.2)
+       → Show target indicator (circle/single/cone)
+       → Left-click confirms, right-click cancels
+  7. Start cast time (casting bar, blinking visual)
+  8. After cast: deduct MP/EP, execute skill, start cooldown
+  9. Cooldown reduced by spell_mastery level * 2%
+
+SKILL DATA STRUCTURE (per skill in SkillDB):
+  name, description, type, class_owner
+  max_level, prerequisite_skill, prerequisite_level
+  Per-level arrays (index 0 = level 1):
+    ep_costs, mp_costs, cooldowns, cast_times,
+    damages, effect_durations, crit_chances, aoe_radiuses, ranges
+
+================================================================================
+8. STAT & FORMULA SYSTEM
+================================================================================
+
+recalculate_stats() is called whenever equipment changes or level up.
+
+CLASS BASE STATS: (see section 2)
+TOTAL STAT = class_base + permanent_allocated + equipment_bonus
+
+DERIVED FORMULAS:
+  max_health = 50 + (total_vit * 10) + equip_max_hp
+  max_mana = 20 + (total_int * 5) + equip_max_mp + elemental_mastery_mp_bonus
+  max_energy = 50.0 + (total_str * 10.0)
+
+  physical_defense = total_vit + equip_p_def + vitality_mastery_bonus
+  magic_defense = floor(total_vit/2 + total_int/2) + equip_m_def + vitality_mastery_bonus
+
+  walk_speed = (10.0 * 1000/3600) + (total_agi * 0.04) + (equip_aspd * 0.02)
+  run_speed = walk_speed * 2.0
+
+  attack_speed_multiplier = 1.0 + (total_agi * 0.05) + (equip_aspd * 0.01)
+  energy_regen = 5.0 + (total_agi * 0.5)
+
+  physical_attack:
+    if bow/crossbow: 10 + (total_dex * 2) + equip_p_atk + weapon_mastery_bonus
+    else: 10 + (total_str * 2) + equip_p_atk + weapon_mastery_bonus
+
+  magic_attack = 10 + (total_int * 2) + equip_m_atk
+  casting_speed = 1.0 + (total_dex * 0.05)
+  critical_chance = total_luk * 1.0 + equip_critical  (percentage)
+  critical_damage_multiplier = 1.5 + (total_dex * 0.01)
+  accuracy = 1.0 + (total_dex * 0.05) + (equip_hit * 0.01)
+
+MANA REGEN:
+  If spell_mastery unlocked: regen spell_mastery_level MP per second (accumulates fractionally)
+
+================================================================================
+9. ENEMY AI SYSTEM
+================================================================================
+
+Three enemy types, all CharacterBody3D:
+
+──── Melee Enemy (enemy.gd) ────
+STATS: speed: 0.8, max_health: 50, damage: 10, element: "netral"
+       chase_radius: 1.5, lose_interest_radius: 2.5, exp_reward: 10
+
+AI STATE MACHINE (3 states):
+  "idle":
+    - If player in chase_radius and not shadow_walking → is_chasing = true
+    - If chasing and distance > 2.0m → move toward player
+    - If chasing and distance <= 2.0m → transition to "lunging"
+    - If not chasing and far from spawn → return to spawn_position
+    - Blind effect reduces chase_radius to 20%
+  "lunging":
+    - Move toward player at speed * 5.0
+    - If within 1.2m → deal damage, transition to "returning"
+    - After 0.25s timeout → transition to "returning"
+  "returning":
+    - Move away from player at speed * 2.5
+    - After reaching 2.0m or 1.0s timeout → back to "idle"
+    - Attack cooldown = 1.0 / attack_speed_multiplier
+
+DAMAGE INTERRUPT: attack_cooldown = 5.0s on hit, resets lunge state
+
+HP BAR: SubViewport (100x15) → Sprite3D billboard at Y=1.5
+
+──── Ranged Enemy (ranged_enemy.gd) ────
+STATS: speed: 0.7, max_health: 30, damage: 5
+       chase_radius: 3.0, ideal_min_dist: 1.2, ideal_max_dist: 2.0
+
+AI: Kiting behavior
+  - If distance > ideal_max_dist → move toward player
+  - If distance < ideal_min_dist → move AWAY from player (retreat)
+  - If in ideal range → stop and shoot
+  - Shoot every 2.0s (adjusted by attack speed)
+  - Fires enemy_projectile.tscn
+
+──── Boss Enemy (boss_enemy.gd) ────
+STATS: speed: 0.6, max_health: 200, damage: 15
+       chase_radius: 8.0, boss_name: string
+
+AI: Two-state alternation
+  "CHASE": Move toward player for 4 seconds
+  "SHOOT": Stop and fire bullet hell (8 projectiles in circle pattern)
+  Then back to CHASE for 4s, repeat
+
+BOSS DEATH:
+  - Opens buff_shop_menu (reward selection UI)
+  - Drops 5 coins + 3 exp gems
+  - Emits boss_died signal
+
+COMMON ENEMY FEATURES:
+  - Gravity: 20.0 m/s² (separate from project setting)
+  - Loot drop: 50% chance coin, 100% exp_gem
+  - Status effect support via StatusEffectManager
+  - Element-based damage multipliers
+  - Damage text: Label3D billboard, tween up + fade
+
+================================================================================
+10. ITEM DATABASE SYSTEM
+================================================================================
+
+──── Architecture ────
+ItemDB is an Autoload scene (item_db.tscn) containing many Sprite2D children,
+each with ItemData script attached.
+
+ItemData (item_data.gd) extends Sprite2D, fields:
+  BASIC: item_name, description, type, rarity, price
+  TYPE ENUM: material, consumable, equipment, upgrade_item, key_item
+  RARITY ENUM: common, rare, epic, legendary, mythic
+  CONSUMABLE: effect_type (None/heal_hp/heal_mp/heal_ep/unlock_recipe), effect_amount, recipe_id
+  EQUIPMENT: equipment_slot, weapon_type, weapon_scene_path
+  STAT BONUSES: bonus_p_atk, bonus_m_atk, bonus_p_def, bonus_m_def,
+    bonus_str/agi/vit/int/dex/luk, bonus_hit/flee/critical/aspd,
+    bonus_max_hp, bonus_max_mp
+  ELEMENTS: weapon_element, defense_element
+  RESISTANCES: resist_api/air/tanah/udara/listrik/es/besi/suara/cahaya/kegelapan (%)
+  DMG BONUS: bonus_dmg_api/air/tanah/etc (%)
+  CRAFTING: is_craftable, craft_time, req_mat_1/2/3, req_amount_1/2/3
+
+──── Database Build Process ────
+On _ready(), ItemDB traverses all children:
+  - Each ItemData child → creates dictionary with all fields
+  - item_id = node_name.to_lower()
+  - Stores in items Dictionary<string, Dictionary>
+  - Icon uses sprite sheet (hframes/vframes/frame) to create AtlasTexture
+
+──── Rarity Colors ────
+  common: (0.8, 0.8, 0.8)
+  rare: (0.2, 0.5, 1.0) blue
+  epic: (0.6, 0.2, 0.8) purple
+  legendary: (1.0, 0.8, 0.1) gold
+  mythic: (1.0, 0.2, 0.2) red
+
+IN UNITY: Use ScriptableObjects for items, or JSON/CSV data files.
+
+================================================================================
+11. SKILL DATABASE SYSTEM
+================================================================================
+
+SkillDB is an Autoload scene (skill_db.tscn) containing Sprite2D children
+with SkillData script.
+
+SkillData (skill_data.gd) extends Sprite2D, fields:
+  skill_name, description, type (instant/target_aoe/passive/buff),
+  class_owner, max_level, prerequisite_skill, prerequisite_level
+  Per-level arrays: ep_costs, mp_costs, cooldowns, cast_times,
+    damages, effect_durations, crit_chances, aoe_radiuses, ranges
+  icon_color
+
+──── Level Scaling ────
+get_skill_val(skill_id, stat_name, level):
+  - Index into array: clamp(level - 1, 0, array.size() - 1)
+  - If level exceeds array, uses last value (max level cap)
+
+IN UNITY: Use ScriptableObjects with serialized arrays for level scaling.
+
+================================================================================
+12. ELEMENT / ELEMENTAL SYSTEM
+================================================================================
+
+ElementDB (element_db.gd) — Autoload scene with Sprite2D children per element.
+
+11 ELEMENTS: netral, api, air, tanah, udara, listrik, es, besi, suara, cahaya, kegelapan
+
+Each element has:
+  - Icon (from sprite sheet)
+  - Color:
+      api: (1.0, 0.4, 0.2) orange
+      air: (0.2, 0.6, 1.0) blue
+      tanah: (0.6, 0.4, 0.2) brown
+      udara: (0.6, 0.8, 0.8) teal
+      listrik: (0.8, 0.8, 0.2) yellow
+      es: (0.6, 0.9, 1.0) ice blue
+      besi: (0.7, 0.7, 0.7) gray
+      suara: (0.8, 0.2, 0.8) purple
+      cahaya: (1.0, 1.0, 0.6) pale yellow
+      kegelapan: (0.3, 0.1, 0.4) dark purple
+      netral: (0.9, 0.9, 0.9) white
+
+Multiplier table: see section 2 (Global.gd)
+
+================================================================================
+13. STATUS EFFECT SYSTEM
+================================================================================
+
+StatusEffectManager (status_effect_manager.gd) — runtime child of player/enemy
+
+STORAGE: active_effects: Dictionary<string, {duration, amount, tick_timer, source_pos, ...}>
+
+EFFECTS LIST:
+  Movement Restricting (can_move = false):
+    freeze: color (0.4, 0.8, 1.0), blocks all
+    sleep: color (0.5, 0.5, 0.8), blocks all, 1.5x damage taken
+    root: blocks movement only
+    stun: blocks all, visual "💫" icon
+
+  Speed Modifiers:
+    chill: 0.6x move speed, 0.6x attack speed
+    burn: 0.8x move speed, DoT
+    slow: configurable amount (default 0.5x)
+    haste: 2.0x attack speed
+
+  DoT (Damage over Time, 1 tick/sec):
+    poison: color (0.4, 1.0, 0.4)
+    burn: color (1.0, 0.5, 0.2)
+    bleed: color (1.0, 0.3, 0.3), 2x damage if target is moving
+    curse: color (0.3, 0.0, 0.4), visual "💀" icon
+    soul_drain: drains HP, heals source player
+
+  Damage Modifiers:
+    vulnerable: 1.5x damage taken
+    hunters_mark: 2.0x damage taken, visual "🎯" icon
+
+  Behavioral:
+    fear: forced to run away from source_pos
+    confuse: random direction change every 0.5-1.5s, color (0.8, 0.4, 0.8)
+    paralyze: 0.5x attack speed, color (1.0, 1.0, 0.2)
+    silence: cannot cast spells
+    blind: chase_radius reduced to 20%, player gets dark overlay
+    taunt: forced to attack player, visual "💢" icon
+
+  Buffs:
+    endure: no knockback
+    shadow_walk: 50% transparency, enemies ignore player
+    holy_veil: damage absorption shield, yellow cylinder visual
+    poison_weapon: adds poison to attacks
+    mirage_strike: extra illusory strikes
+    haste: double attack speed
+
+DAMAGE INTERACTION:
+  - sleep broken by damage
+  - freeze broken by damage → applies chill for 3s
+
+VISUAL SYSTEM:
+  - Each effect changes target modulate color
+  - Shadow walk: 50% transparency on all meshes
+  - Holy veil: CSGCylinder3D shield visual
+  - Curse/Stun/Taunt/Mark: Label3D emoji billboard
+
+IN UNITY: Use a Dictionary<string, StatusEffectData> on each character,
+tick in Update(), apply visual effects via material property blocks.
+
+================================================================================
+14. INVENTORY & EQUIPMENT SYSTEM
+================================================================================
+
+INVENTORY: Dictionary<string, int> — item_id to quantity
+  Stored in Global.inventory
+
+EQUIPMENT SLOTS: 8 slots
+  main_weapon, secondary_weapon, helm, armor, boots,
+  accessory1, accessory2, artifact
+
+EQUIP FLOW:
+  1. From inventory menu, select item
+  2. Check equipment_slot matches slot
+  3. Swap: unequip current → equip new → update inventory counts
+  4. Call recalculate_stats()
+  5. Call update_visual_equipment()
+  6. Call update_equipped_weapon()
+
+VISUAL EQUIPMENT:
+  - Weapons: Slot_Weapon children visibility toggled
+  - Armor/Helm/Boots: load scene/mesh from visual_path, parent to skeleton
+  - Helm hides Base_Head_Group + hair + beard
+  - Armor hides Base_Body
+  - Boots hides Base_Feet
+
+QUICK ITEMS: 4 slots (keys 9, 0, -, =)
+  - Consumables: heal_hp, heal_mp, heal_ep, unlock_recipe
+  - Checks if current health/mana is already full
+  - Decrements inventory count after use
+
+================================================================================
+15. UI SYSTEM
+================================================================================
+
+PlayerHUD (Autoload scene):
+  - HP bar, MP bar, EP bar
+  - Quick skill slots (8), Quick item slots (4)
+  - Skill cooldown overlay
+  - Coin display, Level/EXP display
+
+MENUS (all pause game via get_tree().paused = true):
+  character_menu.gd: Stats page, stat allocation, equipment view
+  inventory_menu.gd: Grid inventory, equip/unequip, sort, tooltip with element info
+  skill_menu.gd: Skill tree per class, level-up skills, assign to quick slots
+  shop_menu.gd: Buy/sell from merchant NPC
+  crafting_menu.gd: Recipe list, material check, craft button
+  class_changer_menu.gd: Switch between fighter/apprentice/scout
+  buff_shop_menu.gd: Post-boss reward selection
+  game_over_hud.gd: Death screen with stats summary
+  dialogue_box.gd: NPC conversation with callback on finish
+  seed_menu.gd: Select seed for farming
+  debug_status_menu.gd: Dev status viewer
+  boss_hud.gd: Boss HP bar overlay
+
+DAMAGE TEXT: Label3D billboard, tweens up 0.5-3.0 units, fades out
+  Colors: white(normal), orange(super effective), gray(resisted),
+          red(critical), green(heal)
+FLOATING TEXT: Same as damage text but for messages
+
+CASTING BAR: ProgressBar created dynamically, shows cast time progress
+CHARGE BAR: ProgressBar for bow/staff charge, max 2.0s
+SPIN BAR: ProgressBar for cyclone_sweep duration
+
+TARGET INDICATOR: Circle/single/cone indicator during targeting mode
+
+ENEMY INDICATOR: Red cylinder mesh under locked target
+HOVER INDICATOR: Yellow cylinder mesh under mouse-hovered enemy
+
+================================================================================
+16. LIFE SKILLS SYSTEM
+================================================================================
+
+──── Mining / Logging (ResourceNode) ────
+resource_node.gd (Area3D):
+  yield_item: string (e.g., "stone")
+  required_tool: string (e.g., "pickaxe")
+  required_cycles: int = 2 (attack animation loops)
+  respawn_time: float = 10s
+  yield_amount: int = 1
+  
+  Flow: interact → check tool → start_life_skill → attack animation loop
+  → on_complete → add item to inventory → hide + respawn timer
+
+──── Foraging (ForagingNode) ────
+Similar to ResourceNode but for plants, no tool required typically.
+
+──── Farming ────
+FarmingZone (farming_zone.gd):
+  - Player enters zone → interact → start_farming_targeting
+  - Shows grid indicator at mouse position
+  - Confirm → auto-walk to position → create CropPlot
+
+CropPlot (crop_plot.gd):
+  States: EMPTY → PLANTED → READY
+  - EMPTY: interact → open seed menu → plant seed (3 animation cycles)
+  - PLANTED: interact with watering_can → adds 60s of watered time
+  - Growth progresses only while watered (watered_time_left > 0)
+  - Max growth time: 120s (2 min debug)
+  - READY: interact → harvest (+2 herb)
+  
+  Data stored in Global.farm_plots[plot_id]
+
+──── Crafting ────
+Recipes stored in Global.CRAFTING_RECIPES (auto-built from ItemDB)
+Format: { "item_id": { "materials": {"mat_id": amount, ...}, "time": seconds } }
+
+Flow: Open crafting menu → select recipe → check materials → start craft
+  → timer runs in Global._process → finish → add item to inventory
+  Recipes must be unlocked first (Global.unlocked_recipes)
+
+──── Life Skill Animation Loop ────
+start_life_skill(target, cycles, type):
+  1. Face target direction
+  2. Play Attack animation
+  3. Wait base_attack_duration
+  4. Increment progress
+  5. Update progress bar
+  6. If progress >= max → call target.on_complete(player)
+  7. Else → loop
+
+================================================================================
+17. NPC & DIALOGUE SYSTEM
+================================================================================
+
+NPC (npc.gd) extends StaticBody3D:
+  npc_name: String
+  dialogue_lines: Array[String]
+  npc_type: enum (Talk, Merchant, Portal, DebugStatus, ClassChanger, Healer)
+  merchant_items: Array[String] — item IDs for shop
+
+  - InteractArea (Area3D) detects player proximity
+  - Press Q → opens dialogue_box with lines
+  - After dialogue, callback based on type:
+    Talk: nothing
+    Merchant: open shop_menu with merchant_items
+    Portal: warp to dungeon scene
+    ClassChanger: open class_changer_menu
+    Healer: full HP/MP/EP restore
+    DebugStatus: open debug_status_menu
+
+DIALOGUE BOX:
+  - Shows text line by line
+  - Player clicks to advance
+  - On finish, calls callback function if provided
+
+================================================================================
+18. WORLD / MAP SYSTEM
+================================================================================
+
+Scene-based maps (Scenes/Maps/ folder)
+
+GRINDING CAMP (grinding_camp.gd):
+  max_enemies: int = 3
+  respawn_time: float = 10s
+  spawn_radius: float = 50 units
+
+  - Spawns wave of enemies at random positions around camp center
+  - Monitors enemy deaths via tree_exited signal
+  - When all dead → respawn timer → new wave
+  - Uses NavigationMesh for pathfinding (if terrain has navmesh)
+
+COLLECTIBLE ITEMS:
+  - Coin (coin.tscn): player touches → add_coin()
+  - EXP Gem (exp_gem.tscn): player touches → add_exp()
+  - Both use collectible.gd with auto-magnet toward player
+
+TERRAIN: Uses Terrain3D plugin (addons/terrain_3d)
+
+================================================================================
+19. CHARACTER CUSTOMIZATION SYSTEM
+================================================================================
+
+CustomizationDB (Autoload scene):
+  Parts: Hair, Beard (expandable)
+  Each part has: name, type, mesh_path, species,
+    apply_offset, position_offset, rotation_offset, scale_offset
+
+CustomizationData (customization_data.gd):
+  part_name, part_type, mesh_path, species
+  Transform offsets for alignment
+
+PlayerVisual (@tool script):
+  - Auto-merges physics bones from hair/beard FBX into GeneralSkeleton
+  - Synty hair models have extra bones (hair_dyr_01, etc.) not in base skeleton
+  - 3-pass merge: add bones → set parents → reset poses
+  - Redirects all MeshInstance3D skeleton paths to GeneralSkeleton
+  - Fixes missing skin bones using inverse bind matrices
+
+RUNTIME FLOW:
+  1. Player selects hair/beard in customization UI
+  2. Global.customization updated
+  3. Load mesh from CustomizationDB path
+  4. Apply offset transforms
+  5. Assign skeleton reference to GeneralSkeleton
+
+IN UNITY: Use SkinnedMeshRenderer.rootBone + bones array reassignment.
+
+================================================================================
+20. INPUT MAPPING (Unity InputSystem equivalent)
+================================================================================
+
+MOVEMENT:
+  W = move_up, S = move_down, A = move_left, D = move_right
+  Shift = run (hold), Space = dash
+
+COMBAT:
+  Left Mouse = basic_attack
+  Right Mouse = charge_attack (tap or hold depending on weapon)
+
+SKILLS & ITEMS:
+  1-8 = skill slots, 9/0/-/= = item slots
+
+MENUS:
+  B = inventory, K = skill menu, C = character menu,
+  J = crafting, P = customization, Q = interact
+
+DEBUG:
+  F1 = level up, F2 = +1000 coins, F3 = class level up
+
+TARGETING MODE:
+  Left click = confirm target, Right click = cancel
+  Engine.time_scale = 0.2 during targeting (slow motion)
+
+================================================================================
+21. CAMERA SYSTEM
+================================================================================
+
+- Camera3D as child of Player, set as top-level (detached from hierarchy)
+- Fixed offset (isometric/top-down angle)
+- Smooth follow: lerp toward player + offset, speed = 6.5
+- Camera shake: tween h_offset/v_offset for intensity/duration
+  Examples: basic hit: 2-3 intensity 0.1s, skill: 8-30 intensity 0.2-0.5s
+
+IN UNITY: Cinemachine Virtual Camera with damping, or manual follow script.
+
+================================================================================
+22. NAVIGATION / PATHFINDING
+================================================================================
+
+- NavigationAgent3D on Player
+- Used for:
+  - Locked target auto-walk (click enemy → walk to attack range)
+  - Auto-walk for life skills (farming → walk to plot)
+  - Enemy: not used (simple direction vectors)
+
+- NavigationMesh baked on terrain
+
+IN UNITY: NavMeshAgent or AI Navigation package.
+
+================================================================================
+23. SCENE / NODE HIERARCHY REFERENCE
+================================================================================
+
+ROOT SCENES:
+  Scenes/Maps/maincity.tscn — Main hub city
+  Scenes/Maps/forest.tscn — Dungeon/forest map
+
+ENTITY SCENES:
+  Scenes/Entities/player.tscn — Player character
+  Scenes/Entities/enemy.tscn — Melee enemy
+  Scenes/Entities/ranged_enemy.tscn — Ranged enemy
+  Scenes/Entities/boss_enemy.tscn — Boss enemy
+  Scenes/Entities/npc.tscn — NPC template
+
+DATABASE SCENES (Autoloads):
+  Scenes/item_db.tscn — Item database
+  Scenes/skill_db.tscn — Skill database
+  Scenes/element_db.tscn — Element icons
+  Scenes/customization_db.tscn — Customization parts
+
+UI SCENES:
+  Scenes/UI/player_hud.tscn — HUD overlay
+  Scenes/UI/character_menu.tscn, inventory_menu.tscn, skill_menu.tscn
+  Scenes/UI/shop_menu.tscn, crafting_menu.tscn
+  Scenes/UI/class_changer_menu.tscn, buff_shop_menu.tscn
+  Scenes/UI/game_over_hud.tscn, dialogue_box.tscn, seed_menu.tscn
+  Scenes/UI/boss_hud.tscn, debug_status_menu.tscn
+
+SKILL SCENES:
+  Scenes/Skills/arrow_projectile.tscn, player_projectile.tscn
+  Scenes/Skills/enemy_projectile.tscn, fire_bolt.tscn, fireball.tscn
+  Scenes/Skills/arrow_rain.tscn, seismic_fissure_hazard.tscn
+  Scenes/Skills/target_indicator.tscn
+  Scenes/Skills/aqua_blast_wave.tscn (runtime-created Area3D)
+
+WEAPON SCENES:
+  Scenes/Weapons/ or Scenes/Weapon/ — modular weapon .tscn files
+  Each contains: Node3D root → MeshInstance3D + Area3D hitbox
+
+ITEM COLLECTIBLES:
+  Scenes/Items/coin.tscn, exp_gem.tscn
+
+LIFE SKILL SCENES:
+  Scenes/LifeSkills/resource_node.tscn, foraging_node.tscn
+  Scenes/LifeSkills/crop_plot.tscn, farming_zone.tscn
+
+================================================================================
+24. KEY GODOT → UNITY CONCEPT MAPPING
+================================================================================
+
+GODOT CONCEPT              → UNITY EQUIVALENT
+───────────────────────────────────────────────────────────────────
+CharacterBody3D            → CharacterController or Rigidbody+Collider
+move_and_slide()           → CharacterController.Move()
+Node / Node3D              → MonoBehaviour on GameObject
+@export                    → [SerializeField] or public field
+@onready                   → Awake() / Start() GetComponent
+get_node()                 → transform.Find() or GetComponent
+Autoload                   → Singleton MonoBehaviour (DontDestroyOnLoad)
+Signal                     → C# event / UnityEvent / Action<T>
+AnimationTree              → Animator + AnimatorController
+AnimationNodeStateMachine   → Animator States/Layers
+AnimationPlayer            → Animation component
+Area3D                     → Collider (isTrigger=true)
+CollisionShape3D           → Collider components
+StaticBody3D               → Rigidbody (isKinematic=true) + Collider
+RigidBody3D                → Rigidbody
+RayCast3D                  → Physics.Raycast()
+NavigationAgent3D          → NavMeshAgent
+Skeleton3D                 → SkinnedMeshRenderer.bones
+BoneAttachment3D           → Attach to bone Transform
+SkeletonIK3D               → Animation Rigging (Two Bone IK)
+Sprite3D                   → SpriteRenderer or Billboard quad
+Label3D                    → TextMeshPro on Canvas/World Space
+CSGCylinder3D              → Procedural mesh or prefab cylinder
+ProgressBar                → UI Slider or custom UI
+SubViewport                → RenderTexture
+Tween                      → DOTween / LeanTween / Coroutine
+Timer                      → Coroutine or Invoke
+get_tree()                 → FindObjectsOfType or EventSystem
+PackedScene.instantiate()  → Instantiate(prefab)
+queue_free()               → Destroy(gameObject)
+_ready()                   → Awake() or Start()
+_process(delta)            → Update()
+_physics_process(delta)    → FixedUpdate()
+_unhandled_input(event)    → Update() + Input class
+Engine.time_scale           → Time.timeScale
+call_deferred()            → StartCoroutine or Invoke next frame
+process_mode               → Not directly equivalent (use TimeScale checks)
+Groups                     → Tags or Layers
+InputMap                   → InputSystem InputActions
+ProjectSettings            → Physics.gravity
+GPUParticles3D             → ParticleSystem
+StandardMaterial3D         → Material (URP Lit/Unlit)
+material_overlay           → Material property block or additional pass
+SceneTree.change_scene()   → SceneManager.LoadScene()
+@tool script               → [ExecuteInEditMode] or [ExecuteAlways]
+Resource (.tres)           → ScriptableObject or Asset
+GDScript class_name         → C# class (naturally named)
+
+================================================================================
+END OF MIGRATION BLUEPRINT
+================================================================================
+
+NOTES FOR CURSOR AI:
+1. Start with the Global singleton (GameManager) — it's the backbone.
+2. Then implement Player with component scripts as separate MonoBehaviours.
+3. ItemDB and SkillDB → ScriptableObjects or JSON data.
+4. Combat system is the most complex — handle weapon-type branching carefully.
+5. Animation system uses dynamic state name lookup — replicate via Animator
+   parameter strings or RuntimeAnimatorController manipulation.
+6. All damage text / floating text uses 3D billboarded text — use TextMeshPro
+   world space canvas or SpriteRenderer.
+7. Status effects use a central manager per character — port as-is.
+8. The elemental system has 11 elements with a rock-paper-scissors table.
+9. Skill execution is split by class (FighterSkills, ApprenticeSkills,
+   ScoutSkills) — each is a static class with an execute() function.
+10. The game uses Synty modular character models with Mixamo-retargeted
+    animations. You may need Mecanim Humanoid retargeting in Unity.

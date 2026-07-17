@@ -80,7 +80,6 @@ shape = SubResource("BoxShape3D_qdt7u")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=674555059]
 transform = Transform3D(0.8520834, 0.02421035, 0.5228458, -0.523406, 0.03941345, 0.8511714, 0, -0.9989297, 0.04625539, 26.587252, 23.205418, 0)
 light_energy = 0.3
-shadow_enabled = true
 
 [node name="Terrain3D" type="Terrain3D" parent="." unique_id=540646147]
 data_directory = "res://Scenes/map"

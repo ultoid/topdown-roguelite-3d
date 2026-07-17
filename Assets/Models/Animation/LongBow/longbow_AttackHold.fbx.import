@@ -41,7 +41,7 @@ _subresources={
 "animations": {
 "HumanM_BowShot01 - Hold": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Old Animations/bow_attackhold.res",
+"save_to_file/fallback_path": "res://Assets/Models/_Old Animations/bow_attackhold.res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://brs3b412knkph",
 "settings/loop_mode": 0,

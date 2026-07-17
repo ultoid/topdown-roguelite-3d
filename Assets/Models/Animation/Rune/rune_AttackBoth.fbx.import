@@ -41,7 +41,7 @@ _subresources={
 "animations": {
 "HumanM_MagicAttackDirect2H01": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Old Animations/rune_attack(3).res",
+"save_to_file/fallback_path": "res://Assets/Models/_Old Animations/rune_attack(3).res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://yndw6d36tw28",
 "settings/loop_mode": 0,

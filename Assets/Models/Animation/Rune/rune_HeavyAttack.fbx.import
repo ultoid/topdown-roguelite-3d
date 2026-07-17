@@ -41,7 +41,7 @@ _subresources={
 "animations": {
 "HumanM_MagicAttackOmni01": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Old Animations/rune_chargeattack.res",
+"save_to_file/fallback_path": "res://Assets/Models/_Old Animations/rune_chargeattack.res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://bj6b2bmydyq01",
 "settings/loop_mode": 0,

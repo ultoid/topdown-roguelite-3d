@@ -41,7 +41,7 @@ _subresources={
 "animations": {
 "mixamo_com": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Old Animations/longsword_chargeattack.res",
+"save_to_file/fallback_path": "res://Assets/Models/_Old Animations/longsword_chargeattack.res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://d3k6ie47ttsrc",
 "settings/loop_mode": 1,

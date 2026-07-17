@@ -41,7 +41,7 @@ _subresources={
 "animations": {
 "HumanM_BowShot01 - Load": {
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Models/Old Animations/bow_attackload.res",
+"save_to_file/fallback_path": "res://Assets/Models/_Old Animations/bow_attackload.res",
 "save_to_file/keep_custom_tracks": true,
 "save_to_file/path": "uid://bocr0eryi8dcp",
 "settings/loop_mode": 0,

@@ -16,7 +16,11 @@ func _unhandled_input(event):
 	if event.is_action_pressed("basic_attack") and not player.is_targeting and not player.is_farming_targeting:
 		var clicked_enemy = player.get_enemy_under_mouse()
 		if is_instance_valid(clicked_enemy):
-			player.locked_target = clicked_enemy
+			# Mencegah penimpaan (reset) locked_target jika sedang menyerang.
+			# Jika tidak dicegah, spam klik akan mengunci musuh terus-menerus dan 
+			# mencegah penghapusan otomatis locked_target di player_movement.gd
+			if not player.is_attacking:
+				player.locked_target = clicked_enemy
 			# Jika menembak (range) atau serangan jarak dekat, player_movement.gd akan mengurus auto-walk
 			get_viewport().set_input_as_handled()
 			return
